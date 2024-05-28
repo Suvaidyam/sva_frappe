@@ -1,0 +1,156 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format: SVA User {####} ",
+ "creation": "2024-05-28 10:06:14.905294",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "email",
+  "first_name",
+  "middle_name",
+  "last_name",
+  "user_image",
+  "column_break_lsez",
+  "role_profile",
+  "password",
+  "confirm_password",
+  "section_break_yevr",
+  "add_permission",
+  "html_ojrc",
+  "section_break_rxmy",
+  "select_state",
+  "select_district",
+  "select_block",
+  "select_village"
+ ],
+ "fields": [
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "First name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "middle_name",
+   "fieldtype": "Data",
+   "label": "Middle Name"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last name"
+  },
+  {
+   "fieldname": "user_image",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "User Image"
+  },
+  {
+   "fieldname": "column_break_lsez",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "role_profile",
+   "fieldtype": "Link",
+   "label": "Role Profile",
+   "options": "Role Profile",
+   "reqd": 1
+  },
+  {
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "label": "Password",
+   "reqd": 1
+  },
+  {
+   "fieldname": "confirm_password",
+   "fieldtype": "Data",
+   "label": "Confirm Password",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_yevr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "add_permission",
+   "fieldtype": "Button",
+   "label": "Add Permission"
+  },
+  {
+   "fieldname": "section_break_rxmy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "select_state",
+   "fieldtype": "Table MultiSelect",
+   "hidden": 1,
+   "is_virtual": 1,
+   "label": "Select State",
+   "options": "State Child"
+  },
+  {
+   "fieldname": "select_district",
+   "fieldtype": "Table MultiSelect",
+   "hidden": 1,
+   "is_virtual": 1,
+   "label": "Select District",
+   "options": "District Child"
+  },
+  {
+   "fieldname": "select_block",
+   "fieldtype": "Table MultiSelect",
+   "hidden": 1,
+   "is_virtual": 1,
+   "label": "Select Block",
+   "options": "Block Child"
+  },
+  {
+   "fieldname": "select_village",
+   "fieldtype": "Table MultiSelect",
+   "hidden": 1,
+   "is_virtual": 1,
+   "label": "Select Village",
+   "options": "Village Child"
+  },
+  {
+   "fieldname": "html_ojrc",
+   "fieldtype": "HTML",
+   "options": "<div id=\"datatable\"></div>"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-28 12:10:42.033515",
+ "modified_by": "Administrator",
+ "module": "Sva Frappe",
+ "name": "SVA User",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
