@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"9RWWZk8Azf\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Geo Master</span>\",\"col\":12}}]",
+ "content": "[{\"id\":\"9RWWZk8Azf\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Geo Master</span>\",\"col\":12}},{\"id\":\"rtRAltS7LX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"State\",\"col\":3}},{\"id\":\"YPoFJplmX3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"District\",\"col\":3}},{\"id\":\"Pf9mwrJlax\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Block\",\"col\":3}},{\"id\":\"_pE-N3CeOA\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Village\",\"col\":3}}]",
  "creation": "2024-05-27 12:20:14.864425",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Geo Master",
  "links": [],
- "modified": "2024-05-27 12:21:12.899717",
+ "modified": "2024-05-28 10:46:03.640125",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Geo Master",
@@ -24,6 +24,39 @@
  "quick_lists": [],
  "roles": [],
  "sequence_id": 1.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "State",
+   "link_to": "State",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "District",
+   "link_to": "District",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Block",
+   "link_to": "Block",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Village",
+   "link_to": "Village",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
  "title": "Geo Master"
 }
