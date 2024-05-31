@@ -39,7 +39,15 @@
   "main_body_section",
   "body_background_color",
   "column_break_ojdd",
-  "main_body_content_box_background_color"
+  "main_body_content_box_background_color",
+  "list_table_section",
+  "table_head_background_color",
+  "table_body_background_color",
+  "hide_comments",
+  "column_break_xskf",
+  "table_head_text_color",
+  "table_body_text_color",
+  "hide_like_section"
  ],
  "fields": [
   {
@@ -210,12 +218,53 @@
   {
    "fieldname": "column_break_ojdd",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "list_table_section",
+   "fieldtype": "Section Break",
+   "label": "List Table"
+  },
+  {
+   "fieldname": "table_head_background_color",
+   "fieldtype": "Color",
+   "label": "Head Background Color"
+  },
+  {
+   "fieldname": "table_body_background_color",
+   "fieldtype": "Color",
+   "label": "Body Background Color"
+  },
+  {
+   "fieldname": "table_head_text_color",
+   "fieldtype": "Color",
+   "label": "Head Text Color"
+  },
+  {
+   "fieldname": "table_body_text_color",
+   "fieldtype": "Color",
+   "label": "Body Text Color"
+  },
+  {
+   "fieldname": "column_break_xskf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "hide_comments",
+   "fieldtype": "Check",
+   "label": "Hide Comments"
+  },
+  {
+   "default": "0",
+   "fieldname": "hide_like_section",
+   "fieldtype": "Check",
+   "label": "Hide Like Section"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-31 11:57:30.824870",
+ "modified": "2024-05-31 13:56:03.141941",
  "modified_by": "Administrator",
  "module": "Theme",
  "name": "My Theme",
