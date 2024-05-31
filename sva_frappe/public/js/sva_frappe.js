@@ -17,7 +17,7 @@ const applyTheme = async () => {
     style.innerHTML = `
         
 
-
+                                /* Login page */
             #page-login {
                 background: ${theme.page_background_type && theme.page_background_type == 'Color' ? `${theme.login_page_background_color}` : theme.page_background_type == 'Image' ? theme.login_page_background_image && `url("${theme.login_page_background_image}")` : 'transparent'} !important;
                 background-size: cover !important;
@@ -58,7 +58,7 @@ const applyTheme = async () => {
                 }
             }
 
-          
+            /* Navbar */
 
             .navbar {
                 background-color: ${theme.navbar_color && theme.navbar_color} !important;
@@ -70,32 +70,24 @@ const applyTheme = async () => {
             #navbar-breadcrumbs li a {
                 color: ${theme.navbar_text_color && theme.navbar_text_color} !important;
             }
-    
-            .navbar li a::before {
-                stroke:${theme.navbar_icon_color && theme.navbar_icon_color};
-            }
-    
-            .navbar svg.es-icon.icon-sm use {
-                stroke:${theme.navbar_icon_color && theme.navbar_icon_color};
-            }
 
-    
 
-        .btn-primary {
+            /* Primary Btn */
+
+        .btn-primary , .btn-primary:active{
             background-color: ${theme.button_background_color && theme.button_background_color} !important;
         }
-        .btn-primary span{
+        .btn-primary span , .btn-primary:active span{
             color: ${theme.button_text_color && theme.button_text_color} !important;
         }
-        .btn-primary svg.icon.icon-xs use{
-            stroke: ${theme.button_text_color && theme.button_text_color} !important;
-        }
+    
+        
+        /* main Contant*/
+
         .d-lg-block,
         .d-sm-block {
             display: none !important;
         }
-        
-
         body{
             background-color: ${theme.body_background_color && theme.body_background_color} !important;
         }
@@ -105,20 +97,30 @@ const applyTheme = async () => {
         .page-head {
             background-color: ${theme.body_background_color && theme.body_background_color} !important;
         }
-        .layout-main-section{
+        .layout-main-section , .row.form-section.card-section.visible-section{
             background-color: ${theme.main_body_content_box_background_color && theme.main_body_content_box_background_color} !important;
+            border-radius: 10px !important;
         }
-        .desk-sidebar-item.standard-sidebar-item.selected{
+        @media (min-width: 992px) {
+            [data-page-route=Workspaces] .layout-main .layout-main-section.edit-mode {
+                background-color: ${theme.main_body_content_box_background_color && theme.main_body_content_box_background_color} !important;
+            }
+        }
+        .desk-sidebar-item.standard-sidebar-item.selected ,.desk-sidebar-item.standard-sidebar-item.selected span{
             background-color: ${theme.secondary_button_background_color && theme.secondary_button_background_color} !important;
             color: ${theme.secondary_button_text_color && theme.secondary_button_text_color} !important;
         }
-        .btn.btn-default.ellipsis, .btn-secondary.btn-default{
+        .desk-sidebar-item.standard-sidebar-item:hover ,.desk-sidebar-item.standard-sidebar-item:hover span{
+            background-color: ${theme.secondary_button_hover_background_color && theme.secondary_button_hover_background_color} !important;
+            color: ${theme.secondary_button_hover_text_color && theme.secondary_button_hover_text_color} !important;
+        }
+        .btn.btn-default.ellipsis, .btn-default , .btn-default:active{
             background-color: ${theme.secondary_button_background_color && theme.secondary_button_background_color} !important;
             color: ${theme.secondary_button_text_color && theme.secondary_button_text_color} !important;s
         }
-        .es-icon.es-line.icon-xs{
-            stroke: ${theme.secondary_button_text_color && theme.secondary_button_text_color} !important;
-            fill:red !important;
+        .btn.btn-default.ellipsis:hover, .btn-default:hover{
+            background-color: ${theme.secondary_button_hover_background_color && theme.secondary_button_hover_background_color} !important;
+            color: ${theme.secondary_button_hover_text_color && theme.secondary_button_hover_text_color} !important;
         }
         .page-form.flex{
             background-color: ${theme.main_body_content_box_background_color && theme.main_body_content_box_background_color} !important;
@@ -133,8 +135,25 @@ const applyTheme = async () => {
             box-shadow: none !important;
             border: 2px solid #c2c0c0 !important;
         }
-    `;
+        .widget{
+            background-color: ${theme.main_body_content_box_background_color && theme.main_body_content_box_background_color} !important;
+        }
 
+
+        /* table */
+        .level.list-row-head ,.level.list-row-head span.level-item{
+            background-color: ${theme.table_head_background_color && theme.table_head_background_color} !important;
+            color: ${theme.page_heading_text_color && theme.page_heading_text_color} !important;
+        }
+        .level.list-row,.level-item.bold.ellipsis a,.filterable.ellipsis{
+            background-color:${theme.table_body_background_color && theme.table_body_background_color} !important;;
+            color: ${theme.table_body_text_color && theme.table_body_text_color} !important;
+        }
+        .level-right{
+            background-color:none !important;
+        }
+
+    `;
     document.head.appendChild(style);
 }
 applyTheme()
