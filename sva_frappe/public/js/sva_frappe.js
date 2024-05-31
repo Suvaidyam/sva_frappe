@@ -96,7 +96,9 @@ const applyTheme = async () => {
         }
         
 
-
+        body{
+            background-color: ${theme.body_background_color && theme.body_background_color} !important;
+        }
         .content.page-container{
             background-color: ${theme.body_background_color && theme.body_background_color} !important;
         }
@@ -105,6 +107,31 @@ const applyTheme = async () => {
         }
         .layout-main-section{
             background-color: ${theme.main_body_content_box_background_color && theme.main_body_content_box_background_color} !important;
+        }
+        .desk-sidebar-item.standard-sidebar-item.selected{
+            background-color: ${theme.secondary_button_background_color && theme.secondary_button_background_color} !important;
+            color: ${theme.secondary_button_text_color && theme.secondary_button_text_color} !important;
+        }
+        .btn.btn-default.ellipsis, .btn-secondary.btn-default{
+            background-color: ${theme.secondary_button_background_color && theme.secondary_button_background_color} !important;
+            color: ${theme.secondary_button_text_color && theme.secondary_button_text_color} !important;s
+        }
+        .es-icon.es-line.icon-xs{
+            stroke: ${theme.secondary_button_text_color && theme.secondary_button_text_color} !important;
+            fill:red !important;
+        }
+        .page-form.flex{
+            background-color: ${theme.main_body_content_box_background_color && theme.main_body_content_box_background_color} !important;
+        }
+        input{
+            background-color: white !important;
+            border: 2px solid #F3F3F3 !important;
+            
+            
+        }
+        input:focus{
+            box-shadow: none !important;
+            border: 2px solid #c2c0c0 !important;
         }
     `;
 
