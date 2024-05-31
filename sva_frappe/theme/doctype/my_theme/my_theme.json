@@ -1,0 +1,93 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{##}",
+ "creation": "2024-05-31 09:59:01.191566",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "navbar_section",
+  "navbar_color",
+  "column_break_jevx",
+  "navbar_text_color",
+  "column_break_yloh",
+  "navbar_icon_color",
+  "primary_button_section",
+  "button_background_color",
+  "column_break_soto",
+  "button_text_color"
+ ],
+ "fields": [
+  {
+   "fieldname": "navbar_section",
+   "fieldtype": "Section Break",
+   "label": "Navbar"
+  },
+  {
+   "fieldname": "navbar_color",
+   "fieldtype": "Color",
+   "label": "Background Color"
+  },
+  {
+   "fieldname": "navbar_text_color",
+   "fieldtype": "Color",
+   "label": "Text Color"
+  },
+  {
+   "fieldname": "navbar_icon_color",
+   "fieldtype": "Color",
+   "label": "Icon Color"
+  },
+  {
+   "fieldname": "column_break_jevx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_yloh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "primary_button_section",
+   "fieldtype": "Section Break",
+   "label": "Primary Button"
+  },
+  {
+   "fieldname": "button_background_color",
+   "fieldtype": "Color",
+   "label": "Background Color"
+  },
+  {
+   "fieldname": "button_text_color",
+   "fieldtype": "Color",
+   "label": "Text Color"
+  },
+  {
+   "fieldname": "column_break_soto",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-05-31 10:03:20.542475",
+ "modified_by": "Administrator",
+ "module": "Theme",
+ "name": "My Theme",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
