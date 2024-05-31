@@ -6,6 +6,18 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "login_page_section",
+  "login_button_background_color",
+  "login_page_button_hover_background_color",
+  "page_background_type",
+  "login_page_background_color",
+  "login_page_background_image",
+  "column_break_umnl",
+  "login_button_text_color",
+  "login_page_button_hover_text_color",
+  "login_box_position",
+  "page_heading_text_color",
+  "login_box_background_color",
   "navbar_section",
   "navbar_color",
   "column_break_jevx",
@@ -17,17 +29,7 @@
   "button_hover_background_color",
   "column_break_soto",
   "button_text_color",
-  "button_hover_text_color",
-  "login_page_section",
-  "login_button_background_color",
-  "login_page_button_hover_background_color",
-  "page_background_type",
-  "login_page_background_color",
-  "login_page_background_image",
-  "column_break_umnl",
-  "login_button_text_color",
-  "login_page_button_hover_text_color",
-  "login_box_position"
+  "button_hover_text_color"
  ],
  "fields": [
   {
@@ -140,12 +142,22 @@
    "fieldname": "login_page_button_hover_text_color",
    "fieldtype": "Color",
    "label": "Button Hover Text Color"
+  },
+  {
+   "fieldname": "page_heading_text_color",
+   "fieldtype": "Color",
+   "label": "Heading Text Color"
+  },
+  {
+   "fieldname": "login_box_background_color",
+   "fieldtype": "Color",
+   "label": "Box Background Color"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-31 10:21:47.257746",
+ "modified": "2024-05-31 11:34:18.479582",
  "modified_by": "Administrator",
  "module": "Theme",
  "name": "My Theme",
