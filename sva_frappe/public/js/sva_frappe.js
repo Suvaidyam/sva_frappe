@@ -9,79 +9,105 @@ const getTheme = async () => {
         });
     })
 }
+
 const applyTheme = async () => {
     let theme = await getTheme()
+    console.log(theme, "theme");
     const style = document.createElement('style');
     style.innerHTML = `
+        
+
+
+            #page-login {
+                background: ${theme.page_background_type && theme.page_background_type == 'Color' ? `${theme.login_page_background_color}` : theme.page_background_type == 'Image' ? theme.login_page_background_image && `url("${theme.login_page_background_image}")` : 'transparent'} !important;
+                background-size: cover !important;
+                height: 100vh !important;
+                z-index: 1000;
+                /* background-color: transparent !important; */
+            }
+            .btn-primary.btn-login {
+                background-color: ${theme.login_button_background_color && theme.login_button_background_color} !important;
+                color: ${theme.login_button_text_color && theme.login_button_text_color} !important;
+            }
+            .btn-primary.btn-login:hover {
+                background-color: ${theme.login_page_button_hover_background_color && theme.login_page_button_hover_background_color} !important;
+                color: ${theme.login_page_button_hover_text_color && theme.login_page_button_hover_text_color} !important;
+            }
+            .for-login {
+                position: ${theme.login_box_position !== 'Default' ? 'absolute' : ''};
+                right: ${theme.login_box_position === 'Right' ? '15%' : ''};
+                left: ${theme.login_box_position === 'Left' ? '15%' : ''};
+            }
+            .login-content.page-card{
+                padding: ${theme.login_box_position !== 'Default' ? '50' : ''}px;
+                background-color: ${theme.login_box_background_color && theme.login_box_background_color} !important;
+                border: 2px solid ${theme.login_box_background_color && theme.login_box_background_color} !important;
+            }
+            .page-card-head h4 {
+                color: ${theme.page_heading_text_color && theme.page_heading_text_color} !important;
+            }
+        
+            @media (max-width: 768px) {
+                .for-login {
+                    position: static;
+                    right: 0%;
+                    left: 0%;
+                }
+                .login-content.page-card{
+                    padding: auto auto;
+                }
+            }
+
+          
+
+            .navbar {
+                background-color: ${theme.navbar_color && theme.navbar_color} !important;
+            }
+            .navbar.container {
+                color: ${theme.navbar_text_color && theme.navbar_text_color} !important;
+            }
+    
+            #navbar-breadcrumbs li a {
+                color: ${theme.navbar_text_color && theme.navbar_text_color} !important;
+            }
+    
+            .navbar li a::before {
+                stroke:${theme.navbar_icon_color && theme.navbar_icon_color};
+            }
+    
+            .navbar svg.es-icon.icon-sm use {
+                stroke:${theme.navbar_icon_color && theme.navbar_icon_color};
+            }
+
+    
+
         .btn-primary {
             background-color: ${theme.button_background_color && theme.button_background_color} !important;
         }
-        .btn-primary span , .btn-primary.btn-login{
+        .btn-primary span{
             color: ${theme.button_text_color && theme.button_text_color} !important;
         }
         .btn-primary svg.icon.icon-xs use{
             stroke: ${theme.button_text_color && theme.button_text_color} !important;
         }
-
-        .navbar {
-            background-color: ${theme.navbar_color && theme.navbar_color} !important;
-        }
-
-        #navbar-breadcrumbs li a {
-            color: ${theme.navbar_text_color && theme.navbar_text_color} !important;
-        }
-
-        .navbar li a::before {
-            stroke:${theme.navbar_icon_color && theme.navbar_icon_color};
-        }
-
-        .navbar svg.es-icon.icon-sm use {
-            stroke:${theme.navbar_icon_color && theme.navbar_icon_color};
-        }
-
         .d-lg-block,
         .d-sm-block {
             display: none !important;
         }
+        
 
-        #page-login {
-            background-image: url("https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0");
-            background-size: cover !important;
-            height: 100vh !important;
-            z-index: 1000;
-            /* background-color: transparent !important; */
+
+        .content.page-container{
+            background-color: ${theme.body_background_color && theme.body_background_color} !important;
         }
-
-        .for-login {
-            margin-left: 650px;
+        .page-head {
+            background-color: ${theme.body_background_color && theme.body_background_color} !important;
         }
-
-        /* Media queries for responsiveness */
-        @media (max-width: 1200px) {
-            .for-login {
-                margin-left: 500px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .for-login {
-                margin-left: 300px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .for-login {
-                margin-left: 20px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .for-login {
-                margin-left: 10px;
-                width: calc(100% - 20px);
-            }
+        .layout-main-section{
+            background-color: ${theme.main_body_content_box_background_color && theme.main_body_content_box_background_color} !important;
         }
     `;
+
     document.head.appendChild(style);
 }
 applyTheme()
