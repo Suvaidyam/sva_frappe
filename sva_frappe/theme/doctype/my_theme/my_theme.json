@@ -29,7 +29,17 @@
   "button_hover_background_color",
   "column_break_soto",
   "button_text_color",
-  "button_hover_text_color"
+  "button_hover_text_color",
+  "secondary_button_section",
+  "secondary_button_background_color",
+  "secondary_button_hover_background_color",
+  "column_break_mslv",
+  "secondary_button_text_color",
+  "secondary_button_hover_text_color",
+  "main_body_section",
+  "body_background_color",
+  "column_break_ojdd",
+  "main_body_content_box_background_color"
  ],
  "fields": [
   {
@@ -152,12 +162,60 @@
    "fieldname": "login_box_background_color",
    "fieldtype": "Color",
    "label": "Box Background Color"
+  },
+  {
+   "fieldname": "main_body_section",
+   "fieldtype": "Section Break",
+   "label": "Main Body"
+  },
+  {
+   "fieldname": "body_background_color",
+   "fieldtype": "Color",
+   "label": "Background Color"
+  },
+  {
+   "fieldname": "secondary_button_section",
+   "fieldtype": "Section Break",
+   "label": "Secondary Button"
+  },
+  {
+   "fieldname": "secondary_button_background_color",
+   "fieldtype": "Color",
+   "label": "Background Color"
+  },
+  {
+   "fieldname": "column_break_mslv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "secondary_button_text_color",
+   "fieldtype": "Color",
+   "label": "Text Color"
+  },
+  {
+   "fieldname": "secondary_button_hover_background_color",
+   "fieldtype": "Color",
+   "label": "Hover Background Color"
+  },
+  {
+   "fieldname": "secondary_button_hover_text_color",
+   "fieldtype": "Color",
+   "label": "Hover Text Color"
+  },
+  {
+   "fieldname": "main_body_content_box_background_color",
+   "fieldtype": "Color",
+   "label": "Content Box Background Color"
+  },
+  {
+   "fieldname": "column_break_ojdd",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-31 11:34:18.479582",
+ "modified": "2024-05-31 11:57:30.824870",
  "modified_by": "Administrator",
  "module": "Theme",
  "name": "My Theme",
