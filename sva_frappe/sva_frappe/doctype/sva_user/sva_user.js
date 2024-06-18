@@ -4,7 +4,7 @@
 
 var settings = {}
 
-const openDialog = (_cb, role_profile) => {
+const openDialog = async (_cb, role_profile) => {
     var doctypes = settings?.role_doctype_mapping?.filter((e) => e.doctyperef && e.role_profile == role_profile);
     const doctypes_arr = settings?.role_doctype_mapping
         ?.filter(e => e.doctyperef && e.role_profile === role_profile)
@@ -12,6 +12,8 @@ const openDialog = (_cb, role_profile) => {
     if (!doctypes) {
         doctypes = settings?.doctype_which_is_shown_in_user_permission?.split(",").map(e => e.trim()).filter(f => f).join("\n");
     }
+    let setting = await get_user_settings()
+    
     return new frappe.ui.Dialog({
         title: "Add User Permission",
         fields: [
@@ -19,7 +21,14 @@ const openDialog = (_cb, role_profile) => {
                 "fieldname": "select_doctype",
                 "fieldtype": "Autocomplete",
                 "label": "Select Doctype",
-                "options": ['State', 'District', 'Block', 'Village'],
+                "options": setting,
+            },
+            {
+                "depends_on": "eval:doc.select_doctype==\"Zone\"",
+                "fieldname": "select_zones",
+                "fieldtype": "Table MultiSelect",
+                "label": "Select Zone",
+                "options": "Zone Child"
             },
             {
                 "depends_on": "eval:doc.select_doctype==\"State\"",
@@ -55,6 +64,10 @@ const openDialog = (_cb, role_profile) => {
             let doctype = values.select_doctype;
             var selected_keys;
             switch (doctype) {
+                case "Zone":
+                    selected_keys = values.select_zones;
+                    await loop_values(selected_keys, doctype, cur_frm, 'zone')
+                    break;
                 case "State":
                     selected_keys = values.select_states;
                     await loop_values(selected_keys, doctype, cur_frm, 'state')
@@ -83,7 +96,26 @@ const openDialog = (_cb, role_profile) => {
         }
     })
 }
-
+//user settings
+const get_user_settings = async () => {
+    try {
+        let list = await callAPI({
+            method: 'sva_frappe.apis.user.get_user_settings',
+            freeze: true,
+            args: {
+                doctype: "User Settings",
+                view: "List",
+                order_by: "",
+                group_by: '',
+            },
+    
+            freeze_message: __("Getting Permissions"),
+        })
+        return list[0].allocate_doctype.split('\n')
+    } catch (error) {
+        console.error(error)
+    }
+}
 const delete_button = async (frm) => {
     document.querySelectorAll(".delete-button").forEach(element => {
         element.onclick = async (e) => {
@@ -178,6 +210,7 @@ const set_permission = async (doctype, values, frm) => {
 }
 
 //   get permissions
+
 const get_permission = async (user) => {
     let list = await callAPI({
         method: 'sva_frappe.apis.user.get_user_permission',
@@ -248,8 +281,9 @@ frappe.ui.form.on("SVA User", {
         }
     },
     add_permission: async function (frm) {
-        openDialog((_frm) => {
-            render_tables(_frm)
-        }, frm.doc.role_profile).show()
+        let d = await openDialog(async (_frm) => {
+            await render_tables(_frm)
+        }, frm.doc.role_profile)
+        d.show()
     }
 });

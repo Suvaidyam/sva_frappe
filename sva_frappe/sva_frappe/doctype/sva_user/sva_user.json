@@ -19,6 +19,7 @@
   "add_permission",
   "html_ojrc",
   "section_break_rxmy",
+  "select_zone",
   "select_state",
   "select_district",
   "select_block",
@@ -126,11 +127,19 @@
    "fieldname": "html_ojrc",
    "fieldtype": "HTML",
    "options": "<div id=\"datatable\"></div>"
+  },
+  {
+   "fieldname": "select_zone",
+   "fieldtype": "Table MultiSelect",
+   "hidden": 1,
+   "is_virtual": 1,
+   "label": "Select Zone",
+   "options": "Zone Child"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-28 12:10:42.033515",
+ "modified": "2024-06-18 14:14:06.386059",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",

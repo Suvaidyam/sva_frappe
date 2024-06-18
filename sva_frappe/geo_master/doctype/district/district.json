@@ -1,14 +1,16 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:district_code",
+ "autoname": "format:{district_code}",
  "creation": "2024-05-28 10:20:50.469435",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "zone",
   "state",
   "district_name",
-  "district_code"
+  "district_code",
+  "status"
  ],
  "fields": [
   {
@@ -34,15 +36,29 @@
    "no_copy": 1,
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Zone",
+   "options": "Zone"
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nActive\nInactive"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-28 10:25:12.330030",
+ "modified": "2024-06-18 12:08:34.698989",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "District",
- "naming_rule": "By fieldname",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
