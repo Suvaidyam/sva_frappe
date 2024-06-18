@@ -111,7 +111,7 @@ const get_user_settings = async () => {
     
             freeze_message: __("Getting Permissions"),
         })
-        return list[0].allocate_doctype.split('\n')
+        return list.allocate_doctype.split('\n')
     } catch (error) {
         console.error(error)
     }
