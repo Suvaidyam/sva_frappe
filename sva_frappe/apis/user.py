@@ -22,3 +22,8 @@ def get_user_permission(user, join_con=[]):
         WHERE UP.user = '{user}'
     """
     return frappe.db.sql(sql_query, as_dict=True)
+
+@frappe.whitelist()
+def get_user_settings():
+    settings = frappe.db.get_list('User Settings',fields=['*'])
+    return settings
