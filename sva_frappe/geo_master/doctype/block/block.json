@@ -1,15 +1,17 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:block_code",
+ "autoname": "format:{block_code}",
  "creation": "2024-05-28 10:25:46.287529",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "zone",
   "state",
   "district",
   "block_name",
-  "block_code"
+  "block_code",
+  "status"
  ],
  "fields": [
   {
@@ -43,15 +45,29 @@
    "no_copy": 1,
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Zone",
+   "options": "Zone"
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nActive\nInactive"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-28 10:28:23.482483",
+ "modified": "2024-06-18 12:08:14.693423",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Block",
- "naming_rule": "By fieldname",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
