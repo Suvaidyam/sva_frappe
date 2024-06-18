@@ -25,5 +25,5 @@ def get_user_permission(user, join_con=[]):
 
 @frappe.whitelist()
 def get_user_settings():
-    settings = frappe.db.get_list('User Settings',fields=['*'])
+    settings = frappe.get_doc('User Settings')
     return settings

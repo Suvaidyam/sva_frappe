@@ -17,7 +17,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-06-18 13:53:10.630211",
+ "modified": "2024-06-18 14:37:59.125921",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "User Settings",
@@ -29,9 +29,27 @@
    "email": 1,
    "print": 1,
    "read": 1,
-   "role": "System Manager",
+   "role": "Administrator",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Head Office (PMU)",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "All",
+   "select": 1,
+   "share": 1
   }
  ],
  "sort_field": "creation",
