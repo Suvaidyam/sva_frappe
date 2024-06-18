@@ -1,4 +1,4 @@
-frappe.listview_settings['SVA User'] = {
+frappe.listview_settings['Aisect User'] = {
     onload: function (listview) {
         $('.layout-side-section').hide();
         $('.sidebar-section.filter-section').hide();
