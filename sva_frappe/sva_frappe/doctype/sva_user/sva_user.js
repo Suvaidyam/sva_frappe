@@ -3,6 +3,7 @@
 
 
 var settings = {}
+var level = ''
 
 const openDialog = async (_cb, role_profile) => {
     var doctypes = settings?.role_doctype_mapping?.filter((e) => e.doctyperef && e.role_profile == role_profile);
@@ -13,7 +14,7 @@ const openDialog = async (_cb, role_profile) => {
         doctypes = settings?.doctype_which_is_shown_in_user_permission?.split(",").map(e => e.trim()).filter(f => f).join("\n");
     }
     let setting = await get_user_settings()
-    
+    let level_option = get_level_option(setting.role_level)
     return new frappe.ui.Dialog({
         title: "Add User Permission",
         fields: [
@@ -21,42 +22,49 @@ const openDialog = async (_cb, role_profile) => {
                 "fieldname": "select_doctype",
                 "fieldtype": "Autocomplete",
                 "label": "Select Doctype",
-                "options": setting,
+                "options": level_option,
             },
             {
                 "depends_on": "eval:doc.select_doctype==\"Zone\"",
                 "fieldname": "select_zones",
-                "fieldtype": "Table MultiSelect",
+                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
                 "label": "Select Zone",
-                "options": "Zone Child"
+                "options": setting.is_multiselect?"Zone Child":"Zone"
             },
             {
                 "depends_on": "eval:doc.select_doctype==\"State\"",
                 "fieldname": "select_states",
-                "fieldtype": "Table MultiSelect",
+                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
                 "label": "Select States",
-                "options": "State Child"
+                "options": setting.is_multiselect?"State Child":"State"
+            },
+            {
+                "depends_on": "eval:doc.select_doctype==\"Center Location\"",
+                "fieldname": "select_center_locations",
+                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
+                "label": "Select Center Location",
+                "options": setting.is_multiselect?"District Child":"Center Location"
             },
             {
                 "depends_on": "eval:doc.select_doctype==\"District\"",
                 "fieldname": "select_districts",
-                "fieldtype": "Table MultiSelect",
+                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
                 "label": "Select Districts",
-                "options": "District Child"
+                "options": setting.is_multiselect?"District Child":"District"
             },
             {
                 "depends_on": "eval:doc.select_doctype==\"Block\"",
                 "fieldname": "select_block",
-                "fieldtype": "Table MultiSelect",
+                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
                 "label": "Select Blocks",
-                "options": "Block Child"
+                "options": setting.is_multiselect?"Block Child":"Block"
             },
             {
                 "depends_on": "eval:doc.select_doctype==\"Village\"",
                 "fieldname": "select_villages",
-                "fieldtype": "Table MultiSelect",
+                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
                 "label": "Select Villages",
-                "options": "Village Child"
+                "options": setting.is_multiselect?"Village Child":"Village"
             },
         ],
         primary_action_label: 'Submit',
@@ -66,27 +74,31 @@ const openDialog = async (_cb, role_profile) => {
             switch (doctype) {
                 case "Zone":
                     selected_keys = values.select_zones;
-                    await loop_values(selected_keys, doctype, cur_frm, 'zone')
+                    await loop_values(selected_keys, doctype, cur_frm, 'zone',setting.is_multiselect)
                     break;
                 case "State":
                     selected_keys = values.select_states;
-                    await loop_values(selected_keys, doctype, cur_frm, 'state')
+                    await loop_values(selected_keys, doctype, cur_frm, 'state',setting.is_multiselect)
                     break;
                 case "District":
                     selected_keys = values.select_districts;
-                    await loop_values(selected_keys, doctype, cur_frm, 'district')
+                    await loop_values(selected_keys, doctype, cur_frm, 'district',setting.is_multiselect)
+                    break;
+                case "Center Location":
+                    selected_keys = values.select_center_locations;
+                    await loop_values(selected_keys, doctype, cur_frm, 'center_location',setting.is_multiselect)
                     break;
                 case "Block":
                     selected_keys = values.select_block;
-                    await loop_values(selected_keys, doctype, cur_frm, 'block')
+                    await loop_values(selected_keys, doctype, cur_frm, 'block',setting.is_multiselect)
                     break;
                 case "Grampanchayat":
                     selected_keys = values.select_grampanchayats;
-                    await loop_values(selected_keys, doctype, cur_frm, 'grampanchayat')
+                    await loop_values(selected_keys, doctype, cur_frm, 'grampanchayat',setting.is_multiselect)
                     break;
                 case "Village":
                     selected_keys = values.select_villages;
-                    await loop_values(selected_keys, doctype, cur_frm, 'village')
+                    await loop_values(selected_keys, doctype, cur_frm, 'village',setting.is_multiselect)
                     break
                 default:
                     break;
@@ -97,6 +109,12 @@ const openDialog = async (_cb, role_profile) => {
     })
 }
 //user settings
+const get_level_option = (value)=>{
+    let data = value.filter((e)=>{
+        return e.role==level
+    })
+    return data.map(item => item.level);
+}
 const get_user_settings = async () => {
     try {
         let list = await callAPI({
@@ -111,7 +129,7 @@ const get_user_settings = async () => {
     
             freeze_message: __("Getting Permissions"),
         })
-        return list.allocate_doctype.split('\n')
+        return list
     } catch (error) {
         console.error(error)
     }
@@ -168,13 +186,17 @@ const render_tables = async (frm) => {
     document.getElementById('datatable').innerHTML = list?.length ? tables : '';
     delete_button(frm)
 }
-const loop_values = async (selected_keys, doctype, frm, key) => {
-    if (Array.isArray(selected_keys) && selected_keys.length) {
-        for (let i = 0; i < selected_keys.length; i++) {
-            await set_permission(doctype, selected_keys[i][key], frm);
+const loop_values = async (selected_keys, doctype, frm, key,is_multiselect) => {
+    if(is_multiselect){
+        if (Array.isArray(selected_keys) && selected_keys.length) {
+            for (let i = 0; i < selected_keys.length; i++) {
+                await set_permission(doctype, selected_keys[i][key], frm);
+            }
+        } else {
+            console.error('selected_keys is not an array or is empty');
         }
-    } else {
-        console.error('selected_keys is not an array or is empty');
+    }else{
+        await set_permission(doctype, selected_keys, frm);
     }
 }
 
@@ -264,6 +286,7 @@ function hide_advance_search(frm, list) {
 
 frappe.ui.form.on("SVA User", {
     async refresh(frm) {
+        level = frm.doc.role_profile
         !frm.is_new() && await render_tables(frm);
         if (frm.is_new()) {
             frm.set_df_property('add_permission', 'hidden', true);
@@ -285,5 +308,9 @@ frappe.ui.form.on("SVA User", {
             await render_tables(_frm)
         }, frm.doc.role_profile)
         d.show()
-    }
+    },
+    role_profile: async function (frm) {
+        level = frm.doc.role_profile
+    },
+   
 });

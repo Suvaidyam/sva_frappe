@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{email} ",
+ "autoname": "format:USER-{YY}-{####} ",
  "creation": "2024-05-28 10:06:14.905294",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -9,12 +9,14 @@
   "email",
   "first_name",
   "middle_name",
+  "full_name",
   "last_name",
   "user_image",
   "column_break_lsez",
   "role_profile",
   "password",
   "confirm_password",
+  "status",
   "section_break_yevr",
   "add_permission",
   "html_ojrc",
@@ -62,6 +64,7 @@
   {
    "fieldname": "role_profile",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Role Profile",
    "options": "Role Profile",
    "reqd": 1
@@ -135,11 +138,27 @@
    "is_virtual": 1,
    "label": "Select Zone",
    "options": "Zone Child"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Full Name"
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "\nActive\nInactive"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-06-18 18:49:32.850975",
+ "modified": "2024-06-19 13:18:16.062830",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
@@ -170,7 +189,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "full_name"
 }
