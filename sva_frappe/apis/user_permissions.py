@@ -9,7 +9,7 @@ def create_user_permissions(doc=None):
     doctype = document.get('doctype')
     user = document.get('user')
     is_zone_mandatory = frappe.db.get_single_value('User Settings','is_zone_mandatory')
-    if allow =="zone":
+    if allow =="Zone":
         exist = frappe.db.exists("User Permission", {"allow": "Zone", "for_value": for_value, "user": user})
         if not exist:
             zone_perm = frappe.get_doc({
