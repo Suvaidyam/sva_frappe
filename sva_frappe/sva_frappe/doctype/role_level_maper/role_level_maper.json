@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-06-19 12:05:17.795186",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "role",
+  "level"
+ ],
+ "fields": [
+  {
+   "fieldname": "role",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Role",
+   "options": "Role Profile",
+   "reqd": 1
+  },
+  {
+   "fieldname": "level",
+   "fieldtype": "Autocomplete",
+   "in_list_view": 1,
+   "label": "Level",
+   "options": "\nZone\nState\nCenter Location",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-06-19 12:08:35.403615",
+ "modified_by": "Administrator",
+ "module": "Sva Frappe",
+ "name": "Role Level Maper",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

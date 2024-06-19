@@ -5,19 +5,45 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "allocate_doctype"
+  "role_level",
+  "section_break_ccvz",
+  "is_multiselect",
+  "column_break_bjlb",
+  "is_zone_mandatory"
  ],
  "fields": [
   {
-   "fieldname": "allocate_doctype",
-   "fieldtype": "Small Text",
-   "label": "Allocate Doctype"
+   "default": "0",
+   "fieldname": "is_multiselect",
+   "fieldtype": "Check",
+   "label": "Is MultiSelect"
+  },
+  {
+   "fieldname": "role_level",
+   "fieldtype": "Table",
+   "label": "Role Level",
+   "options": "Role Level Maper",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_zone_mandatory",
+   "fieldtype": "Check",
+   "label": "Is Zone Mandatory"
+  },
+  {
+   "fieldname": "section_break_ccvz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_bjlb",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-06-18 14:37:59.125921",
+ "modified": "2024-06-19 12:42:37.120890",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "User Settings",
