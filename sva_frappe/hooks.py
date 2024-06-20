@@ -29,6 +29,7 @@ web_include_js = "/assets/sva_frappe/js/sva_frappe.js"
 
 # include js in doctype views
 doctype_js = {
+    "State" : "public/js/sva_frappe.js",
     "District" : "public/js/sva_frappe.js",
     "Block" : "public/js/sva_frappe.js",
     "Village" : "public/js/sva_frappe.js"

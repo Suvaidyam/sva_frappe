@@ -32,3 +32,12 @@ def get_user_permission(user, join_con=[]):
 def get_user_settings():
     settings = frappe.get_doc('User Settings')
     return settings
+
+@frappe.whitelist()
+def get_user_role_permission():
+    user = frappe.session.user
+    user_permissions = frappe.get_list('User Permission',filters={"user":user},fields=['allow','for_value'])
+    result = {}
+    for item in user_permissions:
+        result[item["allow"]] = item["for_value"]
+    return result

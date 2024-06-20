@@ -2,7 +2,9 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("District", {
-    refresh(frm) {
+   async refresh(frm) { 
+        // role by permission
+        set_value_by_role(frm)
         if (frm.doc.district_code != undefined) {
             frm.set_df_property('district_code', 'read_only', 1)
         }

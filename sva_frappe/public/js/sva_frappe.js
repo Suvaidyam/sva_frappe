@@ -10,3 +10,40 @@ function depended_dropdown(frm, filters, child, parent) {
         }
     }
 }
+async function set_value_by_role(frm) {
+    let response = await get_user_permission()
+    if(response['Zone']){
+        await frm.set_value('zone', response['Zone'])
+        await  frm.set_df_property('zone','read_only',1)
+    }
+    if(response['State']){
+        await frm.set_value('state', response['State'])
+        await frm.set_df_property('state','read_only',1)
+    }
+    if(response['District']){
+        await frm.set_value('district', response['District'])
+        await   frm.set_df_property('district','read_only',1)
+    }
+}
+const get_user_permission=async()=>{
+    try {
+        let list = await callAPI({
+            method: 'sva_frappe.apis.user.get_user_role_permission',
+            freeze: true,
+            freeze_message: __("Getting Permissions"),
+        })
+        return list
+    } catch (error) {
+        console.error(error)
+    }
+}
+function callAPI(options) {
+    return new Promise((resolve, reject) => {
+        frappe.call({
+            ...options,
+            callback: async function (response) {
+                resolve(response?.message || response?.value)
+            }
+        });
+    })
+}
