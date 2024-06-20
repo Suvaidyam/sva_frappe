@@ -75,9 +75,9 @@ def create_user_permissions(doc=None):
     elif allow == "Center Location":
         state_value = frappe.db.get_value("Center Location", for_value, "state")
         dist_value = frappe.db.get_value("Center Location", for_value, "district")
-        if state_value and dist_value:
+        if state_value :
             if is_zone_mandatory:
-                zone_value = frappe.db.get_value("State", state_value, "zone")
+                zone_value = frappe.db.get_value("State", for_value, "zone")
                 zone_exist = frappe.db.exists("User Permission", {"allow": "Zone", "for_value": zone_value, "user": user})
                 if not zone_exist:
                     zone_perm = frappe.get_doc({
@@ -89,7 +89,7 @@ def create_user_permissions(doc=None):
                     zone_perm.insert(ignore_permissions=True)
             state_exist = frappe.db.exists("User Permission", {"allow": "State", "for_value": state_value, "user": user})
             dist_exist = frappe.db.exists("User Permission", {"allow": "District", "for_value": dist_value, "user": user})
-            block_exist = frappe.db.exists("User Permission", {"allow": "Center Location", "for_value": for_value, "user": user})
+            center_exist = frappe.db.exists("User Permission", {"allow": "Center Location", "for_value": for_value, "user": user})
             if not state_exist:
                 state_perm = frappe.get_doc({
                     'doctype': 'User Permission',
@@ -106,14 +106,14 @@ def create_user_permissions(doc=None):
                     'user': user
                 })
                 dist_perm.insert(ignore_permissions=True)
-            if not block_exist:
-                block_perm = frappe.get_doc({
+            if not center_exist:
+                center_perm = frappe.get_doc({
                     'doctype': 'User Permission',
                     'allow': 'Center Location',
                     'for_value': for_value,
                     'user': user
                 })
-                block_perm.insert(ignore_permissions=True)
+                center_perm.insert(ignore_permissions=True)
     elif allow == "Block":
         state_value = frappe.db.get_value("Block", for_value, "state")
         dist_value = frappe.db.get_value("Block", for_value, "district")
