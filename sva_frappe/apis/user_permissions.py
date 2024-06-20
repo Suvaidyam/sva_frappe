@@ -77,7 +77,7 @@ def create_user_permissions(doc=None):
         dist_value = frappe.db.get_value("Center Location", for_value, "district")
         if state_value :
             if is_zone_mandatory:
-                zone_value = frappe.db.get_value("State", for_value, "zone")
+                zone_value = frappe.db.get_value("Center Location", for_value, "zone")
                 zone_exist = frappe.db.exists("User Permission", {"allow": "Zone", "for_value": zone_value, "user": user})
                 if not zone_exist:
                     zone_perm = frappe.get_doc({
