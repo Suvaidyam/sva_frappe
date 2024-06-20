@@ -43,9 +43,10 @@
    "options": "Zone"
   }
  ],
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-06-18 12:07:33.386131",
+ "modified": "2024-06-20 11:26:40.489882",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "State",
