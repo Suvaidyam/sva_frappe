@@ -39,11 +39,11 @@ const openDialog = async (_cb, role_profile) => {
                 "options": setting.is_multiselect?"State Child":"State"
             },
             {
-                "depends_on": "eval:doc.select_doctype==\"Center Location\"",
+                "depends_on": "eval:doc.select_doctype==\"Center\"",
                 "fieldname": "select_center_locations",
                 "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
-                "label": "Select Center Location",
-                "options": setting.is_multiselect?"District Child":"Center Location"
+                "label": "Select Center",
+                "options": setting.is_multiselect?"Center Location Child":"Center"
             },
             {
                 "depends_on": "eval:doc.select_doctype==\"District\"",
@@ -84,7 +84,7 @@ const openDialog = async (_cb, role_profile) => {
                     selected_keys = values.select_districts;
                     await loop_values(selected_keys, doctype, cur_frm, 'district',setting.is_multiselect)
                     break;
-                case "Center Location":
+                case "Center":
                     selected_keys = values.select_center_locations;
                     await loop_values(selected_keys, doctype, cur_frm, 'center_location',setting.is_multiselect)
                     break;
