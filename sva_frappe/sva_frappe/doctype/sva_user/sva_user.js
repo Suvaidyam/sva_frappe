@@ -164,8 +164,8 @@ const render_tables = async (frm) => {
     <thead>
         <tr>
             <th scope="col">Sr.No</th>
-            <th scope="col">Doctype</th>
-            <th scope="col">Value</th>
+            <th scope="col">User Level</th>
+            <th scope="col">Assigned Location</th>
             <th scope="col">Action</th>
         </tr>
     </thead>
