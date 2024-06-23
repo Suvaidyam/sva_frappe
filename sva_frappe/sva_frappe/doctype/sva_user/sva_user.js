@@ -21,7 +21,7 @@ const openDialog = async (_cb, role_profile) => {
             {
                 "fieldname": "select_doctype",
                 "fieldtype": "Autocomplete",
-                "label": "Select Doctype",
+                "label": "Assigned Location",
                 "options": level_option,
             },
             {
