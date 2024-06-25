@@ -8,6 +8,7 @@
   "role_level",
   "section_break_ccvz",
   "is_multiselect",
+  "hide_user_table_view_settings",
   "column_break_bjlb",
   "is_zone_mandatory"
  ],
@@ -38,12 +39,18 @@
   {
    "fieldname": "column_break_bjlb",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "hide_user_table_view_settings",
+   "fieldtype": "Check",
+   "label": "Hide User Table View Settings"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-06-19 12:42:37.120890",
+ "modified": "2024-06-25 12:47:47.238082",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "User Settings",
