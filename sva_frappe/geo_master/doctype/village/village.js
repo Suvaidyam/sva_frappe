@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Village", {
 	refresh(frm) {
-        if (frm.doc.village_code != undefined) {
+        if (frm.doc.village_code != undefined && frm.doc.__unsaved!=1) {
             frm.set_df_property('village_code', 'read_only', 1)
         }
         if(frm.fields_dict.zone.df.reqd){
@@ -28,7 +28,7 @@ frappe.ui.form.on("Village", {
         frm.set_value('block')
     },
     after_save: function (frm) {
-        if (frm.doc.village_code != undefined) {
+        if (frm.doc.village_code != undefined && frm.doc.__unsaved!=1) {
             frm.set_df_property('village_code', 'read_only', 1)
         }
     },
