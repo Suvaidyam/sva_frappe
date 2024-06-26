@@ -27,11 +27,15 @@ class SVAUser(Document):
 	def on_update(self):
 		# Update the existing User document
 		user_doc = frappe.get_doc("User", self.email)
-		roles = frappe.db.get_list("User Role Profile",filters={'parent':self.email},fields=['name','role_profile'],ignore_permissions=True)
+		roles_profiles = frappe.db.get_list("User Role Profile",filters={'parent':self.email},fields=['name','role_profile'],ignore_permissions=True)
+		roles = frappe.db.get_list("Has Role",filters={'parent':self.email},fields=['name','role'],ignore_permissions=True)
 		if len(roles):
 			for role in roles:
-				if role.role_profile != self.role_profile:
-					frappe.delete_doc("User Role Profile",role.name,ignore_permissions=True)
+				frappe.delete_doc("Has Role",role.name,ignore_permissions=True)
+		if len(roles_profiles):
+			for role_pro in roles_profiles:
+				if role_pro.role_profile != self.role_profile:
+					frappe.delete_doc("User Role Profile",role_pro.name,ignore_permissions=True)
 		user_doc.email = self.email
 		user_doc.first_name = self.first_name
 		user_doc.middle_name = self.middle_name
