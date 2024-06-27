@@ -150,7 +150,6 @@
    "default": "Active",
    "fieldname": "status",
    "fieldtype": "Select",
-   "hidden": 1,
    "in_list_view": 1,
    "label": "Status",
    "options": "\nActive\nInactive"
@@ -159,7 +158,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-06-20 11:27:19.741023",
+ "modified": "2024-06-27 19:51:21.312720",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",

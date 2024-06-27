@@ -36,6 +36,10 @@ class SVAUser(Document):
 			for role_pro in roles_profiles:
 				if role_pro.role_profile != self.role_profile:
 					frappe.delete_doc("User Role Profile",role_pro.name,ignore_permissions=True)
+		if (self.status=='Active'):
+			user_doc.enabled = True
+		else:
+			user_doc.enabled = False
 		user_doc.email = self.email
 		user_doc.first_name = self.first_name
 		user_doc.middle_name = self.middle_name
