@@ -31,7 +31,8 @@ class SVAUser(Document):
 		roles = frappe.db.get_list("Has Role",filters={'parent':self.email},fields=['name','role'],ignore_permissions=True)
 		if len(roles):
 			for role in roles:
-				frappe.delete_doc("Has Role",role.name,ignore_permissions=True)
+				if role.role != self.role_profile:
+					frappe.delete_doc("Has Role",role.name,ignore_permissions=True)
 		if len(roles_profiles):
 			for role_pro in roles_profiles:
 				if role_pro.role_profile != self.role_profile:
