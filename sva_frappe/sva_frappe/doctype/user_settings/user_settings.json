@@ -10,7 +10,9 @@
   "is_multiselect",
   "hide_user_table_view_settings",
   "column_break_bjlb",
-  "is_zone_mandatory"
+  "is_zone_mandatory",
+  "section_break_vadz",
+  "restriction_role_profile"
  ],
  "fields": [
   {
@@ -23,8 +25,7 @@
    "fieldname": "role_level",
    "fieldtype": "Table",
    "label": "Role Level",
-   "options": "Role Level Maper",
-   "reqd": 1
+   "options": "Role Level Maper"
   },
   {
    "default": "0",
@@ -45,12 +46,22 @@
    "fieldname": "hide_user_table_view_settings",
    "fieldtype": "Check",
    "label": "Hide User Table View Settings"
+  },
+  {
+   "fieldname": "section_break_vadz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "restriction_role_profile",
+   "fieldtype": "Table",
+   "label": "Restriction Role Profile",
+   "options": "Role Restriction"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-06-25 12:47:47.238082",
+ "modified": "2024-07-02 17:36:37.100827",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "User Settings",
