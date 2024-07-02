@@ -4,7 +4,6 @@ frappe.listview_settings['SVA User'] = {
         $('.layout-side-section').hide();
         $('.sidebar-section.filter-section').hide();
         $('.sidebar-section.save-filter-section').hide();
-        console.log(setting)
         if(setting.hide_user_table_view_settings){
             $(".custom-actions").hide();
         }

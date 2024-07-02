@@ -286,6 +286,26 @@ function hide_advance_search(frm, list) {
 
 frappe.ui.form.on("SVA User", {
     async refresh(frm) {
+        let restricted_array = []
+        let setting = await get_user_settings()
+        // console.log(frappe.user_roles)
+        if(setting.restriction_role_profile.length > 0){
+            if(!frappe.user.has_role("Administrator")){
+                restricted_array = setting.restriction_role_profile.map((item)=> {
+                    if(frappe.user_roles[0] == item.role_profile){
+                        return item.restriction_role_profile
+                    }
+                })
+                frm.fields_dict['role_profile'].get_query = function () {
+                    return {
+                        filters: [
+                            ['Role Profile','role_profile','NOT IN',restricted_array]
+                        ],
+                        page_length: 1000
+                    };
+                }
+            }
+        }
         level = frm.doc.role_profile
         !frm.is_new() && await render_tables(frm);
         if (frm.is_new()) {
