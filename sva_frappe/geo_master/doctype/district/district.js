@@ -4,7 +4,7 @@
 frappe.ui.form.on("District", {
    async refresh(frm) { 
         // role by permission
-        set_value_by_role(frm)
+        set_value_by_role(frm,[{fieldname:"zone",allow:"Zone"},{fieldname:"state",allow:"State"}])
         if (frm.doc.district_code != undefined && frm.doc.__unsaved!=1) {
             frm.set_df_property('district_code', 'read_only', 1)
         }
