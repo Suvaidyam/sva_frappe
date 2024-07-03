@@ -45,7 +45,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-03 15:49:49.032688",
+ "modified": "2024-07-03 20:50:05.026722",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "State",
@@ -55,13 +55,11 @@
   {
    "create": 1,
    "delete": 1,
-   "email": 1,
    "export": 1,
-   "print": 1,
+   "import": 1,
    "read": 1,
    "report": 1,
    "role": "System Manager",
-   "share": 1,
    "write": 1
   }
  ],
