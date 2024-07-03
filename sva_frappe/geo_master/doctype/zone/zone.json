@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "format:ZN-{###}",
  "creation": "2024-06-18 11:57:31.143186",
  "doctype": "DocType",
@@ -29,7 +28,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-06-28 18:13:25.106489",
+ "modified": "2024-07-03 15:49:36.471705",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Zone",
