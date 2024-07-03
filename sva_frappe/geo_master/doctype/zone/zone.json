@@ -28,7 +28,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-03 15:49:36.471705",
+ "modified": "2024-07-03 20:49:19.426235",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Zone",
@@ -37,14 +37,12 @@
  "permissions": [
   {
    "create": 1,
-   "email": 1,
+   "delete": 1,
    "export": 1,
-   "print": 1,
+   "import": 1,
    "read": 1,
    "report": 1,
-   "role": "All",
-   "select": 1,
-   "share": 1,
+   "role": "System Manager",
    "write": 1
   }
  ],
