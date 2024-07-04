@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "autoname": "format:ZN-{###}",
  "creation": "2024-06-18 11:57:31.143186",
  "doctype": "DocType",
@@ -28,7 +29,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-03 21:02:16.726415",
+ "modified": "2024-07-04 09:45:15.935600",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Zone",
@@ -39,6 +40,7 @@
    "create": 1,
    "delete": 1,
    "export": 1,
+   "import": 1,
    "read": 1,
    "report": 1,
    "role": "System Manager",
