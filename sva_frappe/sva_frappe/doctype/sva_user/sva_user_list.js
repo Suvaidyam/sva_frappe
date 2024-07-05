@@ -1,5 +1,8 @@
 frappe.listview_settings['SVA User'] = {
     onload:async function (listview) {
+        if(!frappe.user_roles.includes('Administrator')){
+            action_items(listview, ['Export', 'Delete'])
+        }
         let setting = await get_user_settings()
         $('.layout-side-section').hide();
         $('.sidebar-section.filter-section').hide();
