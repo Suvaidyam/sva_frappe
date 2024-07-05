@@ -1,5 +1,8 @@
 frappe.listview_settings['Zone'] = {
     onload: function (listview) {
+        if(!frappe.user_roles.includes('Administrator')){
+            action_items(listview, ['Export', 'Delete'])
+        }
         $('.layout-side-section').hide();
         $('.sidebar-section.filter-section').hide();
         $('.sidebar-section.save-filter-section').hide();

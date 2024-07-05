@@ -29,12 +29,19 @@ web_include_js = "/assets/sva_frappe/js/sva_frappe.js"
 
 # include js in doctype views
 doctype_js = {
+    "Zone" : "public/js/list_utils.js",
     "State" : "public/js/sva_frappe.js",
     "District" : "public/js/sva_frappe.js",
     "Block" : "public/js/sva_frappe.js",
     "Village" : "public/js/sva_frappe.js"
     }
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {
+    "Zone" : "public/js/list_utils.js",
+    "State" : "public/js/list_utils.js",
+    "District" : "public/js/list_utils.js",
+    "Block" : "public/js/list_utils.js",
+    "Village" : "public/js/list_utils.js"
+}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
