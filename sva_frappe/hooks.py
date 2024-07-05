@@ -40,6 +40,7 @@ doctype_list_js = {
     "State" : "public/js/list_utils.js",
     "District" : "public/js/list_utils.js",
     "Block" : "public/js/list_utils.js",
+    "SVA User" : "public/js/list_utils.js",
     "Village" : "public/js/list_utils.js"
 }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
