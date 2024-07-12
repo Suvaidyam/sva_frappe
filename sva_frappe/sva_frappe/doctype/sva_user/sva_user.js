@@ -4,7 +4,16 @@
 
 var settings = {}
 var level = ''
-
+const check_multiselect = async (setting, field) => {
+    let result = false
+    if (setting.length > 0) {
+        let item = await setting.find((item) => { return item.level == field && item.role == level })
+        result = (item && item.is_multiselect == 1) ? true : false
+    } else {
+        result = false
+    }
+    return result
+}
 const openDialog = async (_cb, role_profile) => {
     var doctypes = settings?.role_doctype_mapping?.filter((e) => e.doctyperef && e.role_profile == role_profile);
     const doctypes_arr = settings?.role_doctype_mapping
@@ -15,7 +24,8 @@ const openDialog = async (_cb, role_profile) => {
     }
     let setting = await get_user_settings()
     let level_option = get_level_option(setting.role_level)
-    return new frappe.ui.Dialog({
+
+    return await new frappe.ui.Dialog({
         title: "Add User Permission",
         fields: [
             {
@@ -25,46 +35,46 @@ const openDialog = async (_cb, role_profile) => {
                 "options": level_option,
             },
             {
-                "depends_on": "eval:doc.select_doctype==\"Zone\"",
+                "depends_on": "eval:doc.select_doctype=='Zone'",
                 "fieldname": "select_zones",
-                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
+                "fieldtype": await check_multiselect(setting.role_level, 'Zone') ? "Table MultiSelect" : 'Link',
                 "label": "Select Zone",
-                "options": setting.is_multiselect?"Zone Child":"Zone"
+                "options": await check_multiselect(setting.role_level, 'Zone') ? "Zone Child" : "Zone"
             },
             {
-                "depends_on": "eval:doc.select_doctype==\"State\"",
+                "depends_on": "eval:doc.select_doctype=='State'",
                 "fieldname": "select_states",
-                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
+                "fieldtype": await check_multiselect(setting.role_level, 'State') ? "Table MultiSelect" : 'Link',
                 "label": "Select States",
-                "options": setting.is_multiselect?"State Child":"State"
+                "options": await check_multiselect(setting.role_level, 'State') ? "State Child" : "State"
             },
             {
-                "depends_on": "eval:doc.select_doctype==\"Center\"",
+                "depends_on": "eval:doc.select_doctype=='Center'",
                 "fieldname": "select_center_locations",
-                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
+                "fieldtype": await check_multiselect(setting.role_level, 'Center') ? "Table MultiSelect" : 'Link',
                 "label": "Select Center",
-                "options": setting.is_multiselect?"Center Location Child":"Center"
+                "options": await check_multiselect(setting.role_level, 'Center') ? "Center Location Child" : "Center"
             },
             {
-                "depends_on": "eval:doc.select_doctype==\"District\"",
+                "depends_on": "eval:doc.select_doctype=='District'",
                 "fieldname": "select_districts",
-                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
+                "fieldtype": await check_multiselect(setting.role_level, 'District') ? "Table MultiSelect" : 'Link',
                 "label": "Select Districts",
-                "options": setting.is_multiselect?"District Child":"District"
+                "options": await check_multiselect(setting.role_level, 'District') ? "District Child" : "District"
             },
             {
-                "depends_on": "eval:doc.select_doctype==\"Block\"",
+                "depends_on": "eval:doc.select_doctype=='Block'",
                 "fieldname": "select_block",
-                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
+                "fieldtype": await check_multiselect(setting.role_level, 'Block') ? "Table MultiSelect" : 'Link',
                 "label": "Select Blocks",
-                "options": setting.is_multiselect?"Block Child":"Block"
+                "options": await check_multiselect(setting.role_level, 'Block') ? "Block Child" : "Block"
             },
             {
-                "depends_on": "eval:doc.select_doctype==\"Village\"",
+                "depends_on": "eval:doc.select_doctype=='Village'",
                 "fieldname": "select_villages",
-                "fieldtype": setting.is_multiselect?"Table MultiSelect":'Link',
+                "fieldtype": await check_multiselect(setting.role_level, 'Village') ? "Table MultiSelect" : 'Link',
                 "label": "Select Villages",
-                "options": setting.is_multiselect?"Village Child":"Village"
+                "options": await check_multiselect(setting.role_level, 'Village') ? "Village Child" : "Village"
             },
         ],
         primary_action_label: 'Submit',
@@ -74,31 +84,31 @@ const openDialog = async (_cb, role_profile) => {
             switch (doctype) {
                 case "Zone":
                     selected_keys = values.select_zones;
-                    await loop_values(selected_keys, doctype, cur_frm, 'zone',setting.is_multiselect)
+                    await loop_values(selected_keys, doctype, cur_frm, 'zone')
                     break;
                 case "State":
                     selected_keys = values.select_states;
-                    await loop_values(selected_keys, doctype, cur_frm, 'state',setting.is_multiselect)
+                    await loop_values(selected_keys, doctype, cur_frm, 'state')
                     break;
                 case "District":
                     selected_keys = values.select_districts;
-                    await loop_values(selected_keys, doctype, cur_frm, 'district',setting.is_multiselect)
+                    await loop_values(selected_keys, doctype, cur_frm, 'district')
                     break;
                 case "Center":
                     selected_keys = values.select_center_locations;
-                    await loop_values(selected_keys, doctype, cur_frm, 'center_location',setting.is_multiselect)
+                    await loop_values(selected_keys, doctype, cur_frm, 'center_location')
                     break;
                 case "Block":
                     selected_keys = values.select_block;
-                    await loop_values(selected_keys, doctype, cur_frm, 'block',setting.is_multiselect)
+                    await loop_values(selected_keys, doctype, cur_frm, 'block')
                     break;
                 case "Grampanchayat":
                     selected_keys = values.select_grampanchayats;
-                    await loop_values(selected_keys, doctype, cur_frm, 'grampanchayat',setting.is_multiselect)
+                    await loop_values(selected_keys, doctype, cur_frm, 'grampanchayat')
                     break;
                 case "Village":
                     selected_keys = values.select_villages;
-                    await loop_values(selected_keys, doctype, cur_frm, 'village',setting.is_multiselect)
+                    await loop_values(selected_keys, doctype, cur_frm, 'village')
                     break
                 default:
                     break;
@@ -109,9 +119,9 @@ const openDialog = async (_cb, role_profile) => {
     })
 }
 //user settings
-const get_level_option = (value)=>{
-    let data = value.filter((e)=>{
-        return e.role==level
+const get_level_option = (value) => {
+    let data = value.filter((e) => {
+        return e.role == level
     })
     return data.map(item => item.level);
 }
@@ -126,7 +136,7 @@ const get_user_settings = async () => {
                 order_by: "",
                 group_by: '',
             },
-    
+
             freeze_message: __("Getting Permissions"),
         })
         return list
@@ -158,44 +168,128 @@ const delete_button = async (frm) => {
     });
 }
 
+// const render_tables = async (frm) => {
+//     let list = await get_permission(frm.doc.email)
+//     let tables = `<table class="table">
+//     <thead>
+//         <tr>
+//             <th scope="col">Sr.No</th>
+//             <th scope="col">User Level</th>
+//             <th scope="col">Assigned Location</th>
+//             <th scope="col">Action</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//     `
+//     for (let i = 0; i < list?.length; i++) {
+//         tables = tables + `
+//         <tr>
+//             <th scope="row">${i + 1}</th>
+//             <td>${list?.[i].allow}</td>
+//             <td>${list?.[i].name_value}</td>
+//             <td class="text-danger"><a><i class="fa fa-trash-o delete-button" id="${list[i].name}" style="font-size:25px;"></i><a/></td>
+//         </tr>
+//             `
+//     }
+//     tables = tables + `</tbody>
+//     </table>`;
+//     document.getElementById('datatable').innerHTML = list?.length ? tables : '';
+//     delete_button(frm)
+// }
 const render_tables = async (frm) => {
     let list = await get_permission(frm.doc.email)
-    let tables = `<table class="table">
-    <thead>
+    let tables = `
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"><input style="width: 15px !important; height: 15px !important;" type="checkbox" id="select-all"></th>
+                <th scope="col">User Level</th>
+                <th scope="col">Assigned Location</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+    for (let item of list) {
+        tables += `
         <tr>
-            <th scope="col">Sr.No</th>
-            <th scope="col">User Level</th>
-            <th scope="col">Assigned Location</th>
-            <th scope="col">Action</th>
+            <th scope="row"><input style="width: 15px !important; height: 15px !important;" type="checkbox" class="row-checkbox" data-name="${item.name}"></th>
+            <td>${item.allow}</td>
+            <td>${item.name_value}</td>
+            <td class="text-danger"><a><i class="fa fa-trash-o delete-button" id="${item.name}" style="font-size:25px;"></i></a></td>
         </tr>
-    </thead>
-    <tbody>
-    `
-    for (let i = 0; i < list?.length; i++) {
-        tables = tables + `
-        <tr>
-            <th scope="row">${i + 1}</th>
-            <td>${list?.[i].allow}</td>
-            <td>${list?.[i].name_value}</td>
-            <td class="text-danger"><a><i class="fa fa-trash-o delete-button" id="${list[i].name}" style="font-size:25px;"></i><a/></td>
-        </tr>
-            `
+        `;
     }
-    tables = tables + `</tbody>
-    </table>`;
+    tables += `
+        </tbody>
+    </table>
+    `
     document.getElementById('datatable').innerHTML = list?.length ? tables : '';
-    delete_button(frm)
-}
-const loop_values = async (selected_keys, doctype, frm, key,is_multiselect) => {
-    if(is_multiselect){
-        if (Array.isArray(selected_keys) && selected_keys.length) {
-            for (let i = 0; i < selected_keys.length; i++) {
-                await set_permission(doctype, selected_keys[i][key], frm);
-            }
-        } else {
-            console.error('selected_keys is not an array or is empty');
+
+    const selectAllCheckbox = document.getElementById('select-all');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const deleteSelectedButton = document.getElementById('delete-selected');
+
+    const updateDeleteButtonVisibility = () => {
+        const anyChecked = Array.from(rowCheckboxes).some(checkbox => checkbox.checked);
+        deleteSelectedButton.style.display = anyChecked ? 'block' : 'none';
+    };
+
+    selectAllCheckbox.addEventListener('change', (event) => {
+        const checked = event.target.checked;
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.checked = checked;
+        });
+        updateDeleteButtonVisibility();
+    });
+
+    rowCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateDeleteButtonVisibility);
+    });
+
+    deleteSelectedButton.addEventListener('click', async () => {
+        let selectedNames = Array.from(rowCheckboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.dataset.name);
+        if (selectedNames.length > 0) {
+            await frappe.confirm('Are you sure you want to delete these permissions?',
+                async () => {
+                    deleteSelectedButton.style.display = 'none';
+                    await multiple_delete(selectedNames)
+                    selectedNames = []
+                    selectAllCheckbox.checked = false;
+                    rowCheckboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                },
+                () => {
+                    return
+                }
+            )
         }
-    }else{
+    });
+    delete_button(frm);
+};
+
+const multiple_delete = async (selectedNames) => {
+    let response = await callAPI({
+        method: 'sva_frappe.apis.user.delete_user_permissions',
+        args: {
+            permissions: selectedNames,
+        },
+    })
+    if(response){
+        frappe.show_alert({message:`${response} permissions deleted successfully.`,indicator:'green'})
+    }
+    await render_tables(cur_frm)
+}
+
+const loop_values = async (selected_keys, doctype, frm, key) => {
+    if (Array.isArray(selected_keys) && selected_keys.length > 0) {
+        for (let item of selected_keys) {
+            await set_permission(doctype, item[key], frm);
+        }
+    } else {
         await set_permission(doctype, selected_keys, frm);
     }
 }
@@ -244,7 +338,6 @@ const get_permission = async (user) => {
             order_by: "",
             group_by: '',
         },
-
         freeze_message: __("Getting Permissions"),
     })
     return list
@@ -289,17 +382,17 @@ frappe.ui.form.on("SVA User", {
         let restricted_array = []
         let setting = await get_user_settings()
         // console.log(frappe.user_roles)
-        if(setting.restriction_role_profile.length > 0){
-            if(!frappe.user.has_role("Administrator")){
-                restricted_array = setting.restriction_role_profile.map((item)=> {
-                    if(frappe.user_roles[0] == item.role_profile){
+        if (setting.restriction_role_profile.length > 0) {
+            if (!frappe.user.has_role("Administrator")) {
+                restricted_array = setting.restriction_role_profile.map((item) => {
+                    if (frappe.user_roles[0] == item.role_profile) {
                         return item.restriction_role_profile
                     }
                 })
                 frm.fields_dict['role_profile'].get_query = function () {
                     return {
                         filters: [
-                            ['Role Profile','role_profile','NOT IN',restricted_array]
+                            ['Role Profile', 'role_profile', 'NOT IN', restricted_array]
                         ],
                         page_length: 1000
                     };
@@ -329,9 +422,9 @@ frappe.ui.form.on("SVA User", {
         }, frm.doc.role_profile)
         d.show()
     },
-    after_save:async function(frm){
+    after_save: async function (frm) {
         let list = await get_permission(frm.doc.email)
-        if(list.length == 0){
+        if (list.length == 0) {
             let d = await openDialog(async (_frm) => {
                 await render_tables(_frm)
             }, frm.doc.role_profile)
@@ -341,5 +434,5 @@ frappe.ui.form.on("SVA User", {
     role_profile: async function (frm) {
         level = frm.doc.role_profile
     },
-   
+
 });

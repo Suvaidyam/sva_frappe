@@ -7,7 +7,6 @@
  "field_order": [
   "role_level",
   "section_break_ccvz",
-  "is_multiselect",
   "hide_user_table_view_settings",
   "column_break_bjlb",
   "is_zone_mandatory",
@@ -15,12 +14,6 @@
   "restriction_role_profile"
  ],
  "fields": [
-  {
-   "default": "0",
-   "fieldname": "is_multiselect",
-   "fieldtype": "Check",
-   "label": "Is MultiSelect"
-  },
   {
    "fieldname": "role_level",
    "fieldtype": "Table",
@@ -61,7 +54,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-02 17:36:37.100827",
+ "modified": "2024-07-12 12:23:19.416167",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "User Settings",
