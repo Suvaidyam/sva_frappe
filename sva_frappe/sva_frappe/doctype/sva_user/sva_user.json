@@ -27,7 +27,6 @@
   "select_zone",
   "select_state",
   "select_district",
-  "select_center_locations",
   "select_block",
   "select_village"
  ],
@@ -159,14 +158,6 @@
    "options": "\nActive\nInactive"
   },
   {
-   "fieldname": "select_center_locations",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select Center",
-   "options": "Center Location Child"
-  },
-  {
    "fieldname": "section_break_jski",
    "fieldtype": "Section Break"
   },
@@ -183,7 +174,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-12 13:05:25.368155",
+ "modified": "2024-07-12 14:20:26.428231",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
