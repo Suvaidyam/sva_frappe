@@ -26,29 +26,32 @@ class SVAUser(Document):
 	
 	def on_update(self):
 		# Update the existing User document
-		user_doc = frappe.get_doc("User", self.email)
-		roles_profiles = frappe.db.get_list("User Role Profile",filters={'parent':self.email},fields=['name','role_profile'],ignore_permissions=True)
-		roles = frappe.db.get_list("Has Role",filters={'parent':self.email},fields=['name','role'],ignore_permissions=True)
-		if len(roles):
-			for role in roles:
-				if role.role != self.role_profile:
-					frappe.delete_doc("Has Role",role.name,ignore_permissions=True)
-		if len(roles_profiles):
-			for role_pro in roles_profiles:
-				if role_pro.role_profile != self.role_profile:
-					frappe.delete_doc("User Role Profile",role_pro.name,ignore_permissions=True)
-		if (self.status=='Active'):
-			user_doc.enabled = True
+		if self.get('localname'):
+			pass
 		else:
-			user_doc.enabled = False
-		user_doc.email = self.email
-		user_doc.first_name = self.first_name
-		user_doc.middle_name = self.middle_name
-		user_doc.last_name = self.last_name
-		user_doc.role_profile_name = self.role_profile
-		user_doc.user_image = self.user_image
-		user_doc.new_password = self.confirm_password
-		user_doc.save(ignore_permissions=True)  # Save with ignore_permissions to ensure it saves even without user permissions
+			user_doc = frappe.get_doc("User", self.email)
+			roles_profiles = frappe.db.get_list("User Role Profile",filters={'parent':self.email},fields=['name','role_profile'],ignore_permissions=True)
+			roles = frappe.db.get_list("Has Role",filters={'parent':self.email},fields=['name','role'],ignore_permissions=True)
+			if len(roles):
+				for role in roles:
+					if role.role != self.role_profile:
+						frappe.delete_doc("Has Role",role.name,ignore_permissions=True)
+			if len(roles_profiles):
+				for role_pro in roles_profiles:
+					if role_pro.role_profile != self.role_profile:
+						frappe.delete_doc("User Role Profile",role_pro.name,ignore_permissions=True)
+			if (self.status=='Active'):
+				user_doc.enabled = True
+			else:
+				user_doc.enabled = False
+			user_doc.email = self.email
+			user_doc.first_name = self.first_name
+			user_doc.middle_name = self.middle_name
+			user_doc.last_name = self.last_name
+			user_doc.role_profile_name = self.role_profile
+			user_doc.user_image = self.user_image
+			user_doc.new_password = self.confirm_password
+			user_doc.save(ignore_permissions=True)  # Save with ignore_permissions to ensure it saves even without user permissions
 	
 	def on_trash(self):
 		# Delete the associated User document if it exists
