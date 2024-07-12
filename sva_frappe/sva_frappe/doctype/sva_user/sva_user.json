@@ -19,11 +19,15 @@
   "status",
   "section_break_yevr",
   "add_permission",
+  "column_break_sebk",
+  "delete_btn_checked",
+  "section_break_jski",
   "html_ojrc",
   "section_break_rxmy",
   "select_zone",
   "select_state",
   "select_district",
+  "select_center_locations",
   "select_block",
   "select_village"
  ],
@@ -153,12 +157,33 @@
    "in_list_view": 1,
    "label": "Status",
    "options": "\nActive\nInactive"
+  },
+  {
+   "fieldname": "select_center_locations",
+   "fieldtype": "Table MultiSelect",
+   "hidden": 1,
+   "is_virtual": 1,
+   "label": "Select Center",
+   "options": "Center Location Child"
+  },
+  {
+   "fieldname": "section_break_jski",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "delete_btn_checked",
+   "fieldtype": "HTML",
+   "options": "<button id=\"delete-selected\" class=\"btn btn-danger btn-xs\" style=\"display:none;float:right;\">Delete Selected</button>"
+  },
+  {
+   "fieldname": "column_break_sebk",
+   "fieldtype": "Column Break"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-06-27 19:51:21.312720",
+ "modified": "2024-07-12 13:05:25.368155",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",

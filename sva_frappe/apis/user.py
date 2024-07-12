@@ -1,4 +1,5 @@
 import frappe
+import json
 
 @frappe.whitelist(allow_guest=True)
 def get_user_permission(user, join_con=[]):
@@ -32,6 +33,14 @@ def get_user_permission(user, join_con=[]):
 def get_user_settings():
     settings = frappe.get_doc('User Settings')
     return settings
+
+@frappe.whitelist()
+def delete_user_permissions(permissions=[]):
+    permissions = json.loads(permissions)
+    if len(permissions):
+        for permission in permissions:
+            frappe.delete_doc("User Permission",permission)
+    return len(permissions)
 
 @frappe.whitelist()
 def get_user_role_permission():
