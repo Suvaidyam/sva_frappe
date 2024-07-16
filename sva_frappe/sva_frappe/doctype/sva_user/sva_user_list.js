@@ -12,7 +12,7 @@ frappe.listview_settings['SVA User'] = {
         }
     },
     refresh:async function (listview) {
-        let setting = await get_user_settings()
+        let setting = await get_user_settings() 
         $(".list-row-activity").hide();
         $("use.like-icon").hide();
         if(setting.hide_user_table_view_settings){
