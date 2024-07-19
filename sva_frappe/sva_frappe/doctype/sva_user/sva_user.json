@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:USER-{YY}-{####} ",
  "creation": "2024-05-28 10:06:14.905294",
@@ -174,7 +175,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-12 14:20:26.428231",
+ "modified": "2024-07-16 16:40:49.868191",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
@@ -184,24 +185,12 @@
   {
    "create": 1,
    "delete": 1,
-   "email": 1,
    "export": 1,
-   "print": 1,
+   "import": 1,
    "read": 1,
    "report": 1,
-   "role": "Administrator",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Head Office (PMU)",
-   "share": 1,
+   "role": "System Manager",
+   "select": 1,
    "write": 1
   }
  ],
