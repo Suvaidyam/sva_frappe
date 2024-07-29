@@ -42,7 +42,7 @@
   },
   {
    "fieldname": "village_name",
-   "fieldtype": "Date",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Village Name",
    "reqd": 1
@@ -73,7 +73,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-29 20:27:49.223984",
+ "modified": "2024-07-29 20:42:37.599190",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Village",
