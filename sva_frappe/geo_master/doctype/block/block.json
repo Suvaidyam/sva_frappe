@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:{block_code}",
  "creation": "2024-05-28 10:25:46.287529",
@@ -63,7 +64,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-06-18 12:08:14.693423",
+ "modified": "2024-07-29 20:27:12.852410",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Block",
@@ -75,6 +76,7 @@
    "delete": 1,
    "email": 1,
    "export": 1,
+   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,
