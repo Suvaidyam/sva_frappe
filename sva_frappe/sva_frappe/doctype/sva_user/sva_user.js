@@ -1,7 +1,7 @@
 // Copyright (c) 2024, suvaidyam and contributors
 // For license information, please see license.txt
 
-
+let my_frm = null; 
 var settings = {}
 var level = ''
 const check_multiselect = async (setting, field) => {
@@ -24,7 +24,15 @@ const openDialog = async (_cb, role_profile) => {
     }
     let setting = await get_user_settings()
     let level_option = get_level_option(setting.role_level)
-
+    let additional_fields = level_option.map(doctype=> {
+        return {
+            "depends_on": `eval:doc.select_doctype=='${doctype}'`,
+            "fieldname": `selected_option`,
+            "fieldtype": 'Link',
+            "label": `Select ${doctype}`,
+            "options": doctype
+        }
+    });
     return await new frappe.ui.Dialog({
         title: "Add User Permission",
         fields: [
@@ -34,87 +42,21 @@ const openDialog = async (_cb, role_profile) => {
                 "label": "Assigned Location",
                 "options": level_option,
             },
-            {
-                "depends_on": "eval:doc.select_doctype=='Zone'",
-                "fieldname": "select_zones",
-                "fieldtype": await check_multiselect(setting.role_level, 'Zone') ? "Table MultiSelect" : 'Link',
-                "label": "Select Zone",
-                "options": await check_multiselect(setting.role_level, 'Zone') ? "Zone Child" : "Zone"
-            },
-            {
-                "depends_on": "eval:doc.select_doctype=='State'",
-                "fieldname": "select_states",
-                "fieldtype": await check_multiselect(setting.role_level, 'State') ? "Table MultiSelect" : 'Link',
-                "label": "Select States",
-                "options": await check_multiselect(setting.role_level, 'State') ? "State Child" : "State"
-            },
-            {
-                "depends_on": "eval:doc.select_doctype=='Center'",
-                "fieldname": "select_center_locations",
-                "fieldtype": await check_multiselect(setting.role_level, 'Center') ? "Table MultiSelect" : 'Link',
-                "label": "Select Center",
-                "options": await check_multiselect(setting.role_level, 'Center') ? "Center Location Child" : "Center"
-            },
-            {
-                "depends_on": "eval:doc.select_doctype=='District'",
-                "fieldname": "select_districts",
-                "fieldtype": await check_multiselect(setting.role_level, 'District') ? "Table MultiSelect" : 'Link',
-                "label": "Select Districts",
-                "options": await check_multiselect(setting.role_level, 'District') ? "District Child" : "District"
-            },
-            {
-                "depends_on": "eval:doc.select_doctype=='Block'",
-                "fieldname": "select_block",
-                "fieldtype": await check_multiselect(setting.role_level, 'Block') ? "Table MultiSelect" : 'Link',
-                "label": "Select Blocks",
-                "options": await check_multiselect(setting.role_level, 'Block') ? "Block Child" : "Block"
-            },
-            {
-                "depends_on": "eval:doc.select_doctype=='Village'",
-                "fieldname": "select_villages",
-                "fieldtype": await check_multiselect(setting.role_level, 'Village') ? "Table MultiSelect" : 'Link',
-                "label": "Select Villages",
-                "options": await check_multiselect(setting.role_level, 'Village') ? "Village Child" : "Village"
-            },
+            ...additional_fields
         ],
         primary_action_label: 'Submit',
         async primary_action(values) {
-            let doctype = values.select_doctype;
-            var selected_keys;
-            switch (doctype) {
-                case "Zone":
-                    selected_keys = values.select_zones;
-                    await loop_values(selected_keys, doctype, cur_frm, 'zone')
-                    break;
-                case "State":
-                    selected_keys = values.select_states;
-                    await loop_values(selected_keys, doctype, cur_frm, 'state')
-                    break;
-                case "District":
-                    selected_keys = values.select_districts;
-                    await loop_values(selected_keys, doctype, cur_frm, 'district')
-                    break;
-                case "Center":
-                    selected_keys = values.select_center_locations;
-                    await loop_values(selected_keys, doctype, cur_frm, 'center_location')
-                    break;
-                case "Block":
-                    selected_keys = values.select_block;
-                    await loop_values(selected_keys, doctype, cur_frm, 'block')
-                    break;
-                case "Grampanchayat":
-                    selected_keys = values.select_grampanchayats;
-                    await loop_values(selected_keys, doctype, cur_frm, 'grampanchayat')
-                    break;
-                case "Village":
-                    selected_keys = values.select_villages;
-                    await loop_values(selected_keys, doctype, cur_frm, 'village')
-                    break
-                default:
-                    break;
+            try {
+                let doctype = values.select_doctype;
+                let selected_option = values.selected_option;
+                
+                await set_permission(doctype,selected_option, my_frm);
+                
+                _cb(cur_frm);
+                this.hide();
+            } catch (error) {
+                console.error('Error setting permission:', error);
             }
-            _cb(cur_frm)
-            this.hide();
         }
     })
 }
@@ -197,7 +139,9 @@ const delete_button = async (frm) => {
 //     delete_button(frm)
 // }
 const render_tables = async (frm) => {
+    my_frm = frm
     let list = await get_permission(frm.doc.email)
+    console.log(list);
     let tables = `
     <table class="table">
         <thead>
@@ -215,7 +159,7 @@ const render_tables = async (frm) => {
         <tr>
             <th scope="row"><input style="width: 15px !important; height: 15px !important;" type="checkbox" class="row-checkbox" data-name="${item.name}"></th>
             <td>${item.allow}</td>
-            <td>${item.name_value}</td>
+            <td>${item.allow === "Company Profile" ? item.for_value : item.for_value}</td>
             <td class="text-danger"><a><i class="fa fa-trash-o delete-button" id="${item.name}" style="font-size:25px;"></i></a></td>
         </tr>
         `;

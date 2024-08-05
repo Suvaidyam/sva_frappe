@@ -19,6 +19,19 @@ def create_user_permissions(doc=None):
                 'user': user
             })
             zone_perm.insert(ignore_permissions=True)
+            # 
+    elif allow == "Company Profile":
+        state_exist = frappe.db.exists("User Permission", {"allow": "Company Profile", "for_value": for_value, "user": user})
+      
+        if not state_exist:
+            state_perm = frappe.get_doc({
+                'doctype': 'User Permission',
+                'allow': 'Company Profile',
+                'for_value': for_value,
+                'user': user
+            })
+            state_perm.insert(ignore_permissions=True)
+            # 
     elif allow == "State":
         state_exist = frappe.db.exists("User Permission", {"allow": "State", "for_value": for_value, "user": user})
         if is_zone_mandatory:
