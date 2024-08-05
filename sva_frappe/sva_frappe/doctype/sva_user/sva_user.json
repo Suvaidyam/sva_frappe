@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "email",
+  "username",
   "first_name",
   "middle_name",
   "full_name",
@@ -170,12 +171,18 @@
   {
    "fieldname": "column_break_sebk",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "username",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Username"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-16 16:40:49.868191",
+ "modified": "2024-08-05 17:45:47.640573",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
