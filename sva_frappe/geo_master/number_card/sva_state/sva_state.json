@@ -11,14 +11,14 @@
  "is_public": 0,
  "is_standard": 1,
  "label": "Sva State",
- "modified": "2024-07-12 10:50:44.919735",
+ "modified": "2024-08-07 21:38:30.848469",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Sva State",
  "owner": "Administrator",
  "parent_document_type": "",
  "report_function": "Sum",
- "show_percentage_stats": 1,
+ "show_percentage_stats": 0,
  "stats_time_interval": "Daily",
  "type": "Document Type"
 }
