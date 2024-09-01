@@ -141,7 +141,7 @@ const delete_button = async (frm) => {
 const render_tables = async (frm) => {
     my_frm = frm
     let list = await get_permission(frm.doc.email)
-    console.log(list);
+    // console.log(list);
     let tables = `
     <table class="table">
         <thead>
@@ -159,7 +159,7 @@ const render_tables = async (frm) => {
         <tr>
             <th scope="row"><input style="width: 15px !important; height: 15px !important;" type="checkbox" class="row-checkbox" data-name="${item.name}"></th>
             <td>${item.allow}</td>
-            <td>${item.allow === "Company Profile" ? item.for_value : item.for_value}</td>
+            <td>${item.allow === "Company Profile" ? item.for_value : item.name_value}</td>
             <td class="text-danger"><a><i class="fa fa-trash-o delete-button" id="${item.name}" style="font-size:25px;"></i></a></td>
         </tr>
         `;

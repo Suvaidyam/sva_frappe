@@ -8,7 +8,10 @@
  "engine": "InnoDB",
  "field_order": [
   "email",
+<<<<<<< HEAD
   "username",
+=======
+>>>>>>> 681f421baceb317809e6c8c2ba215f81c5ba87a7
   "first_name",
   "middle_name",
   "full_name",
@@ -171,18 +174,25 @@
   {
    "fieldname": "column_break_sebk",
    "fieldtype": "Column Break"
+<<<<<<< HEAD
   },
   {
    "fieldname": "username",
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Username"
+=======
+>>>>>>> 681f421baceb317809e6c8c2ba215f81c5ba87a7
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
+<<<<<<< HEAD
  "modified": "2024-08-05 17:45:47.640573",
+=======
+ "modified": "2024-07-16 16:40:49.868191",
+>>>>>>> 681f421baceb317809e6c8c2ba215f81c5ba87a7
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
