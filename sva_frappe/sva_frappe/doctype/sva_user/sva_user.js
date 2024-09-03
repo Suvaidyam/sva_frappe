@@ -322,7 +322,13 @@ function hide_advance_search(frm, list) {
 };
 
 frappe.ui.form.on("SVA User", {
+    async before_save(frm) {
+        if(frm.doc.confirm_password === frm.doc.old_password){
+            !frm.is_new() && await frm.set_value('password', frm.doc.confirm_password);
+        }
+    },
     async refresh(frm) {
+        frm.doc.old_password = frm.doc.confirm_password;
         let restricted_array = []
         let setting = await get_user_settings()
         // console.log(frappe.user_roles)
@@ -350,7 +356,6 @@ frappe.ui.form.on("SVA User", {
         } else {
             frm.set_df_property('add_permission', 'hidden', false);
         }
-        frm.doc.password = frm.doc.confirm_password
         hide_advance_search(frm, ["role_profile"])
     },
     state: function (frm) {
