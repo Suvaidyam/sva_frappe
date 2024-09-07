@@ -1,9 +1,10 @@
 // Copyright (c) 2024, suvaidyam and contributors
 // For license information, please see license.txt
 
-let my_frm = null; 
+let my_frm = null;
 var settings = {}
 var level = ''
+let mobilePattern = /^[6-9]\d{9}$/;
 const check_multiselect = async (setting, field) => {
     let result = false
     if (setting.length > 0) {
@@ -24,7 +25,7 @@ const openDialog = async (_cb, role_profile) => {
     }
     let setting = await get_user_settings()
     let level_option = get_level_option(setting.role_level)
-    let additional_fields = level_option.map(doctype=> {
+    let additional_fields = level_option.map(doctype => {
         return {
             "depends_on": `eval:doc.select_doctype=='${doctype}'`,
             "fieldname": `selected_option`,
@@ -49,9 +50,9 @@ const openDialog = async (_cb, role_profile) => {
             try {
                 let doctype = values.select_doctype;
                 let selected_option = values.selected_option;
-                
-                await set_permission(doctype,selected_option, my_frm);
-                
+
+                await set_permission(doctype, selected_option, my_frm);
+
                 _cb(cur_frm);
                 this.hide();
             } catch (error) {
@@ -222,8 +223,8 @@ const multiple_delete = async (selectedNames) => {
             permissions: selectedNames,
         },
     })
-    if(response){
-        frappe.show_alert({message:`${response} permissions deleted successfully.`,indicator:'green'})
+    if (response) {
+        frappe.show_alert({ message: `${response} permissions deleted successfully.`, indicator: 'green' })
     }
     await render_tables(cur_frm)
 }
@@ -323,7 +324,7 @@ function hide_advance_search(frm, list) {
 
 frappe.ui.form.on("SVA User", {
     async before_save(frm) {
-        if(frm.doc.confirm_password === frm.doc.old_password){
+        if (frm.doc.confirm_password === frm.doc.old_password) {
             !frm.is_new() && await frm.set_value('password', frm.doc.confirm_password);
         }
     },
@@ -383,5 +384,9 @@ frappe.ui.form.on("SVA User", {
     role_profile: async function (frm) {
         level = frm.doc.role_profile
     },
-
+    validate: async function (frm) {
+        if (frm.doc.mobile_number && !mobilePattern.test(frm.doc.mobile_number)) {
+            frappe.throw("Please enter a valid mobile number");
+        }
+    },
 });

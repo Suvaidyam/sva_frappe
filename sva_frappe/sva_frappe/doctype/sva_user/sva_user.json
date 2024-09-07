@@ -15,6 +15,7 @@
   "user_image",
   "username",
   "column_break_lsez",
+  "mobile_number",
   "role_profile",
   "password",
   "confirm_password",
@@ -177,12 +178,18 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Username"
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number",
+   "length": 10
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-03 10:19:11.859973",
+ "modified": "2024-09-07 09:39:27.408194",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",

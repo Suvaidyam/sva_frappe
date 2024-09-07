@@ -20,6 +20,7 @@ class SVAUser(Document):
 		new_user.middle_name = self.middle_name
 		new_user.last_name = self.last_name
 		new_user.username == self.username
+		new_user.mobile_no == self.mobile_number
 		new_user.role_profile_name = self.role_profile
 		new_user.user_image = self.user_image
 		new_user.new_password = self.confirm_password
@@ -50,6 +51,7 @@ class SVAUser(Document):
 			user_doc.middle_name = self.middle_name
 			user_doc.last_name = self.last_name
 			user_doc.username = self.username
+			user_doc.mobile_no == self.mobile_number
 			user_doc.role_profile_name = self.role_profile
 			user_doc.user_image = self.user_image
 			user_doc.new_password = self.confirm_password
