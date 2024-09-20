@@ -45,7 +45,7 @@ const openDialog = async (_cb, role_profile) => {
                 "options": level_option,
             },
             ...fields_json
-        ], 
+        ],
         primary_action_label: 'Submit',
         async primary_action(values) {
             try {
