@@ -25,15 +25,16 @@ const openDialog = async (_cb, role_profile) => {
     }
     let setting = await get_user_settings()
     let level_option = get_level_option(setting.role_level)
-    let additional_fields = level_option.map(doctype => {
+    let additional_fields = level_option.map(async doctype => {
         return {
             "depends_on": `eval:doc.select_doctype=='${doctype}'`,
             "fieldname": `selected_option`,
-            "fieldtype": 'Link',
+            "fieldtype": await check_multiselect(setting.role_level, doctype) ? "Table MultiSelect" : 'Link',
             "label": `Select ${doctype}`,
-            "options": doctype
+            "options": await check_multiselect(setting.role_level, doctype) ? `${doctype} Child` : doctype
         }
     });
+    let fields_json = await Promise.all(additional_fields);
     return await new frappe.ui.Dialog({
         title: "Add User Permission",
         fields: [
@@ -43,16 +44,20 @@ const openDialog = async (_cb, role_profile) => {
                 "label": "Assigned Location",
                 "options": level_option,
             },
-            ...additional_fields
+            ...fields_json
         ],
         primary_action_label: 'Submit',
         async primary_action(values) {
             try {
                 let doctype = values.select_doctype;
                 let selected_option = values.selected_option;
-
-                await set_permission(doctype, selected_option, my_frm);
-
+                if (await check_multiselect(setting.role_level, doctype)) {
+                    for (let item of selected_option) {
+                        await set_permission(doctype, item.block, my_frm);
+                    }
+                } else {
+                    await set_permission(doctype, selected_option, my_frm);
+                }
                 _cb(cur_frm);
                 this.hide();
             } catch (error) {
