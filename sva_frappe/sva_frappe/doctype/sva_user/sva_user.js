@@ -185,15 +185,15 @@ const render_tables = async (frm) => {
         deleteSelectedButton.style.display = anyChecked ? 'block' : 'none';
     };
 
-    selectAllCheckbox.addEventListener('change', (event) => {
+    selectAllCheckbox?.addEventListener('change', (event) => {
         const checked = event.target.checked;
-        rowCheckboxes.forEach(checkbox => {
+        rowCheckboxes?.forEach(checkbox => {
             checkbox.checked = checked;
         });
         updateDeleteButtonVisibility();
     });
 
-    rowCheckboxes.forEach(checkbox => {
+    rowCheckboxes?.forEach(checkbox => {
         checkbox.addEventListener('change', updateDeleteButtonVisibility);
     });
 
@@ -356,12 +356,18 @@ frappe.ui.form.on("SVA User", {
             }
         }
         level = frm.doc.role_profile
-        !frm.is_new() && await render_tables(frm);
         if (frm.is_new()) {
             frm.set_df_property('add_permission', 'hidden', true);
         } else {
-            frm.set_df_property('add_permission', 'hidden', false);
+            let setting = await get_user_settings()
+            let level_option = await get_level_option(setting.role_level)
+            if (level_option.length) {
+                frm.set_df_property('add_permission', 'hidden', false);
+            }else{
+                frm.set_df_property('add_permission', 'hidden', true);
+            }
         }
+        !frm.is_new() && await render_tables(frm);
         hide_advance_search(frm, ["role_profile"])
     },
     state: function (frm) {
