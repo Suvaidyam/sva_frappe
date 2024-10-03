@@ -379,7 +379,9 @@ frappe.ui.form.on("SVA User", {
     },
     after_save: async function (frm) {
         let list = await get_permission(frm.doc.email)
-        if (list.length == 0) {
+        let setting = await get_user_settings()
+        let level_option = await get_level_option(setting.role_level)
+        if (list.length == 0 && level_option.length) {
             let d = await openDialog(async (_frm) => {
                 await render_tables(_frm)
             }, frm.doc.role_profile)
