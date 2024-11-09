@@ -1,22 +1,24 @@
 {
  "actions": [],
- "allow_import": 1,
  "allow_rename": 1,
- "autoname": "format:{village_code}",
- "creation": "2024-05-28 10:29:30.340088",
+ "creation": "2024-11-05 22:00:35.304361",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "zone",
+  "gram_pachayat_name",
+  "gram_panchayat_code",
   "state",
   "district",
   "block",
-  "gram_panchayat",
-  "village_name",
-  "village_code",
   "status"
  ],
  "fields": [
+  {
+   "fieldname": "gram_pachayat_name",
+   "fieldtype": "Data",
+   "label": "Gram Pachayat Name",
+   "reqd": 1
+  },
   {
    "fieldname": "state",
    "fieldtype": "Link",
@@ -36,56 +38,28 @@
   {
    "fieldname": "block",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Block",
    "options": "Block",
    "reqd": 1
   },
   {
-   "fieldname": "village_name",
+   "fieldname": "gram_panchayat_code",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Village Name",
+   "label": "Gram Panchayat Code",
    "reqd": 1
   },
   {
-   "fieldname": "village_code",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Village Code",
-   "no_copy": 1,
-   "reqd": 1,
-   "unique": 1
-  },
-  {
-   "fieldname": "zone",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Zone",
-   "options": "Zone"
-  },
-  {
-   "default": "Active",
    "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "\nActive\nInactive"
-  },
-  {
-   "fieldname": "gram_panchayat",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Gram Panchayat",
-   "options": "Gram Panchayat"
+   "fieldtype": "Data",
+   "label": "Status"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-09 09:05:28.421050",
+ "modified": "2024-11-09 09:20:34.061041",
  "modified_by": "Administrator",
  "module": "Geo Master",
- "name": "Village",
- "naming_rule": "Expression",
+ "name": "Gram Panchayat",
  "owner": "Administrator",
  "permissions": [
   {
@@ -93,7 +67,6 @@
    "delete": 1,
    "email": 1,
    "export": 1,
-   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,
@@ -102,9 +75,7 @@
    "write": 1
   }
  ],
- "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": [],
- "title_field": "village_name"
+ "states": []
 }
