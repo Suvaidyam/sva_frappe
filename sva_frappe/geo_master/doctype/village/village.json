@@ -11,6 +11,7 @@
   "state",
   "district",
   "block",
+  "gram_panchayat",
   "village_name",
   "village_code",
   "status"
@@ -69,11 +70,18 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "\nActive\nInactive"
+  },
+  {
+   "fieldname": "gram_panchayat",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Gram Panchayat",
+   "options": "Gram Panchayat"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-29 20:42:37.599190",
+ "modified": "2024-11-09 09:05:28.421050",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Village",
