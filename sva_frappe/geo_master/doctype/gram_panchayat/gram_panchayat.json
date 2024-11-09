@@ -5,22 +5,18 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "id",
   "gram_pachayat_name",
+  "gram_panchayat_code",
   "state",
   "district",
   "block"
  ],
  "fields": [
   {
-   "fieldname": "id",
-   "fieldtype": "Data",
-   "label": "ID"
-  },
-  {
    "fieldname": "gram_pachayat_name",
    "fieldtype": "Data",
-   "label": "Gram Pachayat Name"
+   "label": "Gram Pachayat Name",
+   "reqd": 1
   },
   {
    "fieldname": "state",
@@ -44,11 +40,17 @@
    "label": "Block",
    "options": "Block",
    "reqd": 1
+  },
+  {
+   "fieldname": "gram_panchayat_code",
+   "fieldtype": "Data",
+   "label": "Gram Panchayat Code",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-05 22:12:22.207871",
+ "modified": "2024-11-09 09:07:11.541211",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Gram Panchayat",

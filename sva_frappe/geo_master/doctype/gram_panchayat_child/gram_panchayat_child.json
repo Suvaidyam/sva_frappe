@@ -1,0 +1,32 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-09 09:07:48.824344",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "gram_panchayat"
+ ],
+ "fields": [
+  {
+   "fieldname": "gram_panchayat",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Gram Panchayat",
+   "options": "Gram Panchayat",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-09 09:08:17.144922",
+ "modified_by": "Administrator",
+ "module": "Geo Master",
+ "name": "Gram Panchayat Child",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
