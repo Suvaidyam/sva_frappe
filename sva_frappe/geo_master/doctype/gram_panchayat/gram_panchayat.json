@@ -1,6 +1,6 @@
 {
  "actions": [],
- "allow_rename": 1,
+ "autoname": "field:gram_panchayat_code",
  "creation": "2024-11-05 22:00:35.304361",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -10,7 +10,9 @@
   "state",
   "district",
   "block",
-  "status"
+  "status",
+  "villages_tab",
+  "villages"
  ],
  "fields": [
   {
@@ -25,7 +27,8 @@
    "in_list_view": 1,
    "label": "State",
    "options": "State",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "district",
@@ -33,33 +36,55 @@
    "in_list_view": 1,
    "label": "District",
    "options": "District",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "block",
    "fieldtype": "Link",
    "label": "Block",
    "options": "Block",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "gram_panchayat_code",
    "fieldtype": "Data",
    "label": "Gram Panchayat Code",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "status",
    "fieldtype": "Data",
    "label": "Status"
+  },
+  {
+   "default": "villages",
+   "fieldname": "villages_tab",
+   "fieldtype": "Tab Break",
+   "label": "Villages"
+  },
+  {
+   "default": "Village",
+   "fieldname": "villages",
+   "fieldtype": "HTML",
+   "options": "<div id=\"villages\"></div>"
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2024-11-09 09:20:34.061041",
+ "links": [
+  {
+   "hidden": 1,
+   "link_doctype": "Village",
+   "link_fieldname": "gram_panchayat"
+  }
+ ],
+ "modified": "2024-11-10 12:42:53.693055",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Gram Panchayat",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -75,7 +100,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "gram_pachayat_name"
 }
