@@ -27,7 +27,6 @@ frappe.ui.form.on("State", {
         tabContent(frm, tab_field)
         $('a[data-toggle="tab"]').on('shown.bs.tab', async function (e) {
             let tab_field = frm.get_active_tab()?.df?.fieldname;
-            console.log(tab_field, 'tab_field')
             tabContent(frm, tab_field)
         });
         // role by permission
