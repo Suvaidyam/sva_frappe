@@ -10,7 +10,13 @@
   "state",
   "district_name",
   "district_code",
-  "status"
+  "status",
+  "blocks_tab",
+  "blocks",
+  "gram_panchayats_tab",
+  "panchayats",
+  "villages_tab",
+  "villages"
  ],
  "fields": [
   {
@@ -50,12 +56,64 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "\nActive\nInactive"
+  },
+  {
+   "default": "blocks",
+   "fieldname": "blocks_tab",
+   "fieldtype": "Tab Break",
+   "label": "Blocks"
+  },
+  {
+   "default": "Block",
+   "fieldname": "blocks",
+   "fieldtype": "HTML",
+   "options": "<div  id=\"blocks\"></div>"
+  },
+  {
+   "default": "panchayats",
+   "fieldname": "gram_panchayats_tab",
+   "fieldtype": "Tab Break",
+   "label": "Gram Panchayats"
+  },
+  {
+   "default": "Gram Panchayat",
+   "fieldname": "panchayats",
+   "fieldtype": "HTML",
+   "options": "<div id=\"panchayats\"></div>"
+  },
+  {
+   "default": "villages",
+   "fieldname": "villages_tab",
+   "fieldtype": "Tab Break",
+   "label": "Villages"
+  },
+  {
+   "default": "Village",
+   "fieldname": "villages",
+   "fieldtype": "HTML",
+   "options": "<div id=\"villages\"></div>"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2024-07-03 20:44:03.241225",
+ "links": [
+  {
+   "hidden": 1,
+   "link_doctype": "Block",
+   "link_fieldname": "district"
+  },
+  {
+   "hidden": 1,
+   "link_doctype": "Gram Panchayat",
+   "link_fieldname": "district"
+  },
+  {
+   "hidden": 1,
+   "link_doctype": "Village",
+   "link_fieldname": "district"
+  }
+ ],
+ "modified": "2024-11-10 12:23:48.452224",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "District",
