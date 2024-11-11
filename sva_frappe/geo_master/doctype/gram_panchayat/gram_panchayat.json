@@ -55,9 +55,12 @@
    "unique": 1
   },
   {
+   "default": "Active",
    "fieldname": "status",
-   "fieldtype": "Data",
-   "label": "Status"
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive",
+   "reqd": 1
   },
   {
    "default": "villages",
@@ -80,7 +83,7 @@
    "link_fieldname": "gram_panchayat"
   }
  ],
- "modified": "2024-11-10 12:42:53.693055",
+ "modified": "2024-11-11 12:23:26.842199",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Gram Panchayat",
