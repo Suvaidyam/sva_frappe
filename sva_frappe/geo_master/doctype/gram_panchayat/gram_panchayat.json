@@ -63,16 +63,13 @@
    "reqd": 1
   },
   {
-   "default": "villages",
    "fieldname": "villages_tab",
    "fieldtype": "Tab Break",
    "label": "Villages"
   },
   {
-   "default": "Village",
    "fieldname": "villages",
-   "fieldtype": "HTML",
-   "options": "<div id=\"villages\"></div>"
+   "fieldtype": "HTML"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -83,7 +80,7 @@
    "link_fieldname": "gram_panchayat"
   }
  ],
- "modified": "2024-11-11 12:23:26.842199",
+ "modified": "2024-11-26 12:07:22.367500",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Gram Panchayat",
