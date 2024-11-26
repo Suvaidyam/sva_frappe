@@ -66,28 +66,22 @@
    "options": "\nActive\nInactive"
   },
   {
-   "default": "panchayats",
    "fieldname": "gram_panchayats_tab",
    "fieldtype": "Tab Break",
    "label": "Gram Panchayats"
   },
   {
-   "default": "Gram Panchayat",
    "fieldname": "panchayats",
-   "fieldtype": "HTML",
-   "options": "<div id=\"panchayats\"></div>"
+   "fieldtype": "HTML"
   },
   {
-   "default": "villages",
    "fieldname": "villages_tab",
    "fieldtype": "Tab Break",
    "label": "Villages"
   },
   {
-   "default": "Village",
    "fieldname": "villages",
-   "fieldtype": "HTML",
-   "options": "<div id=\"villages\"></div>"
+   "fieldtype": "HTML"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -103,7 +97,7 @@
    "link_fieldname": "block"
   }
  ],
- "modified": "2024-11-10 12:32:55.989272",
+ "modified": "2024-11-26 11:54:43.417219",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Block",
