@@ -54,7 +54,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-12 12:23:19.416167",
+ "modified": "2024-12-23 16:37:29.386464",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "User Settings",
@@ -67,16 +67,6 @@
    "print": 1,
    "read": 1,
    "role": "Administrator",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "print": 1,
-   "read": 1,
-   "role": "Head Office (PMU)",
    "share": 1,
    "write": 1
   },
