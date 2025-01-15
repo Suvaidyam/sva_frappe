@@ -13,6 +13,7 @@ def get_user_permission(user, join_con=[]):
                 WHEN UP.allow = 'Center' THEN CL.center_location_name
                 WHEN UP.allow = 'Block' THEN TB.block_name
                 WHEN UP.allow = 'Village' THEN TCS.village_name
+                WHEN UP.allow = 'NGO' THEN NGO.ngo_name
             END AS name_value,
             UP.for_value,
             UP.name,
@@ -25,8 +26,10 @@ def get_user_permission(user, join_con=[]):
         LEFT JOIN `tabCenter` AS CL ON UP.for_value = CL.name AND UP.allow = 'Center'
         LEFT JOIN `tabBlock` AS TB ON UP.for_value = TB.name AND UP.allow = 'Block'
         LEFT JOIN `tabVillage` AS TCS ON UP.for_value = TCS.name AND UP.allow = 'Village'
+        LEFT JOIN `tabNGO` AS NGO ON UP.for_value = NGO.name AND UP.allow = 'NGO'
         WHERE UP.user = '{user}'
         ORDER BY 
+            NGO.ngo_name,
             TCS.village_name,
             TB.block_name,
             CL.center_location_name,
