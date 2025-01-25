@@ -154,7 +154,7 @@ const render_tables = async (frm) => {
             <tr>
                 <th scope="col"><input style="width: 15px !important; height: 15px !important;" type="checkbox" id="select-all"></th>
                 <th scope="col">User Level</th>
-                <th scope="col">Assigned Location</th>
+                <th scope="col">Assigned Value</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
