@@ -274,3 +274,57 @@ def create_user_permissions(doc=None):
                 village_perm.insert(ignore_permissions=True)
     else:
         return "Invalid allow value"
+    
+from frappe import _
+
+@frappe.whitelist(allow_guest=True)
+def get_roles_and_permissions_by_profile(role_profile):
+    """Fetch roles and their assigned permissions for a given role profile."""
+    
+    # Get roles assigned to the role profile
+    roles = frappe.get_all(
+        "Has Role",
+        filters={"parent": role_profile},
+        fields=["role"],
+        pluck="role"
+    )
+
+    if not roles:
+        return {"message": "No roles found for this role profile"}
+
+    # Define fields to fetch from permissions tables
+    permission_fields = [
+        "parent", "role", "permlevel", "read", "write", "create", "delete",
+        "submit", "cancel", "amend", "email", "export", "import", "print",
+        "report", "select", "share"
+    ]
+
+    # Fetch permissions from DocPerm
+    perms = frappe.get_all("DocPerm", fields=permission_fields, filters={"role": ["in", roles]})
+    # return perms
+    custom_perms = frappe.get_all("Custom DocPerm", fields=permission_fields, filters={"role": ["in", roles]})
+    # return custom_perms
+    doctypes_with_custom_perms = frappe.get_all("Custom DocPerm", pluck="parent",filters={"role": ["in", roles]}, distinct=True)
+    # return doctypes_with_custom_perms
+
+    for p in perms:
+        if p.parent not in doctypes_with_custom_perms:
+            custom_perms.append(p)
+
+    if not custom_perms:
+        return {"message": "No permissions found for roles in this role profile"}
+
+    # Formatting response
+    result = {
+        "role_profile": role_profile,
+        "roles_and_permissions": [
+            {
+                "role": role["role"],
+                "parent": role["parent"],
+                "permissions": {field: role[field] for field in permission_fields if field not in ["parent", "role"]}
+            }
+            for role in custom_perms
+        ]
+    }
+
+    return result

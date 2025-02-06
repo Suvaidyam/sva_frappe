@@ -28,12 +28,6 @@
   "confirm_password",
   "column_break_cqkl",
   "column_break_bejo",
-  "section_break_yevr",
-  "add_permission",
-  "column_break_sebk",
-  "delete_btn_checked",
-  "section_break_jski",
-  "html_ojrc",
   "section_break_rxmy",
   "select_zone",
   "select_state",
@@ -103,15 +97,6 @@
    "mandatory_depends_on": "eval:(doc.__islocal || (!doc.__islocal && doc.update_password))"
   },
   {
-   "fieldname": "section_break_yevr",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "add_permission",
-   "fieldtype": "Button",
-   "label": "Add Permission"
-  },
-  {
    "fieldname": "section_break_rxmy",
    "fieldtype": "Section Break"
   },
@@ -148,11 +133,6 @@
    "options": "Village Child"
   },
   {
-   "fieldname": "html_ojrc",
-   "fieldtype": "HTML",
-   "options": "<div id=\"datatable\"></div>"
-  },
-  {
    "fieldname": "select_zone",
    "fieldtype": "Table MultiSelect",
    "hidden": 1,
@@ -174,19 +154,6 @@
    "in_list_view": 1,
    "label": "Status",
    "options": "\nActive\nInactive"
-  },
-  {
-   "fieldname": "section_break_jski",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "delete_btn_checked",
-   "fieldtype": "HTML",
-   "options": "<button id=\"delete-selected\" class=\"btn btn-danger btn-xs\" style=\"display:none;float:right;\">Delete Selected</button>"
-  },
-  {
-   "fieldname": "column_break_sebk",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "username",
@@ -259,7 +226,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-01 18:41:23.135699",
+ "modified": "2025-02-06 16:11:10.445173",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
