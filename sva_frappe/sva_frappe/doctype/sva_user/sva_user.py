@@ -8,31 +8,54 @@ class SVAUser(Document):
 			self.full_name = self.first_name + ' ' + self.last_name
 		else:
 			self.full_name = self.first_name
-		existing_permissions = frappe.get_all(
-			"User Permission", 
-			filters={'user': self.email}, 
-			fields=['name', 'for_value']
-		)
 
-		# Extract existing 'for_value' in User Permission
-		existing_for_values = {perm['for_value']: perm['name'] for perm in existing_permissions}
 
-		# Extract child table 'for_value' list
-		new_for_values = {table.value for table in self.get("table_pdop", [])}
+		# existing_permissions = frappe.get_all(
+		# 	"User Permission", 
+		# 	filters={'user': self.email}, 
+		# 	fields=['name', 'for_value']
+		# )
 
-		# Delete permissions that are not in the child table
-		for for_value, name in existing_for_values.items():
-			if for_value not in new_for_values:
-				frappe.delete_doc("User Permission", name, ignore_permissions=True)
+		# # Extract existing 'for_value' in User Permission
+		# existing_for_values = {perm['for_value']: perm['name'] for perm in existing_permissions}
 
+		# # Extract child table 'for_value' list
+		# new_for_values = {table.value for table in self.get("table_pdop", [])}
+
+		# # Delete permissions that are not in the child table
+		# for for_value, name in existing_for_values.items():
+		# 	if for_value not in new_for_values:
+		# 		frappe.delete_doc("User Permission", name, ignore_permissions=True)
+
+		# list of user-permissions
+		up_list = []
 		# Insert new permissions if they don’t exist
 		for table in self.get("table_pdop", []):
-			if table.value not in existing_for_values:
+			user_permission = None
+			up_docs = frappe.db.get_list("User Permission", filters={
+				"user": self.email,
+				"allow": table.module,
+				"for_value": table.value
+			},fields=['name'], limit=1)
+			exists = len(up_docs) 
+			if not exists:
 				user_permission = frappe.new_doc("User Permission")
-				user_permission.user = self.email
-				user_permission.allow = table.module
-				user_permission.for_value = table.value
-				user_permission.insert(ignore_permissions=True)
+			else:
+				user_permission = frappe.get_doc("User Permission", up_docs[0].name)
+			print(exists, user_permission)
+			user_permission.user = self.email
+			user_permission.allow = table.module
+			user_permission.for_value = table.value
+			if not exists:
+				new_doc = user_permission.insert(ignore_permissions=True)
+				table.name= new_doc.name 
+			else:
+				user_permission.save(ignore_permissions=True)
+				
+			up_list.append(table.name)
+		unallocated_permissions = frappe.get_list("User Permission", filters={'name':['NOT IN',up_list]}, pluck='name')
+		for name in unallocated_permissions:
+			frappe.delete_doc("User Permission", name, ignore_permissions=True)
 
 
 	def validate(self):

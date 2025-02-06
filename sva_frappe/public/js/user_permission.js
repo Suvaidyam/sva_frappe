@@ -11,7 +11,7 @@ async function get_all_roles_permissions(role_profile) {
 const role_and_permission_popup = async (frm) => {
     try {
         const roles = await get_all_roles_permissions(frm.doc.role_profile);
-        // console.log(roles,'roles');
+        console.log(roles,'roles');
         if (!roles || roles.message) {
             frm.fields_dict.module_permissions.$wrapper.html(`
                 <div class="p-4 text-center text-muted">
