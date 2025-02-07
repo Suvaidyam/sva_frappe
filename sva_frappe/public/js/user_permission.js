@@ -11,7 +11,6 @@ async function get_all_roles_permissions(role_profile) {
 const role_and_permission_popup = async (frm) => {
     try {
         const roles = await get_all_roles_permissions(frm.doc.role_profile);
-        console.log(roles,'roles');
         if (!roles || roles.message) {
             frm.fields_dict.module_permissions.$wrapper.html(`
                 <div class="p-4 text-center text-muted">
@@ -38,7 +37,15 @@ const role_and_permission_popup = async (frm) => {
             "select",
             "share"
         ];
-
+        const headerRow = `
+            <tr>
+                <th class="text-left" style="min-width: 200px;">Document Type</th>
+                <th class="text-left">Role</th>
+                <th>Level</th>
+                ${permissions.map(perm => `<th>${perm}</th>`).join('')}
+            </tr>
+        `;
+        /*
         // Group permissions by document type
         const groupedPermissions = {};
         roles.roles_and_permissions.forEach(item => {
@@ -49,7 +56,7 @@ const role_and_permission_popup = async (frm) => {
                     levels: {}
                 };
             }
-            
+
             const level = item.permissions.permlevel;
             if (!groupedPermissions[doctype].levels[level]) {
                 groupedPermissions[doctype].levels[level] = {
@@ -57,7 +64,7 @@ const role_and_permission_popup = async (frm) => {
                     permissions: {}
                 };
             }
-            
+
             groupedPermissions[doctype].levels[level].roles.push(item.role);
             permissions.forEach(perm => {
                 const permKey = perm.toLowerCase();
@@ -68,14 +75,7 @@ const role_and_permission_popup = async (frm) => {
         });
 
         // Create table header
-        const headerRow = `
-            <tr>
-                <th class="text-left" style="min-width: 200px;">Document Type</th>
-                <th>Level</th>
-                <th class="text-left">Roles</th>
-                ${permissions.map(perm => `<th>${perm}</th>`).join('')}
-            </tr>
-        `;
+
 
         // Create table rows
         const tableRows = Object.values(groupedPermissions).map(docPerms => {
@@ -97,7 +97,17 @@ const role_and_permission_popup = async (frm) => {
                 `;
             }).join('');
         }).join('');
-
+        */
+        let tableRows = roles?.roles_and_permissions?.map(item => {
+            return `
+                <tr>
+                    <td class="text-left">${item.parent}</td>
+                     <td class="text-left roles-cell">${item.role}</td>
+                    <td>${item.permlevel}</td>
+                    ${permissions.map(perm => `<td>${item[perm.toLowerCase()] ? '✓' : '-'}</td>`).join('')}
+                </tr>
+            `;
+        }).join('');
         // Render the complete table
         frm.fields_dict.module_permissions.$wrapper.html(`
             <div class="permission-table-container">

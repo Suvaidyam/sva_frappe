@@ -11,8 +11,8 @@ class SVAUser(Document):
 
 
 		# existing_permissions = frappe.get_all(
-		# 	"User Permission", 
-		# 	filters={'user': self.email}, 
+		# 	"User Permission",
+		# 	filters={'user': self.email},
 		# 	fields=['name', 'for_value']
 		# )
 
@@ -37,21 +37,21 @@ class SVAUser(Document):
 				"allow": table.module,
 				"for_value": table.value
 			},fields=['name'], limit=1)
-			exists = len(up_docs) 
+			exists = len(up_docs)
 			if not exists:
 				user_permission = frappe.new_doc("User Permission")
 			else:
 				user_permission = frappe.get_doc("User Permission", up_docs[0].name)
-			print(exists, user_permission)
+
 			user_permission.user = self.email
 			user_permission.allow = table.module
 			user_permission.for_value = table.value
 			if not exists:
 				new_doc = user_permission.insert(ignore_permissions=True)
-				table.name= new_doc.name 
+				table.name= new_doc.name
 			else:
 				user_permission.save(ignore_permissions=True)
-				
+
 			up_list.append(table.name)
 		unallocated_permissions = frappe.get_list("User Permission", filters={'name':['NOT IN',up_list]}, pluck='name')
 		for name in unallocated_permissions:
@@ -124,12 +124,12 @@ class SVAUser(Document):
 
 @frappe.whitelist()
 def on_user_permission_change(doc, method):
-	
+
 	if method == 'on_update':
 		_doc = frappe.get_doc("SVA User", {'email': doc.user}, ignore_permissions=True)
 		# Check if the permission already exists
 		new_entry = frappe.get_doc({
-			'doctype': 'User Data Permissions', 
+			'doctype': 'User Data Permissions',
 			'parent': _doc.name,
 			'parentfield': 'table_pdop',
 			'parenttype': 'SVA User',
@@ -138,7 +138,7 @@ def on_user_permission_change(doc, method):
 		})
 		new_entry.insert(ignore_permissions=True)
 		frappe.db.commit()
-			
+
 	elif method == 'on_trash':
 		_doc = frappe.get_doc("SVA User", {'email': doc.user}, ignore_permissions=True)
 
