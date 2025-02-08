@@ -168,6 +168,7 @@
    "length": 10
   },
   {
+   "depends_on": "eval: doc.role_profile",
    "fieldname": "permissions_tab",
    "fieldtype": "Tab Break",
    "label": "Module Permissions"
@@ -226,7 +227,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-06 16:11:10.445173",
+ "modified": "2025-02-08 12:54:18.351066",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
