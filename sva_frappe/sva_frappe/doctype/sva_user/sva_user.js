@@ -188,7 +188,9 @@ frappe.ui.form.on("SVA User", {
         }
     },
     async refresh(frm) {
-        role_and_permission_popup(frm)
+        if(frm.doc.role_profile){
+            role_and_permission_popup(frm)
+        }
         frm.doc.old_password = frm.doc.confirm_password;
         let restricted_array = []
         let setting = await get_user_settings()
@@ -232,6 +234,7 @@ frappe.ui.form.on("SVA User", {
 
     role_profile: async function (frm) {
         level = frm.doc.role_profile
+        role_and_permission_popup(frm)
     },
     
     validate: async function (frm) {
