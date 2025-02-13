@@ -309,12 +309,23 @@ def get_roles_and_permissions_by_profile(role_profile):
         return {"message": "No permissions found for roles in this role profile"}
 
     # Formatting response
+    # result = {
+    #     "role_profile": role_profile,
+    #     "roles_and_permissions": sorted([
+    #         {field: role[field] for field in permission_fields}
+    #         for role in custom_perms
+    #     ], key=lambda x: (x["parent"], x["role"], x['permlevel']))
+    # }
     result = {
         "role_profile": role_profile,
         "roles_and_permissions": sorted([
             {field: role[field] for field in permission_fields}
             for role in custom_perms
-        ], key=lambda x: (x["parent"], x["role"], x['permlevel']))
+        ], key=lambda x: (
+            x["parent"] if x["parent"] is not None else "",
+            x["role"] if x["role"] is not None else "",
+            x["permlevel"] if x["permlevel"] is not None else 0
+        ))
     }
 
     return result
