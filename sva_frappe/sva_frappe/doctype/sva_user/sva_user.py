@@ -28,7 +28,7 @@ class SVAUser(Document):
 		# 		frappe.delete_doc("User Permission", name, ignore_permissions=True)
 
 		# list of user-permissions
-		up_list = []
+		# up_list = []
 		# Insert new permissions if they don’t exist
 		for table in self.get("table_pdop", []):
 			user_permission = None
@@ -52,10 +52,10 @@ class SVAUser(Document):
 			else:
 				user_permission.save(ignore_permissions=True)
 
-			up_list.append(table.name)
-		unallocated_permissions = frappe.get_list("User Permission", filters={'name':['NOT IN',up_list]}, pluck='name')
-		for name in unallocated_permissions:
-			frappe.delete_doc("User Permission", name, ignore_permissions=True)
+		# 	up_list.append(table.name)
+		# unallocated_permissions = frappe.get_list("User Permission", filters={'name':['NOT IN',up_list]}, pluck='name')
+		# for name in unallocated_permissions:
+		# 	frappe.delete_doc("User Permission", name, ignore_permissions=True)
 
 
 	def validate(self):
