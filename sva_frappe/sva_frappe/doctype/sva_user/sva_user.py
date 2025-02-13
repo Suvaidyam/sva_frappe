@@ -54,8 +54,8 @@ class SVAUser(Document):
 
 			up_list.append(table.name)
 		unallocated_permissions = frappe.get_list("User Permission", filters={'name':['NOT IN',up_list]}, pluck='name')
-		for name in unallocated_permissions:
-			frappe.delete_doc("User Permission", name, ignore_permissions=True)
+		# for name in unallocated_permissions:
+		# 	frappe.delete_doc("User Permission", name, ignore_permissions=True)
 
 
 	def validate(self):
