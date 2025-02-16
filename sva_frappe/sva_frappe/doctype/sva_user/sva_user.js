@@ -188,6 +188,18 @@ frappe.ui.form.on("SVA User", {
         }
     },
     async refresh(frm) {
+        frm.add_custom_button(
+            __("Reset Password"),
+            function () {
+                frappe.call({
+                    method: "frappe.core.doctype.user.user.reset_password",
+                    args: {
+                        user: frm.doc.email,
+                    },
+                });
+            },
+            __("Password")
+        );
         if(frm.doc.role_profile){
             role_and_permission_popup(frm)
         }
