@@ -45,6 +45,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Email",
+   "options": "Email",
    "reqd": 1
   },
   {
@@ -227,7 +228,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-08 12:54:18.351066",
+ "modified": "2025-02-18 12:00:32.258189",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
