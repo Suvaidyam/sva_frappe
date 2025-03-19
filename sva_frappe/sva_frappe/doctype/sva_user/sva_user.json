@@ -28,12 +28,6 @@
   "confirm_password",
   "column_break_cqkl",
   "column_break_bejo",
-  "section_break_rxmy",
-  "select_zone",
-  "select_state",
-  "select_district",
-  "select_block",
-  "select_village",
   "data_permissions_tab",
   "table_pdop",
   "permissions_tab",
@@ -96,50 +90,6 @@
    "fieldtype": "Data",
    "label": "Confirm Password",
    "mandatory_depends_on": "eval:(doc.__islocal || (!doc.__islocal && doc.update_password))"
-  },
-  {
-   "fieldname": "section_break_rxmy",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "select_state",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select State",
-   "options": "State Child"
-  },
-  {
-   "fieldname": "select_district",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select District",
-   "options": "District Child"
-  },
-  {
-   "fieldname": "select_block",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select Block",
-   "options": "Block Child"
-  },
-  {
-   "fieldname": "select_village",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select Village",
-   "options": "Village Child"
-  },
-  {
-   "fieldname": "select_zone",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select Zone",
-   "options": "Zone Child"
   },
   {
    "fieldname": "full_name",
@@ -228,7 +178,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-18 12:00:32.258189",
+ "modified": "2025-03-19 11:19:20.323239",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
@@ -247,6 +197,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
