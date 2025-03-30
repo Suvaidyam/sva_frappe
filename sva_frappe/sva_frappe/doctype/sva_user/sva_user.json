@@ -145,6 +145,7 @@
    "fieldname": "full_name",
    "fieldtype": "Data",
    "hidden": 1,
+   "in_global_search": 1,
    "in_list_view": 1,
    "label": "Full Name"
   },
@@ -228,7 +229,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-18 12:00:32.258189",
+ "modified": "2025-03-30 15:13:38.068256",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
