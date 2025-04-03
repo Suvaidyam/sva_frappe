@@ -16,7 +16,7 @@ class SVAUser(Document):
 				"user": self.email,
 				"allow": table.module,
 				"for_value": table.value
-			},fields=['name'], limit=1)
+			},fields=['name'], limit=1,ignore_permissions=True)
 			exists = len(up_docs)
 			if not exists:
 				user_permission = frappe.new_doc("User Permission")
@@ -52,7 +52,8 @@ class SVAUser(Document):
 		unallocated_permissions = frappe.get_list(
 			"User Permission", 
 			filters={'name': ['NOT IN', up_list], 'user': self.email}, 
-			pluck='name'
+			pluck='name',
+			ignore_permissions=True
 		)
 
 		for name in unallocated_permissions:
@@ -62,8 +63,9 @@ class SVAUser(Document):
 
 	def validate(self):
 		# Check if password and confirm password match
-		if self.password != self.confirm_password:
-			frappe.throw("Password and Confirm password do not match")
+		if self.is_new():
+			if self.password != self.confirm_password:
+				frappe.throw("Password and Confirm password do not match")
 
 	def after_insert(self):
 		# Create a new User document after SVAUser is inserted
