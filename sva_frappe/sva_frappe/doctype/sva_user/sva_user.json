@@ -40,7 +40,8 @@
    "in_list_view": 1,
    "label": "Email",
    "options": "Email",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "first_name",
@@ -95,6 +96,7 @@
    "fieldname": "full_name",
    "fieldtype": "Data",
    "hidden": 1,
+   "in_global_search": 1,
    "in_list_view": 1,
    "label": "Full Name"
   },
@@ -178,7 +180,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-19 11:19:20.323239",
+ "modified": "2025-04-02 17:52:06.087362",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
