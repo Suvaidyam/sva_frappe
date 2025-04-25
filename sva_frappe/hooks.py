@@ -15,7 +15,10 @@ app_include_js = [
     "/assets/sva_frappe/js/sva_frappe.js",
     "/assets/sva_frappe/js/user_permission.js"
 ]
-
+# fixtures = [
+#     'State',
+#     'District'
+# ]
 # include js, css files in header of web template
 # web_include_css = "/assets/sva_frappe/css/sva_frappe.css"
 web_include_js = "/assets/sva_frappe/js/sva_frappe.js"
