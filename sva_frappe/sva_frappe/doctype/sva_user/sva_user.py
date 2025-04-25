@@ -9,26 +9,6 @@ class SVAUser(Document):
 		else:
 			self.full_name = self.first_name
 
-
-		# existing_permissions = frappe.get_all(
-		# 	"User Permission",
-		# 	filters={'user': self.email},
-		# 	fields=['name', 'for_value']
-		# )
-
-		# # Extract existing 'for_value' in User Permission
-		# existing_for_values = {perm['for_value']: perm['name'] for perm in existing_permissions}
-
-		# # Extract child table 'for_value' list
-		# new_for_values = {table.value for table in self.get("table_pdop", [])}
-
-		# # Delete permissions that are not in the child table
-		# for for_value, name in existing_for_values.items():
-		# 	if for_value not in new_for_values:
-		# 		frappe.delete_doc("User Permission", name, ignore_permissions=True)
-
-		# list of user-permissions
-		up_list = []
 		# Insert new permissions if they don’t exist
 		for table in self.get("table_pdop", []):
 			user_permission = None
@@ -36,7 +16,7 @@ class SVAUser(Document):
 				"user": self.email,
 				"allow": table.module,
 				"for_value": table.value
-			},fields=['name'], limit=1)
+			},fields=['name'], limit=1,ignore_permissions=True)
 			exists = len(up_docs)
 			if not exists:
 				user_permission = frappe.new_doc("User Permission")
@@ -52,16 +32,40 @@ class SVAUser(Document):
 			else:
 				user_permission.save(ignore_permissions=True)
 
-			up_list.append(table.name)
-		unallocated_permissions = frappe.get_list("User Permission", filters={'name':['NOT IN',up_list]}, pluck='name')
+		existing_permissions = frappe.get_all(
+			"User Permission",
+			filters={'user': self.email},
+			fields=['name', 'for_value']
+		)
+
+		existing_for_values = {perm['for_value']: perm['name'] for perm in existing_permissions}
+		new_for_values = {table.value for table in self.get("table_pdop", [])}
+		# Delete permissions that are not in the child table
+		for for_value, name in existing_for_values.items():
+			if for_value not in new_for_values:
+				frappe.delete_doc("User Permission", name, ignore_permissions=True)
+
+		# List of user-permission names that should exist
+		up_list = [perm['name'] for perm in existing_permissions if perm['for_value'] in new_for_values]
+
+		# Find and delete unallocated permissions
+		unallocated_permissions = frappe.get_list(
+			"User Permission", 
+			filters={'name': ['NOT IN', up_list], 'user': self.email}, 
+			pluck='name',
+			ignore_permissions=True
+		)
+
 		for name in unallocated_permissions:
 			frappe.delete_doc("User Permission", name, ignore_permissions=True)
 
 
+
 	def validate(self):
 		# Check if password and confirm password match
-		if self.password != self.confirm_password:
-			frappe.throw("Password and Confirm password do not match")
+		if self.is_new():
+			if self.password != self.confirm_password:
+				frappe.throw("Password and Confirm password do not match")
 
 	def after_insert(self):
 		# Create a new User document after SVAUser is inserted

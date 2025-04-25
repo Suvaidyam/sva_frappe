@@ -7,6 +7,7 @@
  "field_order": [
   "gram_pachayat_name",
   "gram_panchayat_code",
+  "country",
   "state",
   "district",
   "block",
@@ -70,6 +71,13 @@
   {
    "fieldname": "villages",
    "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -80,7 +88,7 @@
    "link_fieldname": "gram_panchayat"
   }
  ],
- "modified": "2024-11-26 12:07:22.367500",
+ "modified": "2025-03-27 14:09:27.541055",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Gram Panchayat",
