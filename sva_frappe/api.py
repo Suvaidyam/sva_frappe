@@ -74,3 +74,52 @@ def get_villages(gram_panchayat=None):
         limit=500
     )
     return villages
+
+@frappe.whitelist()
+def save_geography_details(selection_data, docname=None, lowest_hierarchy=None):
+    try:
+        selection = json.loads(selection_data)
+        
+        # Check if document exists
+        if docname and frappe.db.exists("Watershed Management", docname):
+            # Update existing document
+            doc = frappe.get_doc("Watershed Management", docname)
+        else:
+            # Create new document with a proper name
+            doc = frappe.new_doc("Watershed Management")
+            # Set a default name if not provided
+            if not docname:
+                doc.name = frappe.generate_hash("Watershed Management", 10)
+        
+        # Set the lowest hierarchy
+        if lowest_hierarchy:
+            doc.lowest_hierarchy = lowest_hierarchy
+        
+        # Clear existing geography details
+        doc.geography_details = []
+        
+        # Add new geography details
+        for item in selection:
+            geography_detail = {
+                "state": item.get("state", {}).get("id"),
+                "district": item.get("district", {}).get("id"),
+                "block": item.get("block", {}).get("id"),
+                "gram_panchayat": item.get("gramPanchayat", {}).get("id"),
+                "village": item.get("village", {}).get("id")
+            }
+            doc.append("geography_details", geography_detail)
+        
+        # Save the document
+        doc.insert() if not docname else doc.save()
+        
+        return {
+            "status": "success",
+            "message": "Geography details saved successfully",
+            "docname": doc.name
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error in save_geography_details")
+        return {
+            "status": "error",
+            "message": str(e)
+        }

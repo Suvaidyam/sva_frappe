@@ -7,7 +7,10 @@ frappe.ui.form.on('Watershed Management', {
         frm.set_df_property('layout', 'options', layout_element);
         frappe.require("geography_details.bundle.js").then(() => {
             new frappe.ui.GeographyDetails({
-                wrapper: layout_element
+                wrapper: layout_element,
+                hierarchy_level: 'lowest_hierarchy',
+                geography_details_field: 'geography_details',
+                frm: frm
             });
         })
 

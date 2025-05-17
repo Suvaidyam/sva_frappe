@@ -12,49 +12,31 @@
             </div>
         </div>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="hierarchyLevel">Select Lowest Hierarchy Level</label>
-                    <select id="hierarchyLevel" class="form-control" v-model="selectedHierarchyLevel"
-                        @change="handleHierarchyLevelChange" :disabled="isLoading">
-                        <option value="state">State</option>
-                        <option value="district">District</option>
-                        <option value="block">Block</option>
-                        <option value="gramPanchayat">Gram Panchayat</option>
-                        <option value="village">Village</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-md-8">
                 <div class="main-container" :class="{ 'loading': isLoading }">
-                    <div class="step-container">
-                        <div class="step" :class="{ active: currentStep >= 1 }">
+                    <div class="step-container" :class="'progress-' + currentStep">
+                        <div class="step" :class="{ 'active': currentStep >= 1, 'completed': currentStep > 1 }">
                             <div class="step-number">1</div>
                             <div>States</div>
                         </div>
-                        <div class="step" v-if="selectedHierarchyLevel !== 'state'"
-                            :class="{ active: currentStep >= 2 }">
+                        <div class="step" v-if="lowest_hierarchy !== 'State'"
+                            :class="{ 'active': currentStep >= 2, 'completed': currentStep > 2 }">
                             <div class="step-number">2</div>
                             <div>Districts</div>
                         </div>
-                        <div class="step"
-                            v-if="selectedHierarchyLevel !== 'state' && selectedHierarchyLevel !== 'district'"
-                            :class="{ active: currentStep >= 3 }">
+                        <div class="step" v-if="lowest_hierarchy !== 'State' && lowest_hierarchy !== 'District'"
+                            :class="{ 'active': currentStep >= 3, 'completed': currentStep > 3 }">
                             <div class="step-number">3</div>
                             <div>Blocks</div>
                         </div>
-                        <div class="step"
-                            v-if="selectedHierarchyLevel !== 'state' && selectedHierarchyLevel !== 'district' && selectedHierarchyLevel !== 'block'"
-                            :class="{ active: currentStep >= 4 }">
+                        <div v-if="lowest_hierarchy !== 'State' && lowest_hierarchy !== 'District' && lowest_hierarchy !== 'Block'"
+                            :class="{ 'active': currentStep >= 4, 'completed': currentStep > 4 }">
                             <div class="step-number">4</div>
                             <div>Gram Panchayats</div>
                         </div>
-                        <div class="step" v-if="selectedHierarchyLevel === 'village'"
-                            :class="{ active: currentStep >= 5 }">
+                        <div v-if="lowest_hierarchy === 'Village'"
+                            :class="{ 'active': currentStep >= 5, 'completed': currentStep > 5 }">
                             <div class="step-number">5</div>
                             <div>Villages</div>
                         </div>
@@ -166,8 +148,6 @@
                                     <span class="path-item">{{ getStateName(getBlockState(blockId)) }}</span>
                                     <span class="path-separator">></span>
                                     <span class="path-item">{{ getDistrictName(getBlockDistrict(blockId)) }}</span>
-                                    <span class="path-separator">></span>
-                                    <span class="path-item">{{ getBlockName(blockId) }}</span>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
@@ -204,8 +184,6 @@
                                     <span class="path-item">{{ getStateName(getGPState(gpId)) }}</span>
                                     <span class="path-separator">></span>
                                     <span class="path-item">{{ getDistrictName(getGPDistrict(gpId)) }}</span>
-                                    <span class="path-separator">></span>
-                                    <span class="path-item">{{ getBlockName(getGPBlock(gpId)) }}</span>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
@@ -250,49 +228,71 @@
                     </div>
                     <div class="geography-tree">
                         <div v-for="stateId in selectedStates" :key="stateId" class="tree-item state-item">
-                            <div class="tree-content" @click="toggleStateExpansion(stateId)">
-                                <span class="tree-icon toggle-icon" :class="{ 'expanded': isStateExpanded(stateId) }">
+                            <div class="tree-content"
+                                @click="lowest_hierarchy !== 'State' && toggleStateExpansion(stateId)">
+                                <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'State'"
+                                    :class="{ 'expanded': isStateExpanded(stateId) }">
                                     {{ isStateExpanded(stateId) ? '▼' : '▶' }}
                                 </span>
                                 <span class="tree-icon">📌</span>
                                 <span class="tree-label">{{ getStateName(stateId) }}</span>
-                                <span class="tree-count" v-if="getDistrictsForState(stateId).length">
-                                    ({{ getDistrictsForState(stateId).length }})
+                                <span class="tree-count" v-if="lowest_hierarchy !== 'State'">
+                                    ({{ getSelectedDistrictsForState(stateId).length }})
                                 </span>
                             </div>
-                            <div class="tree-children" v-show="selectedDistricts.length && isStateExpanded(stateId)">
+                            <div class="tree-children"
+                                v-show="isStateExpanded(stateId) && lowest_hierarchy !== 'State'">
                                 <div v-for="district in getDistrictsForState(stateId)" :key="district.id"
                                     class="tree-item district-item" v-show="selectedDistricts.includes(district.id)">
-                                    <div class="tree-content">
+                                    <div class="tree-content"
+                                        @click="lowest_hierarchy !== 'District' && toggleDistrictExpansion(district.id)">
+                                        <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'District'"
+                                            :class="{ 'expanded': isDistrictExpanded(district.id) }">
+                                            {{ isDistrictExpanded(district.id) ? '▼' : '▶' }}
+                                        </span>
                                         <span class="tree-icon">📍</span>
                                         <span class="tree-label">{{ district.name }}</span>
-                                        <span class="tree-count" v-if="getBlocksForDistrict(district.id).length">
-                                            ({{ getBlocksForDistrict(district.id).length }})
+                                        <span class="tree-count" v-if="lowest_hierarchy !== 'District'">
+                                            ({{ getSelectedBlocksForDistrict(district.id).length }})
                                         </span>
                                     </div>
-                                    <div class="tree-children" v-if="selectedBlocks.length">
+                                    <div class="tree-children"
+                                        v-show="isDistrictExpanded(district.id) && lowest_hierarchy !== 'District'">
                                         <div v-for="block in getBlocksForDistrict(district.id)" :key="block.id"
                                             class="tree-item block-item" v-show="selectedBlocks.includes(block.id)">
-                                            <div class="tree-content">
+                                            <div class="tree-content"
+                                                @click="lowest_hierarchy !== 'Block' && toggleBlockExpansion(block.id)">
+                                                <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'Block'"
+                                                    :class="{ 'expanded': isBlockExpanded(block.id) }">
+                                                    {{ isBlockExpanded(block.id) ? '▼' : '▶' }}
+                                                </span>
                                                 <span class="tree-icon">🏘️</span>
                                                 <span class="tree-label">{{ block.name }}</span>
-                                                <span class="tree-count"
-                                                    v-if="getGramPanchayatsForBlock(block.id).length">
-                                                    ({{ getGramPanchayatsForBlock(block.id).length }})
+                                                <span class="tree-count" v-if="lowest_hierarchy !== 'Block'">
+                                                    ({{ getSelectedGramPanchayatsForBlock(block.id).length }})
                                                 </span>
                                             </div>
-                                            <div class="tree-children" v-if="selectedGramPanchayats.length">
+                                            <div class="tree-children"
+                                                v-show="isBlockExpanded(block.id) && lowest_hierarchy !== 'Block'">
                                                 <div v-for="gp in getGramPanchayatsForBlock(block.id)" :key="gp.id"
                                                     class="tree-item gp-item"
                                                     v-show="selectedGramPanchayats.includes(gp.id)">
-                                                    <div class="tree-content">
+                                                    <div class="tree-content"
+                                                        @click="lowest_hierarchy !== 'Gram Panchayat' && toggleGPExpansion(gp.id)">
+                                                        <span class="tree-icon toggle-icon"
+                                                            v-if="lowest_hierarchy !== 'Gram Panchayat'"
+                                                            :class="{ 'expanded': isGPExpanded(gp.id) }">
+                                                            {{ isGPExpanded(gp.id) ? '▼' : '▶' }}
+                                                        </span>
                                                         <span class="tree-icon">🏛️</span>
                                                         <span class="tree-label">{{ gp.name }}</span>
-                                                        <span class="tree-count" v-if="getVillagesForGP(gp.id).length">
-                                                            ({{ getVillagesForGP(gp.id).length }})
+                                                        <span class="tree-count"
+                                                            v-if="lowest_hierarchy !== 'Gram Panchayat'">
+                                                            ({{ getSelectedVillagesForGP(gp.id).length }})
                                                         </span>
                                                     </div>
-                                                    <div class="tree-children" v-if="selectedVillages.length">
+                                                    <div class="tree-children"
+                                                        v-show="isGPExpanded(gp.id) && lowest_hierarchy !== 'Gram Panchayat'">
                                                         <div v-for="village in getVillagesForGP(gp.id)"
                                                             :key="village.id" class="tree-item village-item"
                                                             v-show="selectedVillages.includes(village.id)">
@@ -322,7 +322,6 @@ export default {
     data() {
         return {
             currentStep: 1,
-            selectedHierarchyLevel: 'village',
             states: [],
             districts: {},
             blocks: {},
@@ -338,13 +337,33 @@ export default {
             availableGramPanchayats: [],
             availableVillages: [],
             isLoading: false,
-            expandedStateId: null
+            expandedStateId: null,
+            watershed_management_name: null,
+            lowest_hierarchy: null,
+            isDataLoaded: false,
+            expandedStates: new Set(),
+            expandedDistricts: new Set(),
+            expandedBlocks: new Set(),
+            expandedGPs: new Set(),
         };
     },
-    async created() {
-        await this.loadStates();
-    },
     computed: {
+        totalSteps() {
+            switch (this.lowest_hierarchy) {
+                case 'State':
+                    return 1;
+                case 'District':
+                    return 2;
+                case 'Block':
+                    return 3;
+                case 'Gram Panchayat':
+                    return 4;
+                case 'Village':
+                    return 5;
+                default:
+                    return 5;
+            }
+        },
         allStatesSelected() {
             return this.states.length > 0 && this.selectedStates.length === this.states.length;
         },
@@ -364,24 +383,101 @@ export default {
             return this.availableVillages.length > 0 &&
                 this.selectedVillages.length === this.availableVillages.length;
         },
-        totalSteps() {
-            switch (this.selectedHierarchyLevel) {
-                case 'state':
-                    return 1;
-                case 'district':
-                    return 2;
-                case 'block':
-                    return 3;
-                case 'gramPanchayat':
-                    return 4;
-                case 'village':
-                    return 5;
-                default:
-                    return 5;
-            }
+    },
+    async created() {
+        if (this.isDataLoaded) return;
+
+        const route = frappe.get_route();
+        if (route[1] === 'Watershed Management' && route[2]) {
+            this.watershed_management_name = route[2];
+            await this.loadExistingData();
+        } else {
+            await this.loadDefaultLowestHierarchy();
+        }
+        await this.loadStates();
+        // Expand the first state by default if available
+        if (this.states.length > 0) {
+            this.expandedStates.add(this.states[0].id);
+        }
+        this.isDataLoaded = true;
+    },
+    watch: {
+        '$route': {
+            handler: async function (to, from) {
+                if (to[1] === 'Watershed Management' && to[2] && to[2] !== this.watershed_management_name) {
+                    this.resetData();
+                    this.watershed_management_name = to[2];
+                    await this.loadExistingData();
+                }
+            },
+            immediate: true
         }
     },
     methods: {
+        async loadDefaultLowestHierarchy() {
+            try {
+                const response = await frappe.call({
+                    method: 'frappe.client.get',
+                    args: {
+                        doctype: 'Watershed Management',
+                        name: 'Watershed Management'
+                    },
+                    callback: (r) => {
+                        if (r.message && r.message.lowest_hierarchy) {
+                            this.lowest_hierarchy = r.message.lowest_hierarchy;
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading default lowest hierarchy:', error);
+            }
+        },
+        async loadExistingData() {
+            if (!this.watershed_management_name || this.isLoading) return;
+
+            await this.withLoading(async () => {
+                try {
+                    const doc = await frappe.get_doc('Watershed Management', this.watershed_management_name);
+                    if (doc) {
+                        this.resetData();
+
+                        if (doc.lowest_hierarchy) {
+                            this.lowest_hierarchy = doc.lowest_hierarchy;
+                        }
+
+                        if (doc.geography_details) {
+                            const stateSet = new Set();
+                            const districtSet = new Set();
+                            const blockSet = new Set();
+                            const gpSet = new Set();
+                            const villageSet = new Set();
+
+                            doc.geography_details.forEach(detail => {
+                                if (detail.state) stateSet.add(detail.state);
+                                if (detail.district) districtSet.add(detail.district);
+                                if (detail.block) blockSet.add(detail.block);
+                                if (detail.gram_panchayat) gpSet.add(detail.gram_panchayat);
+                                if (detail.village) villageSet.add(detail.village);
+                            });
+
+                            this.selectedStates = Array.from(stateSet);
+                            this.selectedDistricts = Array.from(districtSet);
+                            this.selectedBlocks = Array.from(blockSet);
+                            this.selectedGramPanchayats = Array.from(gpSet);
+                            this.selectedVillages = Array.from(villageSet);
+
+                            await this.updateAvailableItems();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading existing data:', error);
+                    frappe.show_alert({
+                        message: __('Error loading existing data'),
+                        indicator: 'red'
+                    });
+                }
+            });
+        },
         async loadStates() {
             await this.withLoading(async () => {
                 const response = await frappe.call({
@@ -393,7 +489,6 @@ export default {
                                 name: state.state_name,
                                 code: state.state_code
                             }));
-                            // Set the first state as expanded by default if there are states
                             if (this.states.length > 0) {
                                 this.expandedStateId = this.states[0].id;
                             }
@@ -402,7 +497,6 @@ export default {
                 });
             });
         },
-
         async updateDistricts() {
             if (this.selectedStates.length === 0) {
                 this.availableDistricts = [];
@@ -429,7 +523,6 @@ export default {
                             console.log('API Response:', r);
                             console.log('API Response message:', r.message);
                             if (r.message) {
-                                // Group districts by state
                                 this.districts = {};
                                 this.availableDistricts = r.message.map(district => {
                                     console.log('Processing district:', district);
@@ -457,7 +550,6 @@ export default {
                                     districts: this.districts[stateId]
                                 })));
 
-                                // Filter out districts that don't belong to selected states
                                 this.selectedDistricts = this.selectedDistricts.filter(districtId => {
                                     const district = this.availableDistricts.find(d => d.id === districtId);
                                     return district && this.selectedStates.includes(district.state);
@@ -476,7 +568,6 @@ export default {
 
             this.updateBlocks();
         },
-
         async updateBlocks() {
             if (this.selectedDistricts.length === 0) {
                 this.availableBlocks = [];
@@ -493,7 +584,6 @@ export default {
                     },
                     callback: (r) => {
                         if (r.message) {
-                            // Group blocks by district
                             this.blocks = {};
                             this.availableBlocks = r.message.map(block => ({
                                 id: block.name,
@@ -510,7 +600,6 @@ export default {
                                 this.blocks[block.district].push(block);
                             });
 
-                            // Filter out blocks that don't belong to selected districts
                             this.selectedBlocks = this.selectedBlocks.filter(blockId => {
                                 const block = this.availableBlocks.find(b => b.id === blockId);
                                 return block && this.selectedDistricts.includes(block.district);
@@ -522,7 +611,6 @@ export default {
 
             this.updateGramPanchayats();
         },
-
         async updateGramPanchayats() {
             if (this.selectedBlocks.length === 0) {
                 this.availableGramPanchayats = [];
@@ -539,7 +627,6 @@ export default {
                     },
                     callback: (r) => {
                         if (r.message) {
-                            // Group gram panchayats by block
                             this.gramPanchayats = {};
                             this.availableGramPanchayats = r.message.map(gp => ({
                                 id: gp.name,
@@ -557,7 +644,6 @@ export default {
                                 this.gramPanchayats[gp.block].push(gp);
                             });
 
-                            // Filter out gram panchayats that don't belong to selected blocks
                             this.selectedGramPanchayats = this.selectedGramPanchayats.filter(gpId => {
                                 const gp = this.availableGramPanchayats.find(g => g.id === gpId);
                                 return gp && this.selectedBlocks.includes(gp.block);
@@ -569,7 +655,6 @@ export default {
 
             this.updateVillages();
         },
-
         async updateVillages() {
             if (this.selectedGramPanchayats.length === 0) {
                 this.availableVillages = [];
@@ -585,7 +670,6 @@ export default {
                     },
                     callback: (r) => {
                         if (r.message) {
-                            // Group villages by gram panchayat
                             this.villages = {};
                             this.availableVillages = r.message.map(village => ({
                                 id: village.name,
@@ -604,7 +688,6 @@ export default {
                                 this.villages[village.gram_panchayat].push(village);
                             });
 
-                            // Filter out villages that don't belong to selected gram panchayats
                             this.selectedVillages = this.selectedVillages.filter(villageId => {
                                 const village = this.availableVillages.find(v => v.id === villageId);
                                 return village && this.selectedGramPanchayats.includes(village.gram_panchayat);
@@ -653,10 +736,8 @@ export default {
             }
         },
         async saveSelection() {
-            // Create a map to store unique combinations
             const selectionMap = new Map();
 
-            // Process states
             this.selectedStates.forEach(stateId => {
                 const state = this.states.find(s => s.id === stateId);
                 if (state) {
@@ -671,7 +752,6 @@ export default {
                 }
             });
 
-            // Process districts
             this.selectedDistricts.forEach(districtId => {
                 const district = this.availableDistricts.find(d => d.id === districtId);
                 if (district) {
@@ -693,7 +773,6 @@ export default {
                 }
             });
 
-            // Process blocks
             this.selectedBlocks.forEach(blockId => {
                 const block = this.availableBlocks.find(b => b.id === blockId);
                 if (block) {
@@ -723,7 +802,6 @@ export default {
                 }
             });
 
-            // Process gram panchayats
             this.selectedGramPanchayats.forEach(gpId => {
                 const gp = this.availableGramPanchayats.find(g => g.id === gpId);
                 if (gp) {
@@ -762,7 +840,6 @@ export default {
                 }
             });
 
-            // Process villages
             this.selectedVillages.forEach(villageId => {
                 const village = this.availableVillages.find(v => v.id === villageId);
                 if (village) {
@@ -811,36 +888,63 @@ export default {
                 }
             });
 
-            // Convert map to array and filter based on hierarchy level
             let selection = Array.from(selectionMap.values());
 
-            // Filter based on hierarchy level
-            switch (this.selectedHierarchyLevel) {
-                case 'state':
+            switch (this.lowest_hierarchy) {
+                case 'State':
                     selection = selection.filter(item => item.state && !item.district);
                     break;
-                case 'district':
+                case 'District':
                     selection = selection.filter(item => item.state && item.district && !item.block);
                     break;
-                case 'block':
+                case 'Block':
                     selection = selection.filter(item => item.state && item.district && item.block && !item.gramPanchayat);
                     break;
-                case 'gramPanchayat':
+                case 'Gram Panchayat':
                     selection = selection.filter(item => item.state && item.district && item.block && item.gramPanchayat && !item.village);
                     break;
-                case 'village':
+                case 'Village':
                     selection = selection.filter(item => item.state && item.district && item.block && item.gramPanchayat && item.village);
                     break;
             }
 
-            // Here you can add code to save the selection to your database
-            console.log('Selected Hierarchy Level:', this.selectedHierarchyLevel);
-            console.log('Selection:', selection);
+            try {
+                const response = await frappe.call({
+                    method: 'sva_frappe.api.save_geography_details',
+                    args: {
+                        selection_data: JSON.stringify(selection),
+                        docname: this.watershed_management_name,
+                        lowest_hierarchy: this.lowest_hierarchy
+                    },
+                    callback: (r) => {
+                        if (r.message && r.message.status === 'success') {
+                            if (!this.watershed_management_name && r.message.docname) {
+                                this.watershed_management_name = r.message.docname;
+                            }
 
-            frappe.show_alert({
-                message: __('Selection saved successfully'),
-                indicator: 'green'
-            });
+                            frappe.show_alert({
+                                message: r.message.message,
+                                indicator: 'green'
+                            });
+
+                            if (!this.watershed_management_name && r.message.docname) {
+                                frappe.set_route('Form', 'Watershed Management', r.message.docname);
+                            }
+                        } else {
+                            frappe.show_alert({
+                                message: r.message?.message || __('Error saving geography details'),
+                                indicator: 'red'
+                            });
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error saving geography details:', error);
+                frappe.show_alert({
+                    message: __('Error saving geography details'),
+                    indicator: 'red'
+                });
+            }
 
             return selection;
         },
@@ -992,41 +1096,13 @@ export default {
                 this.selectedVillages = [...new Set([...this.selectedVillages, ...villageIds])];
             }
         },
-        handleHierarchyLevelChange() {
-            if (this.currentStep > this.totalSteps) {
-                this.currentStep = 1;
-            }
-
-            switch (this.selectedHierarchyLevel) {
-                case 'state':
-                    this.selectedDistricts = [];
-                    this.selectedBlocks = [];
-                    this.selectedGramPanchayats = [];
-                    this.selectedVillages = [];
-                    break;
-                case 'district':
-                    this.selectedBlocks = [];
-                    this.selectedGramPanchayats = [];
-                    this.selectedVillages = [];
-                    break;
-                case 'block':
-                    this.selectedGramPanchayats = [];
-                    this.selectedVillages = [];
-                    break;
-                case 'gramPanchayat':
-                    this.selectedVillages = [];
-                    break;
-            }
-
-            this.updateAvailableItems();
-        },
         updateAvailableItems() {
             this.updateDistricts();
-            if (this.selectedHierarchyLevel !== 'state') {
+            if (this.lowest_hierarchy !== 'State') {
                 this.updateBlocks();
-                if (this.selectedHierarchyLevel !== 'district') {
+                if (this.lowest_hierarchy !== 'District') {
                     this.updateGramPanchayats();
-                    if (this.selectedHierarchyLevel !== 'block') {
+                    if (this.lowest_hierarchy !== 'Block') {
                         this.updateVillages();
                     }
                 }
@@ -1065,11 +1141,96 @@ export default {
             return gp ? gp.block : '';
         },
         toggleStateExpansion(stateId) {
-            this.expandedStateId = this.expandedStateId === stateId ? null : stateId;
+            if (this.expandedStates.has(stateId)) {
+                this.expandedStates.delete(stateId);
+            } else {
+                this.expandedStates.clear();
+                this.expandedStates.add(stateId);
+                this.expandedDistricts.clear();
+                this.expandedBlocks.clear();
+                this.expandedGPs.clear();
+            }
+        },
+        toggleDistrictExpansion(districtId) {
+            if (this.expandedDistricts.has(districtId)) {
+                this.expandedDistricts.delete(districtId);
+            } else {
+                this.expandedDistricts.clear();
+                this.expandedDistricts.add(districtId);
+                this.expandedBlocks.clear();
+                this.expandedGPs.clear();
+            }
+        },
+        toggleBlockExpansion(blockId) {
+            if (this.expandedBlocks.has(blockId)) {
+                this.expandedBlocks.delete(blockId);
+            } else {
+                this.expandedBlocks.clear();
+                this.expandedBlocks.add(blockId);
+                this.expandedGPs.clear();
+            }
+        },
+        toggleGPExpansion(gpId) {
+            if (this.expandedGPs.has(gpId)) {
+                this.expandedGPs.delete(gpId);
+            } else {
+                this.expandedGPs.clear();
+                this.expandedGPs.add(gpId);
+            }
         },
         isStateExpanded(stateId) {
-            return this.expandedStateId === stateId;
-        }
+            return this.expandedStates.has(stateId);
+        },
+        isDistrictExpanded(districtId) {
+            return this.expandedDistricts.has(districtId);
+        },
+        isBlockExpanded(blockId) {
+            return this.expandedBlocks.has(blockId);
+        },
+        isGPExpanded(gpId) {
+            return this.expandedGPs.has(gpId);
+        },
+        resetData() {
+            this.states = [];
+            this.districts = {};
+            this.blocks = {};
+            this.gramPanchayats = {};
+            this.villages = {};
+            this.selectedStates = [];
+            this.selectedDistricts = [];
+            this.selectedBlocks = [];
+            this.selectedGramPanchayats = [];
+            this.selectedVillages = [];
+            this.availableDistricts = [];
+            this.availableBlocks = [];
+            this.availableGramPanchayats = [];
+            this.availableVillages = [];
+            this.isDataLoaded = false;
+            this.expandedStates.clear();
+            this.expandedDistricts.clear();
+            this.expandedBlocks.clear();
+            this.expandedGPs.clear();
+        },
+        getSelectedDistrictsForState(stateId) {
+            return this.getDistrictsForState(stateId).filter(district =>
+                this.selectedDistricts.includes(district.id)
+            );
+        },
+        getSelectedBlocksForDistrict(districtId) {
+            return this.getBlocksForDistrict(districtId).filter(block =>
+                this.selectedBlocks.includes(block.id)
+            );
+        },
+        getSelectedGramPanchayatsForBlock(blockId) {
+            return this.getGramPanchayatsForBlock(blockId).filter(gp =>
+                this.selectedGramPanchayats.includes(gp.id)
+            );
+        },
+        getSelectedVillagesForGP(gpId) {
+            return this.getVillagesForGP(gpId).filter(village =>
+                this.selectedVillages.includes(village.id)
+            );
+        },
     }
 };
 </script>
@@ -1228,47 +1389,118 @@ select.form-control:focus {
 }
 
 /* Step Indicators */
+.step-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    position: relative;
+    padding: 0 15px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.step-container::before {
+    content: '';
+    position: absolute;
+    top: 11px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #e9ecef;
+    z-index: 0;
+}
+
+.step {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    background: white;
+    padding: 0 15px;
+    min-width: 120px;
+    gap: 8px;
+}
+
+.step-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.step>div:last-child {
+    font-size: 13px;
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
 .step.active .step-number {
+    background-color: #8C1D40 !important;
+    border-color: #8C1D40 !important;
+    color: white !important;
+    box-shadow: 0 0 0 3px rgba(140, 29, 64, 0.1);
+}
+
+.step.active>div:last-child {
+    color: #8C1D40 !important;
+    font-weight: 600;
+}
+
+.step.completed .step-number {
     background-color: #8C1D40 !important;
     border-color: #8C1D40 !important;
     color: white !important;
 }
 
-.step.active>div:last-child {
+.step.completed>div:last-child {
     color: #8C1D40 !important;
 }
 
-/* Geography Header */
-.geography-header h5 {
-    color: #8C1D40 !important;
+/* Update progress bar position */
+.step-container::after {
+    content: '';
+    position: absolute;
+    top: 11px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #8C1D40;
+    z-index: 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
 }
 
-.view-summary {
-    color: #8C1D40 !important;
+.step-container.progress-1::after {
+    transform: scaleX(0.25);
 }
 
-/* Headers */
-.state-header h5,
-.district-header h5,
-.block-header h5,
-.gp-header h5 {
-    color: #8C1D40 !important;
+.step-container.progress-2::after {
+    transform: scaleX(0.5);
 }
 
-/* Keep other existing styles but update colors */
-.header {
-    color: #8C1D40 !important;
-    font-size: 16px !important;
-    font-weight: 500;
+.step-container.progress-3::after {
+    transform: scaleX(0.75);
 }
 
-/* Add !important to all color-related properties */
-.form-group label {
-    color: #8C1D40 !important;
+.step-container.progress-4::after {
+    transform: scaleX(1);
 }
 
-.tree-icon {
-    color: #8C1D40 !important;
+.step-container.progress-5::after {
+    transform: scaleX(1);
 }
 
 /* Keep existing layout styles */
@@ -1314,63 +1546,6 @@ select.form-control:focus {
     border-radius: 5px;
     padding: 20px;
     margin-bottom: 20px;
-}
-
-.step-container {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    position: relative;
-    padding: 0 15px;
-}
-
-.step-container::before {
-    content: '';
-    position: absolute;
-    top: 12px;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: #ccc;
-    z-index: 0;
-}
-
-.step {
-    display: flex;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-    background: white;
-    padding: 0 8px;
-}
-
-.step-number {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 8px;
-    font-weight: 500;
-    font-size: 12px;
-}
-
-.step.active .step-number {
-    background-color: #8C1D40 !important;
-    border-color: #8C1D40 !important;
-    color: white !important;
-}
-
-.step>div:last-child {
-    font-size: 13px;
-    color: #666;
-}
-
-.step.active>div:last-child {
-    color: #8C1D40 !important;
 }
 
 .button-group {
@@ -1723,4 +1898,86 @@ select.form-control:focus {
     width: 100%;
     max-width: 400px;
 }
+
+/* Add new styles for collapsible tree */
+.tree-content {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.tree-content:hover {
+    background-color: rgba(140, 29, 64, 0.05);
+}
+
+.toggle-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    transition: transform 0.2s ease;
+}
+
+.toggle-icon.expanded {
+    transform: rotate(90deg);
+}
+
+.tree-children {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.tree-item {
+    margin-bottom: 4px;
+}
+
+.tree-content {
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+}
+
+/* Hierarchy-specific styles */
+.state-item .tree-content {
+    background-color: #fff3f3;
+    border: 1px solid #ffe0e0;
+}
+
+.district-item .tree-content {
+    background-color: #f8f9fa;
+}
+
+.block-item .tree-content {
+    background-color: #f0f7ff;
+}
+
+.gp-item .tree-content {
+    background-color: #f0fff4;
+}
+
+.village-item .tree-content {
+    background-color: #fffaf0;
+}
+
+/* Headers */
+.state-header h5,
+.district-header h5,
+.block-header h5,
+.gp-header h5 {
+    color: #8C1D40 !important;
+}
+
+/* Keep other existing styles but update colors */
+.header {
+    color: #8C1D40 !important;
+    font-size: 16px !important;
+    font-weight: 500;
+}
+
+/* Add !important to all color-related properties */
 </style>
