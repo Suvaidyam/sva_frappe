@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="main-container" :class="{ 'loading': isLoading }">
-                    <div class="step-container" :data-progress="currentStep">
+                    <div class="step-container" :data-progress="currentStep" :data-total-steps="totalSteps">
                         <div class="step" :class="{ 'active': currentStep >= 1, 'completed': currentStep > 1 }">
                             <div class="step-number">1</div>
                             <div>States</div>
@@ -1588,7 +1588,7 @@ select.form-control:focus {
     color: #8C1D40 !important;
 }
 
-/* Add new connecting line styles */
+/* Updated progress line styles */
 .step-container::after {
     content: '';
     position: absolute;
@@ -1603,23 +1603,85 @@ select.form-control:focus {
     transition: width 0.3s ease;
 }
 
+/* Calculate width based on current step and total steps */
 .step-container[data-progress="1"]::after {
     width: 0%;
 }
 
 .step-container[data-progress="2"]::after {
-    width: 25%;
+    width: 33.33%;
 }
 
 .step-container[data-progress="3"]::after {
-    width: 50%;
+    width: 66.66%;
 }
 
 .step-container[data-progress="4"]::after {
-    width: 75%;
+    width: 100%;
 }
 
 .step-container[data-progress="5"]::after {
+    width: 100%;
+}
+
+/* Add dynamic step width calculation */
+.step-container[data-total-steps="1"]::after {
+    width: 0%;
+}
+
+.step-container[data-total-steps="2"][data-progress="1"]::after {
+    width: 0%;
+}
+
+.step-container[data-total-steps="2"][data-progress="2"]::after {
+    width: 100%;
+}
+
+.step-container[data-total-steps="3"][data-progress="1"]::after {
+    width: 0%;
+}
+
+.step-container[data-total-steps="3"][data-progress="2"]::after {
+    width: 50%;
+}
+
+.step-container[data-total-steps="3"][data-progress="3"]::after {
+    width: 100%;
+}
+
+.step-container[data-total-steps="4"][data-progress="1"]::after {
+    width: 0%;
+}
+
+.step-container[data-total-steps="4"][data-progress="2"]::after {
+    width: 33.33%;
+}
+
+.step-container[data-total-steps="4"][data-progress="3"]::after {
+    width: 66.66%;
+}
+
+.step-container[data-total-steps="4"][data-progress="4"]::after {
+    width: 100%;
+}
+
+.step-container[data-total-steps="5"][data-progress="1"]::after {
+    width: 0%;
+}
+
+.step-container[data-total-steps="5"][data-progress="2"]::after {
+    width: 25%;
+}
+
+.step-container[data-total-steps="5"][data-progress="3"]::after {
+    width: 50%;
+}
+
+.step-container[data-total-steps="5"][data-progress="4"]::after {
+    width: 75%;
+}
+
+.step-container[data-total-steps="5"][data-progress="5"]::after {
     width: 100%;
 }
 
