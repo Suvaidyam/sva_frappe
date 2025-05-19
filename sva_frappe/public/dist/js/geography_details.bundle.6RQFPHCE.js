@@ -11369,6 +11369,7 @@ Only state can be modified.`);
         this.expandedStates.add(this.states[0].id);
       }
       this.isDataLoaded = true;
+      this.expandTreeBasedOnStep();
     },
     watch: {
       "$route": {
@@ -11436,6 +11437,7 @@ Only state can be modified.`);
                 this.selectedGramPanchayats = Array.from(gpSet);
                 this.selectedVillages = Array.from(villageSet);
                 await this.updateAvailableItems();
+                this.expandTreeBasedOnStep();
               }
             }
           } catch (error) {
@@ -11647,6 +11649,66 @@ Only state can be modified.`);
           });
         });
       },
+      expandTreeBasedOnStep() {
+        this.expandedStates.clear();
+        this.expandedDistricts.clear();
+        this.expandedBlocks.clear();
+        this.expandedGPs.clear();
+        switch (this.currentStep) {
+          case 1:
+            this.selectedStates.forEach((stateId) => {
+              this.expandedStates.add(stateId);
+            });
+            break;
+          case 2:
+            this.selectedStates.forEach((stateId) => {
+              this.expandedStates.add(stateId);
+              this.getSelectedDistrictsForState(stateId).forEach((district) => {
+                this.expandedDistricts.add(district.id);
+              });
+            });
+            break;
+          case 3:
+            this.selectedStates.forEach((stateId) => {
+              this.expandedStates.add(stateId);
+              this.getSelectedDistrictsForState(stateId).forEach((district) => {
+                this.expandedDistricts.add(district.id);
+                this.getSelectedBlocksForDistrict(district.id).forEach((block) => {
+                  this.expandedBlocks.add(block.id);
+                });
+              });
+            });
+            break;
+          case 4:
+            this.selectedStates.forEach((stateId) => {
+              this.expandedStates.add(stateId);
+              this.getSelectedDistrictsForState(stateId).forEach((district) => {
+                this.expandedDistricts.add(district.id);
+                this.getSelectedBlocksForDistrict(district.id).forEach((block) => {
+                  this.expandedBlocks.add(block.id);
+                  this.getSelectedGramPanchayatsForBlock(block.id).forEach((gp) => {
+                    this.expandedGPs.add(gp.id);
+                  });
+                });
+              });
+            });
+            break;
+          case 5:
+            this.selectedStates.forEach((stateId) => {
+              this.expandedStates.add(stateId);
+              this.getSelectedDistrictsForState(stateId).forEach((district) => {
+                this.expandedDistricts.add(district.id);
+                this.getSelectedBlocksForDistrict(district.id).forEach((block) => {
+                  this.expandedBlocks.add(block.id);
+                  this.getSelectedGramPanchayatsForBlock(block.id).forEach((gp) => {
+                    this.expandedGPs.add(gp.id);
+                  });
+                });
+              });
+            });
+            break;
+        }
+      },
       goNext() {
         if (this.currentStep >= this.totalSteps)
           return;
@@ -11677,11 +11739,13 @@ Only state can be modified.`);
               this.updateVillages();
               break;
           }
+          this.expandTreeBasedOnStep();
         }
       },
       goBack() {
         if (this.currentStep > 1) {
           this.currentStep--;
+          this.expandTreeBasedOnStep();
         }
       },
       async saveSelection() {
@@ -12898,4 +12962,4 @@ Only state can be modified.`);
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-//# sourceMappingURL=geography_details.bundle.5GAEZ4H5.js.map
+//# sourceMappingURL=geography_details.bundle.6RQFPHCE.js.map

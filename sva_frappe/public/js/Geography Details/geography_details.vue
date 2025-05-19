@@ -422,6 +422,8 @@ export default {
             this.expandedStates.add(this.states[0].id);
         }
         this.isDataLoaded = true;
+        // Expand tree based on initial step
+        this.expandTreeBasedOnStep();
     },
     watch: {
         '$route': {
@@ -489,6 +491,8 @@ export default {
                             this.selectedVillages = Array.from(villageSet);
 
                             await this.updateAvailableItems();
+                            // Expand tree based on current step after loading data
+                            this.expandTreeBasedOnStep();
                         }
                     }
                 } catch (error) {
@@ -719,6 +723,74 @@ export default {
                 });
             });
         },
+        expandTreeBasedOnStep() {
+            // Clear all expansions first
+            this.expandedStates.clear();
+            this.expandedDistricts.clear();
+            this.expandedBlocks.clear();
+            this.expandedGPs.clear();
+
+            // Expand based on current step
+            switch (this.currentStep) {
+                case 1: // States
+                    // Expand all states
+                    this.selectedStates.forEach(stateId => {
+                        this.expandedStates.add(stateId);
+                    });
+                    break;
+                case 2: // Districts
+                    // Expand states and their districts
+                    this.selectedStates.forEach(stateId => {
+                        this.expandedStates.add(stateId);
+                        this.getSelectedDistrictsForState(stateId).forEach(district => {
+                            this.expandedDistricts.add(district.id);
+                        });
+                    });
+                    break;
+                case 3: // Blocks
+                    // Expand states, districts and their blocks
+                    this.selectedStates.forEach(stateId => {
+                        this.expandedStates.add(stateId);
+                        this.getSelectedDistrictsForState(stateId).forEach(district => {
+                            this.expandedDistricts.add(district.id);
+                            this.getSelectedBlocksForDistrict(district.id).forEach(block => {
+                                this.expandedBlocks.add(block.id);
+                            });
+                        });
+                    });
+                    break;
+                case 4: // Gram Panchayats
+                    // Expand states, districts, blocks and their GPs
+                    this.selectedStates.forEach(stateId => {
+                        this.expandedStates.add(stateId);
+                        this.getSelectedDistrictsForState(stateId).forEach(district => {
+                            this.expandedDistricts.add(district.id);
+                            this.getSelectedBlocksForDistrict(district.id).forEach(block => {
+                                this.expandedBlocks.add(block.id);
+                                this.getSelectedGramPanchayatsForBlock(block.id).forEach(gp => {
+                                    this.expandedGPs.add(gp.id);
+                                });
+                            });
+                        });
+                    });
+                    break;
+                case 5: // Villages
+                    // Expand everything
+                    this.selectedStates.forEach(stateId => {
+                        this.expandedStates.add(stateId);
+                        this.getSelectedDistrictsForState(stateId).forEach(district => {
+                            this.expandedDistricts.add(district.id);
+                            this.getSelectedBlocksForDistrict(district.id).forEach(block => {
+                                this.expandedBlocks.add(block.id);
+                                this.getSelectedGramPanchayatsForBlock(block.id).forEach(gp => {
+                                    this.expandedGPs.add(gp.id);
+                                });
+                            });
+                        });
+                    });
+                    break;
+            }
+        },
         goNext() {
             if (this.currentStep >= this.totalSteps) return;
 
@@ -750,11 +822,15 @@ export default {
                         this.updateVillages();
                         break;
                 }
+                // Expand tree based on new step
+                this.expandTreeBasedOnStep();
             }
         },
         goBack() {
             if (this.currentStep > 1) {
                 this.currentStep--;
+                // Expand tree based on new step
+                this.expandTreeBasedOnStep();
             }
         },
         async saveSelection() {
