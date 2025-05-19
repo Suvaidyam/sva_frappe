@@ -1086,17 +1086,27 @@ export default {
             const allSelected = this.isAllDistrictsSelectedForState(stateId);
 
             if (allSelected) {
+                // If all districts for this state are selected, unselect them and their children
                 const districtIds = stateDistricts.map(d => d.id);
                 this.selectedDistricts = this.selectedDistricts.filter(id => !districtIds.includes(id));
 
-                this.selectedBlocks = this.selectedBlocks.filter(blockId => {
-                    const block = this.availableBlocks.find(b => b.id === blockId);
-                    return block && !districtIds.includes(Math.floor(blockId / 100));
-                });
+                // Also remove any blocks, GPs, and villages that belong to these districts
+                const blocksToRemove = this.availableBlocks
+                    .filter(block => districtIds.includes(block.district))
+                    .map(block => block.id);
+                this.selectedBlocks = this.selectedBlocks.filter(id => !blocksToRemove.includes(id));
 
-                this.updateGramPanchayats();
-                this.updateVillages();
+                const gpsToRemove = this.availableGramPanchayats
+                    .filter(gp => blocksToRemove.includes(gp.block))
+                    .map(gp => gp.id);
+                this.selectedGramPanchayats = this.selectedGramPanchayats.filter(id => !gpsToRemove.includes(id));
+
+                const villagesToRemove = this.availableVillages
+                    .filter(village => gpsToRemove.includes(village.gram_panchayat))
+                    .map(village => village.id);
+                this.selectedVillages = this.selectedVillages.filter(id => !villagesToRemove.includes(id));
             } else {
+                // If not all districts are selected, select all districts for this state
                 const districtIds = stateDistricts.map(d => d.id);
                 this.selectedDistricts = [...new Set([...this.selectedDistricts, ...districtIds])];
             }
@@ -1128,16 +1138,22 @@ export default {
             const allSelected = this.isAllBlocksSelectedForDistrict(districtId);
 
             if (allSelected) {
+                // If all blocks for this district are selected, unselect them and their children
                 const blockIds = districtBlocks.map(b => b.id);
                 this.selectedBlocks = this.selectedBlocks.filter(id => !blockIds.includes(id));
 
-                this.selectedGramPanchayats = this.selectedGramPanchayats.filter(gpId => {
-                    const gp = this.availableGramPanchayats.find(g => g.id === gpId);
-                    return gp && !blockIds.includes(Math.floor(gpId / 100));
-                });
+                // Also remove any GPs and villages that belong to these blocks
+                const gpsToRemove = this.availableGramPanchayats
+                    .filter(gp => blockIds.includes(gp.block))
+                    .map(gp => gp.id);
+                this.selectedGramPanchayats = this.selectedGramPanchayats.filter(id => !gpsToRemove.includes(id));
 
-                this.updateVillages();
+                const villagesToRemove = this.availableVillages
+                    .filter(village => gpsToRemove.includes(village.gram_panchayat))
+                    .map(village => village.id);
+                this.selectedVillages = this.selectedVillages.filter(id => !villagesToRemove.includes(id));
             } else {
+                // If not all blocks are selected, select all blocks for this district
                 const blockIds = districtBlocks.map(b => b.id);
                 this.selectedBlocks = [...new Set([...this.selectedBlocks, ...blockIds])];
             }
@@ -1169,14 +1185,17 @@ export default {
             const allSelected = this.isAllGramPanchayatsSelectedForBlock(blockId);
 
             if (allSelected) {
+                // If all GPs for this block are selected, unselect them and their children
                 const gpIds = blockGPs.map(gp => gp.id);
                 this.selectedGramPanchayats = this.selectedGramPanchayats.filter(id => !gpIds.includes(id));
 
-                this.selectedVillages = this.selectedVillages.filter(villageId => {
-                    const village = this.availableVillages.find(v => v.id === villageId);
-                    return village && !gpIds.includes(Math.floor(villageId / 100));
-                });
+                // Also remove any villages that belong to these GPs
+                const villagesToRemove = this.availableVillages
+                    .filter(village => gpIds.includes(village.gram_panchayat))
+                    .map(village => village.id);
+                this.selectedVillages = this.selectedVillages.filter(id => !villagesToRemove.includes(id));
             } else {
+                // If not all GPs are selected, select all GPs for this block
                 const gpIds = blockGPs.map(gp => gp.id);
                 this.selectedGramPanchayats = [...new Set([...this.selectedGramPanchayats, ...gpIds])];
             }
@@ -1208,9 +1227,11 @@ export default {
             const allSelected = this.isAllVillagesSelectedForGP(gpId);
 
             if (allSelected) {
+                // If all villages for this GP are selected, unselect them
                 const villageIds = gpVillages.map(v => v.id);
                 this.selectedVillages = this.selectedVillages.filter(id => !villageIds.includes(id));
             } else {
+                // If not all villages are selected, select all villages for this GP
                 const villageIds = gpVillages.map(v => v.id);
                 this.selectedVillages = [...new Set([...this.selectedVillages, ...villageIds])];
             }
@@ -1349,6 +1370,65 @@ export default {
             return this.getVillagesForGP(gpId).filter(village =>
                 this.selectedVillages.includes(village.id)
             );
+        },
+        toggleAllStates() {
+            if (this.allStatesSelected) {
+                // If all are selected, unselect all
+                this.selectedStates = [];
+                this.selectedDistricts = [];
+                this.selectedBlocks = [];
+                this.selectedGramPanchayats = [];
+                this.selectedVillages = [];
+            } else {
+                // If not all are selected, select all states
+                this.selectedStates = this.states.map(state => state.id);
+            }
+            this.updateDistricts();
+        },
+        toggleAllDistricts() {
+            if (this.allDistrictsSelected) {
+                // If all are selected, unselect all districts and their children
+                this.selectedDistricts = [];
+                this.selectedBlocks = [];
+                this.selectedGramPanchayats = [];
+                this.selectedVillages = [];
+            } else {
+                // If not all are selected, select all available districts
+                this.selectedDistricts = this.availableDistricts.map(district => district.id);
+            }
+            this.updateBlocks();
+        },
+        toggleAllBlocks() {
+            if (this.allBlocksSelected) {
+                // If all are selected, unselect all blocks and their children
+                this.selectedBlocks = [];
+                this.selectedGramPanchayats = [];
+                this.selectedVillages = [];
+            } else {
+                // If not all are selected, select all available blocks
+                this.selectedBlocks = this.availableBlocks.map(block => block.id);
+            }
+            this.updateGramPanchayats();
+        },
+        toggleAllGramPanchayats() {
+            if (this.allGramPanchayatsSelected) {
+                // If all are selected, unselect all GPs and their children
+                this.selectedGramPanchayats = [];
+                this.selectedVillages = [];
+            } else {
+                // If not all are selected, select all available GPs
+                this.selectedGramPanchayats = this.availableGramPanchayats.map(gp => gp.id);
+            }
+            this.updateVillages();
+        },
+        toggleAllVillages() {
+            if (this.allVillagesSelected) {
+                // If all are selected, unselect all villages
+                this.selectedVillages = [];
+            } else {
+                // If not all are selected, select all available villages
+                this.selectedVillages = this.availableVillages.map(village => village.id);
+            }
         },
     }
 };

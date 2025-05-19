@@ -11991,12 +11991,12 @@ Only state can be modified.`);
         if (allSelected) {
           const districtIds = stateDistricts.map((d) => d.id);
           this.selectedDistricts = this.selectedDistricts.filter((id) => !districtIds.includes(id));
-          this.selectedBlocks = this.selectedBlocks.filter((blockId) => {
-            const block = this.availableBlocks.find((b) => b.id === blockId);
-            return block && !districtIds.includes(Math.floor(blockId / 100));
-          });
-          this.updateGramPanchayats();
-          this.updateVillages();
+          const blocksToRemove = this.availableBlocks.filter((block) => districtIds.includes(block.district)).map((block) => block.id);
+          this.selectedBlocks = this.selectedBlocks.filter((id) => !blocksToRemove.includes(id));
+          const gpsToRemove = this.availableGramPanchayats.filter((gp) => blocksToRemove.includes(gp.block)).map((gp) => gp.id);
+          this.selectedGramPanchayats = this.selectedGramPanchayats.filter((id) => !gpsToRemove.includes(id));
+          const villagesToRemove = this.availableVillages.filter((village) => gpsToRemove.includes(village.gram_panchayat)).map((village) => village.id);
+          this.selectedVillages = this.selectedVillages.filter((id) => !villagesToRemove.includes(id));
         } else {
           const districtIds = stateDistricts.map((d) => d.id);
           this.selectedDistricts = [.../* @__PURE__ */ new Set([...this.selectedDistricts, ...districtIds])];
@@ -12027,11 +12027,10 @@ Only state can be modified.`);
         if (allSelected) {
           const blockIds = districtBlocks.map((b) => b.id);
           this.selectedBlocks = this.selectedBlocks.filter((id) => !blockIds.includes(id));
-          this.selectedGramPanchayats = this.selectedGramPanchayats.filter((gpId) => {
-            const gp = this.availableGramPanchayats.find((g) => g.id === gpId);
-            return gp && !blockIds.includes(Math.floor(gpId / 100));
-          });
-          this.updateVillages();
+          const gpsToRemove = this.availableGramPanchayats.filter((gp) => blockIds.includes(gp.block)).map((gp) => gp.id);
+          this.selectedGramPanchayats = this.selectedGramPanchayats.filter((id) => !gpsToRemove.includes(id));
+          const villagesToRemove = this.availableVillages.filter((village) => gpsToRemove.includes(village.gram_panchayat)).map((village) => village.id);
+          this.selectedVillages = this.selectedVillages.filter((id) => !villagesToRemove.includes(id));
         } else {
           const blockIds = districtBlocks.map((b) => b.id);
           this.selectedBlocks = [.../* @__PURE__ */ new Set([...this.selectedBlocks, ...blockIds])];
@@ -12062,10 +12061,8 @@ Only state can be modified.`);
         if (allSelected) {
           const gpIds = blockGPs.map((gp) => gp.id);
           this.selectedGramPanchayats = this.selectedGramPanchayats.filter((id) => !gpIds.includes(id));
-          this.selectedVillages = this.selectedVillages.filter((villageId) => {
-            const village = this.availableVillages.find((v) => v.id === villageId);
-            return village && !gpIds.includes(Math.floor(villageId / 100));
-          });
+          const villagesToRemove = this.availableVillages.filter((village) => gpIds.includes(village.gram_panchayat)).map((village) => village.id);
+          this.selectedVillages = this.selectedVillages.filter((id) => !villagesToRemove.includes(id));
         } else {
           const gpIds = blockGPs.map((gp) => gp.id);
           this.selectedGramPanchayats = [.../* @__PURE__ */ new Set([...this.selectedGramPanchayats, ...gpIds])];
@@ -12235,6 +12232,55 @@ Only state can be modified.`);
         return this.getVillagesForGP(gpId).filter(
           (village) => this.selectedVillages.includes(village.id)
         );
+      },
+      toggleAllStates() {
+        if (this.allStatesSelected) {
+          this.selectedStates = [];
+          this.selectedDistricts = [];
+          this.selectedBlocks = [];
+          this.selectedGramPanchayats = [];
+          this.selectedVillages = [];
+        } else {
+          this.selectedStates = this.states.map((state) => state.id);
+        }
+        this.updateDistricts();
+      },
+      toggleAllDistricts() {
+        if (this.allDistrictsSelected) {
+          this.selectedDistricts = [];
+          this.selectedBlocks = [];
+          this.selectedGramPanchayats = [];
+          this.selectedVillages = [];
+        } else {
+          this.selectedDistricts = this.availableDistricts.map((district) => district.id);
+        }
+        this.updateBlocks();
+      },
+      toggleAllBlocks() {
+        if (this.allBlocksSelected) {
+          this.selectedBlocks = [];
+          this.selectedGramPanchayats = [];
+          this.selectedVillages = [];
+        } else {
+          this.selectedBlocks = this.availableBlocks.map((block) => block.id);
+        }
+        this.updateGramPanchayats();
+      },
+      toggleAllGramPanchayats() {
+        if (this.allGramPanchayatsSelected) {
+          this.selectedGramPanchayats = [];
+          this.selectedVillages = [];
+        } else {
+          this.selectedGramPanchayats = this.availableGramPanchayats.map((gp) => gp.id);
+        }
+        this.updateVillages();
+      },
+      toggleAllVillages() {
+        if (this.allVillagesSelected) {
+          this.selectedVillages = [];
+        } else {
+          this.selectedVillages = this.availableVillages.map((village) => village.id);
+        }
       }
     }
   };
@@ -12476,7 +12522,7 @@ Only state can be modified.`);
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allStatesSelected,
-                    onChange: _cache[0] || (_cache[0] = (...args) => _ctx.toggleAllStates && _ctx.toggleAllStates(...args))
+                    onChange: _cache[0] || (_cache[0] = (...args) => $options.toggleAllStates && $options.toggleAllStates(...args))
                   }, null, 40, _hoisted_28),
                   _hoisted_29
                 ])
@@ -12511,7 +12557,7 @@ Only state can be modified.`);
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allDistrictsSelected,
-                    onChange: _cache[3] || (_cache[3] = (...args) => _ctx.toggleAllDistricts && _ctx.toggleAllDistricts(...args))
+                    onChange: _cache[3] || (_cache[3] = (...args) => $options.toggleAllDistricts && $options.toggleAllDistricts(...args))
                   }, null, 40, _hoisted_38),
                   _hoisted_39
                 ])
@@ -12567,7 +12613,7 @@ Only state can be modified.`);
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allBlocksSelected,
-                    onChange: _cache[6] || (_cache[6] = (...args) => _ctx.toggleAllBlocks && _ctx.toggleAllBlocks(...args))
+                    onChange: _cache[6] || (_cache[6] = (...args) => $options.toggleAllBlocks && $options.toggleAllBlocks(...args))
                   }, null, 40, _hoisted_54),
                   _hoisted_55
                 ])
@@ -12625,7 +12671,7 @@ Only state can be modified.`);
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allGramPanchayatsSelected,
-                    onChange: _cache[9] || (_cache[9] = (...args) => _ctx.toggleAllGramPanchayats && _ctx.toggleAllGramPanchayats(...args))
+                    onChange: _cache[9] || (_cache[9] = (...args) => $options.toggleAllGramPanchayats && $options.toggleAllGramPanchayats(...args))
                   }, null, 40, _hoisted_72),
                   _hoisted_73
                 ])
@@ -12683,7 +12729,7 @@ Only state can be modified.`);
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allVillagesSelected,
-                    onChange: _cache[12] || (_cache[12] = (...args) => _ctx.toggleAllVillages && _ctx.toggleAllVillages(...args))
+                    onChange: _cache[12] || (_cache[12] = (...args) => $options.toggleAllVillages && $options.toggleAllVillages(...args))
                   }, null, 40, _hoisted_90),
                   _hoisted_91
                 ])
@@ -12982,4 +13028,4 @@ Only state can be modified.`);
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-//# sourceMappingURL=geography_details.bundle.MRFXJPKU.js.map
+//# sourceMappingURL=geography_details.bundle.XEXSPNAK.js.map
