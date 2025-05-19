@@ -359,7 +359,7 @@ export default {
             isLoading: false,
             expandedStateId: null,
             watershed_management_name: null,
-            lowest_hierarchy: null,
+            lowest_hierarchy: 'District',
             isDataLoaded: false,
             expandedStates: new Set(),
             expandedDistricts: new Set(),
@@ -382,7 +382,7 @@ export default {
                 case 'Village':
                     return 5;
                 default:
-                    return 5;
+                    return 2;
             }
         },
         isAtLowestHierarchy() {
@@ -2148,9 +2148,9 @@ select.form-control:focus {
     background: #6b1630 !important;
 }
 
-.toggle-icon.expanded {
+/* .toggle-icon.expanded {
     transform: rotate(90deg);
-}
+} */
 
 /* Ensure container has proper width */
 .container-fluid {
@@ -2184,9 +2184,9 @@ select.form-control:focus {
     transition: transform 0.2s ease;
 }
 
-.toggle-icon.expanded {
+/* .toggle-icon.expanded {
     transform: rotate(90deg);
-}
+} */
 
 .tree-children {
     margin-left: 20px;
