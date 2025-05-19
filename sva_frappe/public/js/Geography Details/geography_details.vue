@@ -1495,16 +1495,16 @@ select.form-control:focus {
     justify-content: space-between;
     margin-bottom: 20px;
     position: relative;
-    padding: 0 15px;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 0;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .step-container::before {
     content: '';
     position: absolute;
-    top: 11px;
+    top: 8px;
     left: 0;
     right: 0;
     height: 2px;
@@ -1519,14 +1519,14 @@ select.form-control:focus {
     position: relative;
     z-index: 1;
     background: white;
-    padding: 0 15px;
-    min-width: 120px;
-    gap: 8px;
+    padding: 0 10px;
+    min-width: 100px;
+    gap: 5px;
 }
 
 .step-number {
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background-color: #fff;
     border: 2px solid #e9ecef;
@@ -1534,13 +1534,13 @@ select.form-control:focus {
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 10px;
     transition: all 0.3s ease;
     flex-shrink: 0;
 }
 
 .step>div:last-child {
-    font-size: 13px;
+    font-size: 11px;
     color: #6c757d;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -1573,7 +1573,7 @@ select.form-control:focus {
 .step-container::after {
     content: '';
     position: absolute;
-    top: 11px;
+    top: 8px;
     left: 0;
     right: 0;
     height: 2px;
