@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="main-container" :class="{ 'loading': isLoading }">
-                    <div class="step-container">
+                    <div class="step-container" :data-progress="currentStep">
                         <div class="step" :class="{ 'active': currentStep >= 1, 'completed': currentStep > 1 }">
                             <div class="step-number">1</div>
                             <div>States</div>
@@ -30,12 +30,13 @@
                             <div class="step-number">3</div>
                             <div>Blocks</div>
                         </div>
-                        <div v-if="lowest_hierarchy !== 'State' && lowest_hierarchy !== 'District' && lowest_hierarchy !== 'Block'"
+                        <div class="step"
+                            v-if="lowest_hierarchy !== 'State' && lowest_hierarchy !== 'District' && lowest_hierarchy !== 'Block'"
                             :class="{ 'active': currentStep >= 4, 'completed': currentStep > 4 }">
                             <div class="step-number">4</div>
                             <div>Gram Panchayats</div>
                         </div>
-                        <div v-if="lowest_hierarchy === 'Village'"
+                        <div class="step" v-if="lowest_hierarchy === 'Village'"
                             :class="{ 'active': currentStep >= 5, 'completed': currentStep > 5 }">
                             <div class="step-number">5</div>
                             <div>Villages</div>
@@ -1510,12 +1511,24 @@ select.form-control:focus {
 .step-container {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     position: relative;
     padding: 0;
     width: 100%;
     margin-left: 0;
     margin-right: 0;
+}
+
+.step-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e9ecef;
+    transform: translateY(-50%);
+    z-index: 0;
 }
 
 .step {
@@ -1525,22 +1538,22 @@ select.form-control:focus {
     position: relative;
     z-index: 1;
     background: white;
-    padding: 0 10px;
-    min-width: 100px;
-    gap: 5px;
+    padding: 0 8px;
+    min-width: 80px;
+    gap: 6px;
 }
 
 .step-number {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background-color: #fff;
-    border: 2px solid #e9ecef;
+    border: 1.5px solid #e9ecef;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 10px;
+    font-size: 11px;
     transition: all 0.3s ease;
     flex-shrink: 0;
 }
@@ -1557,7 +1570,7 @@ select.form-control:focus {
     background-color: #8C1D40 !important;
     border-color: #8C1D40 !important;
     color: white !important;
-    box-shadow: 0 0 0 3px rgba(140, 29, 64, 0.1);
+    box-shadow: 0 0 0 2px rgba(140, 29, 64, 0.1);
 }
 
 .step.active>div:last-child {
@@ -1573,6 +1586,41 @@ select.form-control:focus {
 
 .step.completed>div:last-child {
     color: #8C1D40 !important;
+}
+
+/* Add new connecting line styles */
+.step-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #8C1D40;
+    transform: translateY(-50%);
+    z-index: 0;
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+.step-container[data-progress="1"]::after {
+    width: 0%;
+}
+
+.step-container[data-progress="2"]::after {
+    width: 25%;
+}
+
+.step-container[data-progress="3"]::after {
+    width: 50%;
+}
+
+.step-container[data-progress="4"]::after {
+    width: 75%;
+}
+
+.step-container[data-progress="5"]::after {
+    width: 100%;
 }
 
 /* Keep existing layout styles */
