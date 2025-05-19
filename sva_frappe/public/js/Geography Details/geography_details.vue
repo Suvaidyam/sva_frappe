@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid mt-4">
-        <h1 class="header text-center">Watershed Management</h1>
+        <h1 class="header text-center">{{ geography_title }}</h1>
 
         <!-- Add loading overlay -->
         <div class="loading-overlay" v-if="isLoading">
@@ -318,7 +318,25 @@
 
 <script>
 export default {
-    name: 'WatershedManagement',
+    name: 'GeographyDetails',
+    props: {
+        hierarchy_level_field: {
+            type: String,
+            required: true
+        },
+        geography_details_field: {
+            type: String,
+            required: true
+        },
+        frm: {
+            type: Object,
+            required: true
+        },
+        geography_title: {
+            type: String,
+            required: false
+        }
+    },
     data() {
         return {
             currentStep: 1,
@@ -345,6 +363,7 @@ export default {
             expandedDistricts: new Set(),
             expandedBlocks: new Set(),
             expandedGPs: new Set(),
+            doctype: null
         };
     },
     computed: {
@@ -385,10 +404,13 @@ export default {
         },
     },
     async created() {
+        // Get doctype from frm
+        this.doctype = this.frm.doctype;
+
         if (this.isDataLoaded) return;
 
         const route = frappe.get_route();
-        if (route[1] === 'Watershed Management' && route[2]) {
+        if (route[1] === this.doctype && route[2]) {
             this.watershed_management_name = route[2];
             await this.loadExistingData();
         } else {
@@ -404,7 +426,7 @@ export default {
     watch: {
         '$route': {
             handler: async function (to, from) {
-                if (to[1] === 'Watershed Management' && to[2] && to[2] !== this.watershed_management_name) {
+                if (to[1] === this.doctype && to[2] && to[2] !== this.watershed_management_name) {
                     this.resetData();
                     this.watershed_management_name = to[2];
                     await this.loadExistingData();
@@ -419,12 +441,12 @@ export default {
                 const response = await frappe.call({
                     method: 'frappe.client.get',
                     args: {
-                        doctype: 'Watershed Management',
-                        name: 'Watershed Management'
+                        doctype: this.doctype,
+                        name: this.doctype
                     },
                     callback: (r) => {
-                        if (r.message && r.message.lowest_hierarchy) {
-                            this.lowest_hierarchy = r.message.lowest_hierarchy;
+                        if (r.message && r.message[this.hierarchy_level_field]) {
+                            this.lowest_hierarchy = r.message[this.hierarchy_level_field];
                         }
                     }
                 });
@@ -437,22 +459,22 @@ export default {
 
             await this.withLoading(async () => {
                 try {
-                    const doc = await frappe.get_doc('Watershed Management', this.watershed_management_name);
+                    const doc = await frappe.get_doc(this.doctype, this.watershed_management_name);
                     if (doc) {
                         this.resetData();
 
-                        if (doc.lowest_hierarchy) {
-                            this.lowest_hierarchy = doc.lowest_hierarchy;
+                        if (doc[this.hierarchy_level_field]) {
+                            this.lowest_hierarchy = doc[this.hierarchy_level_field];
                         }
 
-                        if (doc.geography_details) {
+                        if (doc[this.geography_details_field]) {
                             const stateSet = new Set();
                             const districtSet = new Set();
                             const blockSet = new Set();
                             const gpSet = new Set();
                             const villageSet = new Set();
 
-                            doc.geography_details.forEach(detail => {
+                            doc[this.geography_details_field].forEach(detail => {
                                 if (detail.state) stateSet.add(detail.state);
                                 if (detail.district) districtSet.add(detail.district);
                                 if (detail.block) blockSet.add(detail.block);
@@ -914,7 +936,10 @@ export default {
                     args: {
                         selection_data: JSON.stringify(selection),
                         docname: this.watershed_management_name,
-                        lowest_hierarchy: this.lowest_hierarchy
+                        lowest_hierarchy: this.lowest_hierarchy,
+                        doctype: this.doctype,
+                        hierarchy_level_field: this.hierarchy_level_field,
+                        geography_details_field: this.geography_details_field
                     },
                     callback: (r) => {
                         if (r.message && r.message.status === 'success') {
@@ -928,7 +953,7 @@ export default {
                             });
 
                             if (!this.watershed_management_name && r.message.docname) {
-                                frappe.set_route('Form', 'Watershed Management', r.message.docname);
+                                frappe.set_route('Form', this.doctype, r.message.docname);
                             }
                         } else {
                             frappe.show_alert({

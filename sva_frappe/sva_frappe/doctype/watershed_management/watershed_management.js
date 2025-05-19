@@ -8,8 +8,9 @@ frappe.ui.form.on('Watershed Management', {
         frappe.require("geography_details.bundle.js").then(() => {
             new frappe.ui.GeographyDetails({
                 wrapper: layout_element,
-                hierarchy_level: 'lowest_hierarchy',
+                hierarchy_level_field: 'lowest_hierarchy',
                 geography_details_field: 'geography_details',
+                geography_title: 'Geography Details',
                 frm: frm
             });
         })

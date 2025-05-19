@@ -2,9 +2,13 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./geography_details.vue";
 class GeographyDetails {
-    constructor({ wrapper }) {
+    constructor({ wrapper, hierarchy_level_field, geography_details_field, geography_title, frm }) {
         this.$wrapper = $(wrapper);
         this.app = null;
+        this.hierarchy_level_field = hierarchy_level_field;
+        this.geography_details_field = geography_details_field;
+        this.geography_title = geography_title;
+        this.frm = frm;
         this.init();
     }
 
@@ -32,7 +36,12 @@ class GeographyDetails {
         // create a pinia instance
         let pinia = createPinia();
         // create a vue instance with dynamic props
-        this.app = createApp(App);
+        this.app = createApp(App, {
+            hierarchy_level_field: this.hierarchy_level_field,
+            geography_details_field: this.geography_details_field,
+            geography_title: this.geography_title,
+            frm: this.frm
+        });
         SetVueGlobals(this.app);
         this.app.use(pinia);
 

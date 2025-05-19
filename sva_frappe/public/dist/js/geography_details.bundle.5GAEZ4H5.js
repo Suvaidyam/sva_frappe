@@ -11272,7 +11272,25 @@ Only state can be modified.`);
 
   // sfc-script:/Users/aniket/frappe/apps/sva_frappe/sva_frappe/public/js/Geography Details/geography_details.vue?type=script
   var geography_details_default = {
-    name: "WatershedManagement",
+    name: "GeographyDetails",
+    props: {
+      hierarchy_level_field: {
+        type: String,
+        required: true
+      },
+      geography_details_field: {
+        type: String,
+        required: true
+      },
+      frm: {
+        type: Object,
+        required: true
+      },
+      geography_title: {
+        type: String,
+        required: false
+      }
+    },
     data() {
       return {
         currentStep: 1,
@@ -11298,7 +11316,8 @@ Only state can be modified.`);
         expandedStates: /* @__PURE__ */ new Set(),
         expandedDistricts: /* @__PURE__ */ new Set(),
         expandedBlocks: /* @__PURE__ */ new Set(),
-        expandedGPs: /* @__PURE__ */ new Set()
+        expandedGPs: /* @__PURE__ */ new Set(),
+        doctype: null
       };
     },
     computed: {
@@ -11335,10 +11354,11 @@ Only state can be modified.`);
       }
     },
     async created() {
+      this.doctype = this.frm.doctype;
       if (this.isDataLoaded)
         return;
       const route = frappe.get_route();
-      if (route[1] === "Watershed Management" && route[2]) {
+      if (route[1] === this.doctype && route[2]) {
         this.watershed_management_name = route[2];
         await this.loadExistingData();
       } else {
@@ -11353,7 +11373,7 @@ Only state can be modified.`);
     watch: {
       "$route": {
         handler: async function(to, from) {
-          if (to[1] === "Watershed Management" && to[2] && to[2] !== this.watershed_management_name) {
+          if (to[1] === this.doctype && to[2] && to[2] !== this.watershed_management_name) {
             this.resetData();
             this.watershed_management_name = to[2];
             await this.loadExistingData();
@@ -11368,12 +11388,12 @@ Only state can be modified.`);
           const response = await frappe.call({
             method: "frappe.client.get",
             args: {
-              doctype: "Watershed Management",
-              name: "Watershed Management"
+              doctype: this.doctype,
+              name: this.doctype
             },
             callback: (r) => {
-              if (r.message && r.message.lowest_hierarchy) {
-                this.lowest_hierarchy = r.message.lowest_hierarchy;
+              if (r.message && r.message[this.hierarchy_level_field]) {
+                this.lowest_hierarchy = r.message[this.hierarchy_level_field];
               }
             }
           });
@@ -11386,19 +11406,19 @@ Only state can be modified.`);
           return;
         await this.withLoading(async () => {
           try {
-            const doc2 = await frappe.get_doc("Watershed Management", this.watershed_management_name);
+            const doc2 = await frappe.get_doc(this.doctype, this.watershed_management_name);
             if (doc2) {
               this.resetData();
-              if (doc2.lowest_hierarchy) {
-                this.lowest_hierarchy = doc2.lowest_hierarchy;
+              if (doc2[this.hierarchy_level_field]) {
+                this.lowest_hierarchy = doc2[this.hierarchy_level_field];
               }
-              if (doc2.geography_details) {
+              if (doc2[this.geography_details_field]) {
                 const stateSet = /* @__PURE__ */ new Set();
                 const districtSet = /* @__PURE__ */ new Set();
                 const blockSet = /* @__PURE__ */ new Set();
                 const gpSet = /* @__PURE__ */ new Set();
                 const villageSet = /* @__PURE__ */ new Set();
-                doc2.geography_details.forEach((detail) => {
+                doc2[this.geography_details_field].forEach((detail) => {
                   if (detail.state)
                     stateSet.add(detail.state);
                   if (detail.district)
@@ -11835,7 +11855,10 @@ Only state can be modified.`);
             args: {
               selection_data: JSON.stringify(selection),
               docname: this.watershed_management_name,
-              lowest_hierarchy: this.lowest_hierarchy
+              lowest_hierarchy: this.lowest_hierarchy,
+              doctype: this.doctype,
+              hierarchy_level_field: this.hierarchy_level_field,
+              geography_details_field: this.geography_details_field
             },
             callback: (r) => {
               var _a;
@@ -11848,7 +11871,7 @@ Only state can be modified.`);
                   indicator: "green"
                 });
                 if (!this.watershed_management_name && r.message.docname) {
-                  frappe.set_route("Form", "Watershed Management", r.message.docname);
+                  frappe.set_route("Form", this.doctype, r.message.docname);
                 }
               } else {
                 frappe.show_alert({
@@ -12139,7 +12162,7 @@ Only state can be modified.`);
   // sfc-template:/Users/aniket/frappe/apps/sva_frappe/sva_frappe/public/js/Geography Details/geography_details.vue?type=template
   var _withScopeId = (n) => (pushScopeId("data-v-9d93b00b"), n = n(), popScopeId(), n);
   var _hoisted_1 = { class: "container-fluid mt-4" };
-  var _hoisted_2 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h1", { class: "header text-center" }, "Watershed Management", -1));
+  var _hoisted_2 = { class: "header text-center" };
   var _hoisted_3 = {
     key: 0,
     class: "loading-overlay"
@@ -12331,7 +12354,7 @@ Only state can be modified.`);
   var _hoisted_133 = { class: "tree-label" };
   function render(_ctx, _cache, $props, $setup, $data, $options) {
     return openBlock(), createElementBlock("div", _hoisted_1, [
-      _hoisted_2,
+      createBaseVNode("h1", _hoisted_2, toDisplayString($props.geography_title), 1),
       createCommentVNode(" Add loading overlay "),
       $data.isLoading ? (openBlock(), createElementBlock("div", _hoisted_3, [..._hoisted_5])) : createCommentVNode("v-if", true),
       createBaseVNode("div", _hoisted_6, [
@@ -12777,9 +12800,13 @@ Only state can be modified.`);
 
   // ../sva_frappe/sva_frappe/public/js/Geography Details/geography_details.bundle.js
   var GeographyDetails = class {
-    constructor({ wrapper }) {
+    constructor({ wrapper, hierarchy_level_field, geography_details_field, geography_title, frm }) {
       this.$wrapper = $(wrapper);
       this.app = null;
+      this.hierarchy_level_field = hierarchy_level_field;
+      this.geography_details_field = geography_details_field;
+      this.geography_title = geography_title;
+      this.frm = frm;
       this.init();
     }
     init(refresh) {
@@ -12801,7 +12828,12 @@ Only state can be modified.`);
     }
     setup_app() {
       let pinia = createPinia();
-      this.app = createApp(geography_details_default2);
+      this.app = createApp(geography_details_default2, {
+        hierarchy_level_field: this.hierarchy_level_field,
+        geography_details_field: this.geography_details_field,
+        geography_title: this.geography_title,
+        frm: this.frm
+      });
       SetVueGlobals(this.app);
       this.app.use(pinia);
       if (this.$wrapper && this.$wrapper.get(0)) {
@@ -12866,4 +12898,4 @@ Only state can be modified.`);
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-//# sourceMappingURL=geography_details.bundle.7I54XS32.js.map
+//# sourceMappingURL=geography_details.bundle.5GAEZ4H5.js.map

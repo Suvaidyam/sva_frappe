@@ -76,27 +76,28 @@ def get_villages(gram_panchayat=None):
     return villages
 
 @frappe.whitelist()
-def save_geography_details(selection_data, docname=None, lowest_hierarchy=None):
+def save_geography_details(selection_data, docname=None, lowest_hierarchy=None, doctype=None, hierarchy_level_field=None, geography_details_field=None):
     try:
         selection = json.loads(selection_data)
         
         # Check if document exists
-        if docname and frappe.db.exists("Watershed Management", docname):
+        if docname and frappe.db.exists(doctype, docname):
             # Update existing document
-            doc = frappe.get_doc("Watershed Management", docname)
+            doc = frappe.get_doc(doctype, docname)
         else:
             # Create new document with a proper name
-            doc = frappe.new_doc("Watershed Management")
+            doc = frappe.new_doc(doctype)
             # Set a default name if not provided
             if not docname:
-                doc.name = frappe.generate_hash("Watershed Management", 10)
+                doc.name = frappe.generate_hash(doctype, 10)
         
         # Set the lowest hierarchy
-        if lowest_hierarchy:
-            doc.lowest_hierarchy = lowest_hierarchy
+        if lowest_hierarchy and hierarchy_level_field:
+            doc.set(hierarchy_level_field, lowest_hierarchy)
         
         # Clear existing geography details
-        doc.geography_details = []
+        if geography_details_field:
+            doc.set(geography_details_field, [])
         
         # Add new geography details
         for item in selection:
@@ -107,7 +108,7 @@ def save_geography_details(selection_data, docname=None, lowest_hierarchy=None):
                 "gram_panchayat": item.get("gramPanchayat", {}).get("id"),
                 "village": item.get("village", {}).get("id")
             }
-            doc.append("geography_details", geography_detail)
+            doc.append(geography_details_field, geography_detail)
         
         # Save the document
         doc.insert() if not docname else doc.save()
