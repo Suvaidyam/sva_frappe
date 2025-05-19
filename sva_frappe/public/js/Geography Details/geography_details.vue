@@ -1639,8 +1639,8 @@ select.form-control:focus {
 }
 
 .step>div:last-child {
-    font-size: 12px;
-    color: #6c757d;
+    font-size: 14px;
+    color: #495057;
     font-weight: 500;
     transition: all 0.3s ease;
     white-space: nowrap;
@@ -1656,6 +1656,7 @@ select.form-control:focus {
 .step.active>div:last-child {
     color: #8C1D40 !important;
     font-weight: 600;
+    font-size: 14px;
 }
 
 .step.completed .step-number {
@@ -1666,6 +1667,7 @@ select.form-control:focus {
 
 .step.completed>div:last-child {
     color: #8C1D40 !important;
+    font-size: 14px;
 }
 
 /* Updated progress line styles */
