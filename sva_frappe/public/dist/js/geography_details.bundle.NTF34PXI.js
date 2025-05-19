@@ -1,4 +1,4 @@
-frappe.dom.set_style("/* sfc-style:/Users/aniket/frappe/apps/sva_frappe/sva_frappe/public/js/Geography Details/geography_details.vue?type=style&index=0 */\n.primary-color[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.primary-bg[data-v-9d93b00b] {\n  background-color: #8C1D40 !important;\n}\n.primary-border[data-v-9d93b00b] {\n  border-color: #8C1D40 !important;\n}\n.form-control[data-v-9d93b00b] {\n  border: 1px solid #dee2e6;\n  border-radius: 4px;\n  padding: 0.5rem;\n  width: 100%;\n  color: #495057;\n}\n.form-control[data-v-9d93b00b]:focus {\n  border-color: #8C1D40 !important;\n  box-shadow: 0 0 0 0.2rem rgba(140, 29, 64, 0.15) !important;\n}\n.form-group label[data-v-9d93b00b],\n.form-check-label[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  font-weight: 500;\n}\n.btn-save[data-v-9d93b00b],\n.btn-next[data-v-9d93b00b] {\n  background-color: #8C1D40 !important;\n  color: white !important;\n  border-color: #8C1D40 !important;\n  margin-left: 10px;\n}\n.btn-save[data-v-9d93b00b]:hover,\n.btn-next[data-v-9d93b00b]:hover {\n  background-color: #6b1630 !important;\n  border-color: #6b1630 !important;\n  color: white !important;\n}\n.btn-outline-secondary[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  border-color: #8C1D40 !important;\n}\n.btn-outline-secondary[data-v-9d93b00b]:hover {\n  background-color: #8C1D40 !important;\n  color: white !important;\n}\n.form-check-input[data-v-9d93b00b]:checked {\n  background-color: #8C1D40 !important;\n  border-color: #8C1D40 !important;\n}\n.form-check-input[data-v-9d93b00b]:focus {\n  border-color: #8C1D40 !important;\n  box-shadow: 0 0 0 0.2rem rgba(140, 29, 64, 0.15) !important;\n}\nselect.form-control[data-v-9d93b00b] {\n  color: #495057;\n  background-color: white;\n  height: auto;\n  min-height: 38px;\n  padding: 0.375rem 0.75rem;\n  font-size: 14px;\n  line-height: 1.5;\n  appearance: none;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%238C1D40' d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' transform='rotate(90 4 4)'/%3E%3C/svg%3E\");\n  background-repeat: no-repeat;\n  background-position: right 0.75rem center;\n  background-size: 8px 10px;\n  padding-right: 2rem;\n}\nselect.form-control option[data-v-9d93b00b] {\n  color: #495057;\n  background-color: white;\n  padding: 8px;\n  font-size: 14px;\n  min-height: 30px;\n  display: block;\n}\nselect.form-control[data-v-9d93b00b]:focus {\n  border-color: #8C1D40 !important;\n  box-shadow: 0 0 0 0.2rem rgba(140, 29, 64, 0.15) !important;\n  outline: none;\n}\n.tree-content[data-v-9d93b00b] {\n  color: #495057;\n}\n.tree-icon[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.tree-label[data-v-9d93b00b] {\n  color: #495057;\n}\n.state-item .tree-content[data-v-9d93b00b] {\n  background-color: #fff3f3;\n  border: 1px solid #ffe0e0;\n}\n.state-item .tree-content[data-v-9d93b00b]:hover {\n  background-color: #ffe6e6;\n  border-color: #ffcccc;\n}\n.loading-text[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.spinner-border[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-thumb {\n  background: #8C1D40 !important;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-thumb:hover {\n  background: #6b1630 !important;\n}\n.path-item[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  font-weight: 500;\n}\n.step-container[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n  position: relative;\n  padding: 0;\n  width: 100%;\n  margin-left: 0;\n  margin-right: 0;\n}\n.step-container[data-v-9d93b00b]::before {\n  content: \"\";\n  position: absolute;\n  top: 8px;\n  left: 0;\n  right: 0;\n  height: 2px;\n  background: #e9ecef;\n  z-index: 0;\n}\n.step[data-v-9d93b00b] {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  position: relative;\n  z-index: 1;\n  background: white;\n  padding: 0 10px;\n  min-width: 100px;\n  gap: 5px;\n}\n.step-number[data-v-9d93b00b] {\n  width: 16px;\n  height: 16px;\n  border-radius: 50%;\n  background-color: #fff;\n  border: 2px solid #e9ecef;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: 600;\n  font-size: 10px;\n  transition: all 0.3s ease;\n  flex-shrink: 0;\n}\n.step > div[data-v-9d93b00b]:last-child {\n  font-size: 11px;\n  color: #6c757d;\n  font-weight: 500;\n  transition: all 0.3s ease;\n  white-space: nowrap;\n}\n.step.active .step-number[data-v-9d93b00b] {\n  background-color: #8C1D40 !important;\n  border-color: #8C1D40 !important;\n  color: white !important;\n  box-shadow: 0 0 0 3px rgba(140, 29, 64, 0.1);\n}\n.step.active > div[data-v-9d93b00b]:last-child {\n  color: #8C1D40 !important;\n  font-weight: 600;\n}\n.step.completed .step-number[data-v-9d93b00b] {\n  background-color: #8C1D40 !important;\n  border-color: #8C1D40 !important;\n  color: white !important;\n}\n.step.completed > div[data-v-9d93b00b]:last-child {\n  color: #8C1D40 !important;\n}\n.step-container[data-v-9d93b00b]::after {\n  content: \"\";\n  position: absolute;\n  top: 8px;\n  left: 0;\n  right: 0;\n  height: 2px;\n  background: #8C1D40;\n  z-index: 0;\n  transform: scaleX(0);\n  transform-origin: left;\n  transition: transform 0.3s ease;\n}\n.step-container.progress-1[data-v-9d93b00b]::after {\n  transform: scaleX(0.25);\n}\n.step-container.progress-2[data-v-9d93b00b]::after {\n  transform: scaleX(0.5);\n}\n.step-container.progress-3[data-v-9d93b00b]::after {\n  transform: scaleX(0.75);\n}\n.step-container.progress-4[data-v-9d93b00b]::after {\n  transform: scaleX(1);\n}\n.step-container.progress-5[data-v-9d93b00b]::after {\n  transform: scaleX(1);\n}\n.container[data-v-9d93b00b] {\n  max-width: 1200px;\n}\n.row[data-v-9d93b00b] {\n  margin-left: -15px;\n  margin-right: -15px;\n}\n.col-md-6[data-v-9d93b00b],\n.col-md-8[data-v-9d93b00b],\n.col-md-4[data-v-9d93b00b] {\n  padding-left: 15px;\n  padding-right: 15px;\n}\n.loading-overlay[data-v-9d93b00b] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(255, 255, 255, 0.8);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n}\n.loading-spinner[data-v-9d93b00b] {\n  text-align: center;\n  background: white;\n  padding: 2rem;\n  border-radius: 8px;\n  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\n}\n.main-container[data-v-9d93b00b] {\n  border: 1px solid #ddd;\n  border-radius: 5px;\n  padding: 20px;\n  margin-bottom: 20px;\n}\n.button-group[data-v-9d93b00b] {\n  display: flex;\n  justify-content: flex-end;\n  margin-top: 20px;\n}\n.geography-overview[data-v-9d93b00b] {\n  border: 1px solid #ddd;\n  border-radius: 5px;\n  padding: 20px;\n}\n.geography-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 15px;\n}\n.view-summary[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  display: flex;\n  align-items: center;\n}\n.view-summary svg[data-v-9d93b00b] {\n  margin-right: 5px;\n}\n.state-district-group[data-v-9d93b00b] {\n  border: 1px solid #eee;\n  border-radius: 5px;\n  padding: 15px;\n  margin-bottom: 20px;\n}\n.state-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px;\n  border-bottom: 1px solid #eee;\n  margin-bottom: 15px;\n}\n.state-header h5[data-v-9d93b00b] {\n  margin: 0;\n  color: #8C1D40 !important;\n}\n.district-block-group[data-v-9d93b00b],\n.block-gp-group[data-v-9d93b00b],\n.gp-village-group[data-v-9d93b00b] {\n  border: 1px solid #eee;\n  border-radius: 5px;\n  padding: 15px;\n  margin-bottom: 20px;\n}\n.district-header[data-v-9d93b00b],\n.block-header[data-v-9d93b00b],\n.gp-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px;\n  border-bottom: 1px solid #eee;\n  margin-bottom: 15px;\n}\n.district-header h5[data-v-9d93b00b],\n.block-header h5[data-v-9d93b00b],\n.gp-header h5[data-v-9d93b00b] {\n  margin: 0;\n  color: #8C1D40 !important;\n}\n.form-group[data-v-9d93b00b] {\n  margin-bottom: 1.5rem;\n  position: relative;\n}\n.form-group label[data-v-9d93b00b] {\n  display: block;\n  margin-bottom: 0.5rem;\n  font-weight: 500;\n  color: #8C1D40 !important;\n}\n.form-control[data-v-9d93b00b]:disabled {\n  background-color: var(--hover-bg);\n  cursor: not-allowed;\n}\n.main-container.loading[data-v-9d93b00b] {\n  opacity: 0.7;\n  pointer-events: none;\n}\n.btn[data-v-9d93b00b]:disabled {\n  opacity: 0.7;\n  cursor: not-allowed;\n}\n.main-container[data-v-9d93b00b] {\n  transition: opacity 0.3s ease;\n}\n@keyframes spin-9d93b00b {\n  to {\n    transform: rotate(360deg);\n  }\n}\n.spinner-border[data-v-9d93b00b] {\n  width: 3rem;\n  height: 3rem;\n  border: 0.25em solid currentColor;\n  border-right-color: transparent;\n  border-radius: 50%;\n  animation: spin-9d93b00b 0.75s linear infinite;\n}\n.form-check[data-v-9d93b00b] {\n  display: flex;\n  align-items: center;\n  white-space: nowrap;\n  margin-bottom: 0;\n}\n.form-check-label[data-v-9d93b00b] {\n  color: #000000 !important;\n  margin-left: 0.5rem;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.checkbox-container[data-v-9d93b00b] {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n.checkbox-item[data-v-9d93b00b] {\n  min-width: 200px;\n  flex: 0 1 auto;\n  margin-bottom: 10px;\n}\n.state-header[data-v-9d93b00b],\n.district-header[data-v-9d93b00b],\n.block-header[data-v-9d93b00b],\n.gp-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px;\n  border-bottom: 1px solid #eee;\n  margin-bottom: 15px;\n  flex-wrap: nowrap;\n}\n.state-header h5[data-v-9d93b00b],\n.district-header h5[data-v-9d93b00b],\n.block-header h5[data-v-9d93b00b],\n.gp-header h5[data-v-9d93b00b] {\n  margin: 0;\n  color: #8C1D40 !important;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin-right: 10px;\n}\n.state-header .form-check[data-v-9d93b00b],\n.district-header .form-check[data-v-9d93b00b],\n.block-header .form-check[data-v-9d93b00b],\n.gp-header .form-check[data-v-9d93b00b] {\n  flex-shrink: 0;\n}\n.hierarchy-path[data-v-9d93b00b] {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 5px;\n  font-size: 0.9rem;\n  color: #666;\n}\n.path-item[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  font-weight: 500;\n}\n.path-separator[data-v-9d93b00b] {\n  color: #999;\n  margin: 0 5px;\n}\n.state-header[data-v-9d93b00b],\n.district-header[data-v-9d93b00b],\n.block-header[data-v-9d93b00b],\n.gp-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  padding-bottom: 10px;\n  border-bottom: 1px solid #eee;\n  margin-bottom: 15px;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n.state-header .hierarchy-path[data-v-9d93b00b],\n.district-header .hierarchy-path[data-v-9d93b00b],\n.block-header .hierarchy-path[data-v-9d93b00b],\n.gp-header .hierarchy-path[data-v-9d93b00b] {\n  flex: 1;\n  min-width: 200px;\n}\n.state-header .form-check[data-v-9d93b00b],\n.district-header .form-check[data-v-9d93b00b],\n.block-header .form-check[data-v-9d93b00b],\n.gp-header .form-check[data-v-9d93b00b] {\n  flex-shrink: 0;\n}\n.geography-tree[data-v-9d93b00b] {\n  max-height: 600px;\n  overflow-y: auto;\n  padding-right: 10px;\n}\n.tree-item[data-v-9d93b00b] {\n  margin-bottom: 5px;\n}\n.tree-content[data-v-9d93b00b] {\n  display: flex;\n  align-items: center;\n  padding: 8px 12px;\n  border-radius: 4px;\n  background-color: #f8f9fa;\n  transition: all 0.2s ease;\n  cursor: pointer;\n  user-select: none;\n}\n.tree-content[data-v-9d93b00b]:hover {\n  background-color: #e9ecef;\n}\n.tree-icon[data-v-9d93b00b] {\n  margin-right: 8px;\n  font-size: 10px;\n  color: #8C1D40 !important;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 14px;\n  height: 14px;\n  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n  font-weight: bold;\n}\n.tree-label[data-v-9d93b00b] {\n  flex: 1;\n  font-size: 0.9rem;\n  color: #495057;\n}\n.tree-count[data-v-9d93b00b] {\n  font-size: 0.8rem;\n  color: #6c757d;\n  margin-left: 8px;\n}\n.tree-children[data-v-9d93b00b] {\n  margin-left: 20px;\n  padding-left: 10px;\n  border-left: 2px solid #dee2e6;\n  transition: all 0.3s ease;\n}\n.state-item .tree-content[data-v-9d93b00b] {\n  background-color: #fff3f3;\n  border: 1px solid #ffe0e0;\n}\n.state-item .tree-content[data-v-9d93b00b]:hover {\n  background-color: #ffe6e6;\n  border-color: #ffcccc;\n}\n.district-item .tree-content[data-v-9d93b00b] {\n  background-color: #f8f9fa;\n}\n.block-item .tree-content[data-v-9d93b00b] {\n  background-color: #f0f7ff;\n}\n.gp-item .tree-content[data-v-9d93b00b] {\n  background-color: #f0fff4;\n}\n.village-item .tree-content[data-v-9d93b00b] {\n  background-color: #fffaf0;\n}\n.geography-overview[data-v-9d93b00b] {\n  position: sticky;\n  top: 20px;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar {\n  width: 6px;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-track {\n  background: #f1f1f1;\n  border-radius: 3px;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-thumb {\n  background: #8C1D40 !important;\n  border-radius: 3px;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-thumb:hover {\n  background: #6b1630 !important;\n}\n.toggle-icon.expanded[data-v-9d93b00b] {\n  transform: rotate(90deg);\n}\n.container-fluid[data-v-9d93b00b] {\n  padding-left: 15px;\n  padding-right: 15px;\n}\n.col-md-6[data-v-9d93b00b] {\n  width: 100%;\n  max-width: 400px;\n}\n.tree-content[data-v-9d93b00b] {\n  cursor: pointer;\n  user-select: none;\n  transition: background-color 0.2s ease;\n}\n.tree-content[data-v-9d93b00b]:hover {\n  background-color: rgba(140, 29, 64, 0.05);\n}\n.toggle-icon[data-v-9d93b00b] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 16px;\n  height: 16px;\n  margin-right: 4px;\n  transition: transform 0.2s ease;\n}\n.toggle-icon.expanded[data-v-9d93b00b] {\n  transform: rotate(90deg);\n}\n.tree-children[data-v-9d93b00b] {\n  margin-left: 20px;\n  padding-left: 10px;\n  border-left: 2px solid #dee2e6;\n  transition: all 0.3s ease;\n}\n.tree-item[data-v-9d93b00b] {\n  margin-bottom: 4px;\n}\n.tree-content[data-v-9d93b00b] {\n  padding: 8px 12px;\n  border-radius: 4px;\n  display: flex;\n  align-items: center;\n}\n.state-item .tree-content[data-v-9d93b00b] {\n  background-color: #fff3f3;\n  border: 1px solid #ffe0e0;\n}\n.district-item .tree-content[data-v-9d93b00b] {\n  background-color: #f8f9fa;\n}\n.block-item .tree-content[data-v-9d93b00b] {\n  background-color: #f0f7ff;\n}\n.gp-item .tree-content[data-v-9d93b00b] {\n  background-color: #f0fff4;\n}\n.village-item .tree-content[data-v-9d93b00b] {\n  background-color: #fffaf0;\n}\n.state-header h5[data-v-9d93b00b],\n.district-header h5[data-v-9d93b00b],\n.block-header h5[data-v-9d93b00b],\n.gp-header h5[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.header[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  font-size: 16px !important;\n  font-weight: 500;\n}\n/*# sourceMappingURL=geography_details.bundle.545PNIRM.css.map */\n");
+frappe.dom.set_style("/* sfc-style:/Users/aniket/frappe/apps/sva_frappe/sva_frappe/public/js/Geography Details/geography_details.vue?type=style&index=0 */\n.primary-color[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.primary-bg[data-v-9d93b00b] {\n  background-color: #8C1D40 !important;\n}\n.primary-border[data-v-9d93b00b] {\n  border-color: #8C1D40 !important;\n}\n.form-control[data-v-9d93b00b] {\n  border: 1px solid #dee2e6;\n  border-radius: 4px;\n  padding: 0.5rem;\n  width: 100%;\n  color: #495057;\n}\n.form-control[data-v-9d93b00b]:focus {\n  border-color: #8C1D40 !important;\n  box-shadow: 0 0 0 0.2rem rgba(140, 29, 64, 0.15) !important;\n}\n.form-group label[data-v-9d93b00b],\n.form-check-label[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  font-weight: 500;\n}\n.btn-save[data-v-9d93b00b],\n.btn-next[data-v-9d93b00b] {\n  background-color: #8C1D40 !important;\n  color: white !important;\n  border-color: #8C1D40 !important;\n  margin-left: 10px;\n}\n.btn-save[data-v-9d93b00b]:hover,\n.btn-next[data-v-9d93b00b]:hover {\n  background-color: #6b1630 !important;\n  border-color: #6b1630 !important;\n  color: white !important;\n}\n.btn-outline-secondary[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  border-color: #8C1D40 !important;\n}\n.btn-outline-secondary[data-v-9d93b00b]:hover {\n  background-color: #8C1D40 !important;\n  color: white !important;\n}\n.form-check-input[data-v-9d93b00b]:checked {\n  background-color: #8C1D40 !important;\n  border-color: #8C1D40 !important;\n}\n.form-check-input[data-v-9d93b00b]:focus {\n  border-color: #8C1D40 !important;\n  box-shadow: 0 0 0 0.2rem rgba(140, 29, 64, 0.15) !important;\n}\nselect.form-control[data-v-9d93b00b] {\n  color: #495057;\n  background-color: white;\n  height: auto;\n  min-height: 38px;\n  padding: 0.375rem 0.75rem;\n  font-size: 14px;\n  line-height: 1.5;\n  appearance: none;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%238C1D40' d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' transform='rotate(90 4 4)'/%3E%3C/svg%3E\");\n  background-repeat: no-repeat;\n  background-position: right 0.75rem center;\n  background-size: 8px 10px;\n  padding-right: 2rem;\n}\nselect.form-control option[data-v-9d93b00b] {\n  color: #495057;\n  background-color: white;\n  padding: 8px;\n  font-size: 14px;\n  min-height: 30px;\n  display: block;\n}\nselect.form-control[data-v-9d93b00b]:focus {\n  border-color: #8C1D40 !important;\n  box-shadow: 0 0 0 0.2rem rgba(140, 29, 64, 0.15) !important;\n  outline: none;\n}\n.tree-content[data-v-9d93b00b] {\n  color: #495057;\n}\n.tree-icon[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.tree-label[data-v-9d93b00b] {\n  color: #495057;\n}\n.state-item .tree-content[data-v-9d93b00b] {\n  background-color: #fff3f3;\n  border: 1px solid #ffe0e0;\n}\n.state-item .tree-content[data-v-9d93b00b]:hover {\n  background-color: #ffe6e6;\n  border-color: #ffcccc;\n}\n.loading-text[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.spinner-border[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-thumb {\n  background: #8C1D40 !important;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-thumb:hover {\n  background: #6b1630 !important;\n}\n.path-item[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  font-weight: 500;\n}\n.step-container[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n  position: relative;\n  padding: 0;\n  width: 100%;\n  margin-left: 0;\n  margin-right: 0;\n}\n.step[data-v-9d93b00b] {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  position: relative;\n  z-index: 1;\n  background: white;\n  padding: 0 10px;\n  min-width: 100px;\n  gap: 5px;\n}\n.step-number[data-v-9d93b00b] {\n  width: 16px;\n  height: 16px;\n  border-radius: 50%;\n  background-color: #fff;\n  border: 2px solid #e9ecef;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: 600;\n  font-size: 10px;\n  transition: all 0.3s ease;\n  flex-shrink: 0;\n}\n.step > div[data-v-9d93b00b]:last-child {\n  font-size: 12px;\n  color: #6c757d;\n  font-weight: 500;\n  transition: all 0.3s ease;\n  white-space: nowrap;\n}\n.step.active .step-number[data-v-9d93b00b] {\n  background-color: #8C1D40 !important;\n  border-color: #8C1D40 !important;\n  color: white !important;\n  box-shadow: 0 0 0 3px rgba(140, 29, 64, 0.1);\n}\n.step.active > div[data-v-9d93b00b]:last-child {\n  color: #8C1D40 !important;\n  font-weight: 600;\n}\n.step.completed .step-number[data-v-9d93b00b] {\n  background-color: #8C1D40 !important;\n  border-color: #8C1D40 !important;\n  color: white !important;\n}\n.step.completed > div[data-v-9d93b00b]:last-child {\n  color: #8C1D40 !important;\n}\n.container[data-v-9d93b00b] {\n  max-width: 1200px;\n}\n.row[data-v-9d93b00b] {\n  margin-left: -15px;\n  margin-right: -15px;\n}\n.col-md-6[data-v-9d93b00b],\n.col-md-8[data-v-9d93b00b],\n.col-md-4[data-v-9d93b00b] {\n  padding-left: 15px;\n  padding-right: 15px;\n}\n.loading-overlay[data-v-9d93b00b] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(255, 255, 255, 0.8);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n}\n.loading-spinner[data-v-9d93b00b] {\n  text-align: center;\n  background: white;\n  padding: 2rem;\n  border-radius: 8px;\n  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\n}\n.main-container[data-v-9d93b00b] {\n  border: 1px solid #ddd;\n  border-radius: 5px;\n  padding: 20px;\n  margin-bottom: 20px;\n}\n.button-group[data-v-9d93b00b] {\n  display: flex;\n  justify-content: flex-end;\n  margin-top: 20px;\n}\n.geography-overview[data-v-9d93b00b] {\n  border: 1px solid #ddd;\n  border-radius: 5px;\n  padding: 20px;\n}\n.geography-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 15px;\n}\n.view-summary[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  display: flex;\n  align-items: center;\n}\n.view-summary svg[data-v-9d93b00b] {\n  margin-right: 5px;\n}\n.state-district-group[data-v-9d93b00b] {\n  border: 1px solid #eee;\n  border-radius: 5px;\n  padding: 15px;\n  margin-bottom: 20px;\n}\n.state-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px;\n  border-bottom: 1px solid #eee;\n  margin-bottom: 15px;\n}\n.state-header h5[data-v-9d93b00b] {\n  margin: 0;\n  color: #8C1D40 !important;\n}\n.district-block-group[data-v-9d93b00b],\n.block-gp-group[data-v-9d93b00b],\n.gp-village-group[data-v-9d93b00b] {\n  border: 1px solid #eee;\n  border-radius: 5px;\n  padding: 15px;\n  margin-bottom: 20px;\n}\n.district-header[data-v-9d93b00b],\n.block-header[data-v-9d93b00b],\n.gp-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px;\n  border-bottom: 1px solid #eee;\n  margin-bottom: 15px;\n}\n.district-header h5[data-v-9d93b00b],\n.block-header h5[data-v-9d93b00b],\n.gp-header h5[data-v-9d93b00b] {\n  margin: 0;\n  color: #8C1D40 !important;\n}\n.form-group[data-v-9d93b00b] {\n  margin-bottom: 1.5rem;\n  position: relative;\n}\n.form-group label[data-v-9d93b00b] {\n  display: block;\n  margin-bottom: 0.5rem;\n  font-weight: 500;\n  color: #8C1D40 !important;\n}\n.form-control[data-v-9d93b00b]:disabled {\n  background-color: var(--hover-bg);\n  cursor: not-allowed;\n}\n.main-container.loading[data-v-9d93b00b] {\n  opacity: 0.7;\n  pointer-events: none;\n}\n.btn[data-v-9d93b00b]:disabled {\n  opacity: 0.7;\n  cursor: not-allowed;\n}\n.main-container[data-v-9d93b00b] {\n  transition: opacity 0.3s ease;\n}\n@keyframes spin-9d93b00b {\n  to {\n    transform: rotate(360deg);\n  }\n}\n.spinner-border[data-v-9d93b00b] {\n  width: 3rem;\n  height: 3rem;\n  border: 0.25em solid currentColor;\n  border-right-color: transparent;\n  border-radius: 50%;\n  animation: spin-9d93b00b 0.75s linear infinite;\n}\n.form-check[data-v-9d93b00b] {\n  display: flex;\n  align-items: center;\n  white-space: nowrap;\n  margin-bottom: 0;\n}\n.form-check-label[data-v-9d93b00b] {\n  color: #000000 !important;\n  margin-left: 0.5rem;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.checkbox-container[data-v-9d93b00b] {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n.checkbox-item[data-v-9d93b00b] {\n  min-width: 200px;\n  flex: 0 1 auto;\n  margin-bottom: 10px;\n}\n.state-header[data-v-9d93b00b],\n.district-header[data-v-9d93b00b],\n.block-header[data-v-9d93b00b],\n.gp-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px;\n  border-bottom: 1px solid #eee;\n  margin-bottom: 15px;\n  flex-wrap: nowrap;\n}\n.state-header h5[data-v-9d93b00b],\n.district-header h5[data-v-9d93b00b],\n.block-header h5[data-v-9d93b00b],\n.gp-header h5[data-v-9d93b00b] {\n  margin: 0;\n  color: #8C1D40 !important;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin-right: 10px;\n}\n.state-header .form-check[data-v-9d93b00b],\n.district-header .form-check[data-v-9d93b00b],\n.block-header .form-check[data-v-9d93b00b],\n.gp-header .form-check[data-v-9d93b00b] {\n  flex-shrink: 0;\n}\n.hierarchy-path[data-v-9d93b00b] {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 5px;\n  font-size: 0.9rem;\n  color: #666;\n}\n.path-item[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  font-weight: 500;\n}\n.path-separator[data-v-9d93b00b] {\n  color: #999;\n  margin: 0 5px;\n}\n.state-header[data-v-9d93b00b],\n.district-header[data-v-9d93b00b],\n.block-header[data-v-9d93b00b],\n.gp-header[data-v-9d93b00b] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  padding-bottom: 10px;\n  border-bottom: 1px solid #eee;\n  margin-bottom: 15px;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n.state-header .hierarchy-path[data-v-9d93b00b],\n.district-header .hierarchy-path[data-v-9d93b00b],\n.block-header .hierarchy-path[data-v-9d93b00b],\n.gp-header .hierarchy-path[data-v-9d93b00b] {\n  flex: 1;\n  min-width: 200px;\n}\n.state-header .form-check[data-v-9d93b00b],\n.district-header .form-check[data-v-9d93b00b],\n.block-header .form-check[data-v-9d93b00b],\n.gp-header .form-check[data-v-9d93b00b] {\n  flex-shrink: 0;\n}\n.geography-tree[data-v-9d93b00b] {\n  max-height: 600px;\n  overflow-y: auto;\n  padding-right: 10px;\n}\n.tree-item[data-v-9d93b00b] {\n  margin-bottom: 5px;\n}\n.tree-content[data-v-9d93b00b] {\n  display: flex;\n  align-items: center;\n  padding: 8px 12px;\n  border-radius: 4px;\n  background-color: #f8f9fa;\n  transition: all 0.2s ease;\n  cursor: pointer;\n  user-select: none;\n}\n.tree-content[data-v-9d93b00b]:hover {\n  background-color: #e9ecef;\n}\n.tree-icon[data-v-9d93b00b] {\n  margin-right: 8px;\n  font-size: 10px;\n  color: #8C1D40 !important;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 14px;\n  height: 14px;\n  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n  font-weight: bold;\n}\n.tree-label[data-v-9d93b00b] {\n  flex: 1;\n  font-size: 0.9rem;\n  color: #495057;\n}\n.tree-count[data-v-9d93b00b] {\n  font-size: 0.8rem;\n  color: #6c757d;\n  margin-left: 8px;\n}\n.tree-children[data-v-9d93b00b] {\n  margin-left: 20px;\n  padding-left: 10px;\n  border-left: 2px solid #dee2e6;\n  transition: all 0.3s ease;\n}\n.state-item .tree-content[data-v-9d93b00b] {\n  background-color: #fff3f3;\n  border: 1px solid #ffe0e0;\n}\n.state-item .tree-content[data-v-9d93b00b]:hover {\n  background-color: #ffe6e6;\n  border-color: #ffcccc;\n}\n.district-item .tree-content[data-v-9d93b00b] {\n  background-color: #f8f9fa;\n}\n.block-item .tree-content[data-v-9d93b00b] {\n  background-color: #f0f7ff;\n}\n.gp-item .tree-content[data-v-9d93b00b] {\n  background-color: #f0fff4;\n}\n.village-item .tree-content[data-v-9d93b00b] {\n  background-color: #fffaf0;\n}\n.geography-overview[data-v-9d93b00b] {\n  position: sticky;\n  top: 20px;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar {\n  width: 6px;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-track {\n  background: #f1f1f1;\n  border-radius: 3px;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-thumb {\n  background: #8C1D40 !important;\n  border-radius: 3px;\n}\n.geography-tree[data-v-9d93b00b]::-webkit-scrollbar-thumb:hover {\n  background: #6b1630 !important;\n}\n.toggle-icon.expanded[data-v-9d93b00b] {\n  transform: rotate(90deg);\n}\n.container-fluid[data-v-9d93b00b] {\n  padding-left: 15px;\n  padding-right: 15px;\n}\n.col-md-6[data-v-9d93b00b] {\n  width: 100%;\n  max-width: 400px;\n}\n.tree-content[data-v-9d93b00b] {\n  cursor: pointer;\n  user-select: none;\n  transition: background-color 0.2s ease;\n}\n.tree-content[data-v-9d93b00b]:hover {\n  background-color: rgba(140, 29, 64, 0.05);\n}\n.toggle-icon[data-v-9d93b00b] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 16px;\n  height: 16px;\n  margin-right: 4px;\n  transition: transform 0.2s ease;\n}\n.toggle-icon.expanded[data-v-9d93b00b] {\n  transform: rotate(90deg);\n}\n.tree-children[data-v-9d93b00b] {\n  margin-left: 20px;\n  padding-left: 10px;\n  border-left: 2px solid #dee2e6;\n  transition: all 0.3s ease;\n}\n.tree-item[data-v-9d93b00b] {\n  margin-bottom: 4px;\n}\n.tree-content[data-v-9d93b00b] {\n  padding: 8px 12px;\n  border-radius: 4px;\n  display: flex;\n  align-items: center;\n}\n.state-item .tree-content[data-v-9d93b00b] {\n  background-color: #fff3f3;\n  border: 1px solid #ffe0e0;\n}\n.district-item .tree-content[data-v-9d93b00b] {\n  background-color: #f8f9fa;\n}\n.block-item .tree-content[data-v-9d93b00b] {\n  background-color: #f0f7ff;\n}\n.gp-item .tree-content[data-v-9d93b00b] {\n  background-color: #f0fff4;\n}\n.village-item .tree-content[data-v-9d93b00b] {\n  background-color: #fffaf0;\n}\n.state-header h5[data-v-9d93b00b],\n.district-header h5[data-v-9d93b00b],\n.block-header h5[data-v-9d93b00b],\n.gp-header h5[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n}\n.header[data-v-9d93b00b] {\n  color: #8C1D40 !important;\n  font-size: 16px !important;\n  font-weight: 500;\n}\n/*# sourceMappingURL=geography_details.bundle.3T3XZCXM.css.map */\n");
 (() => {
   // ../sva_frappe/sva_frappe/node_modules/@vue/shared/dist/shared.esm-bundler.js
   function makeMap(str) {
@@ -11337,6 +11337,22 @@ Only state can be modified.`);
             return 5;
         }
       },
+      isAtLowestHierarchy() {
+        switch (this.lowest_hierarchy) {
+          case "State":
+            return this.currentStep === 1;
+          case "District":
+            return this.currentStep === 2;
+          case "Block":
+            return this.currentStep === 3;
+          case "Gram Panchayat":
+            return this.currentStep === 4;
+          case "Village":
+            return this.currentStep === 5;
+          default:
+            return false;
+        }
+      },
       allStatesSelected() {
         return this.states.length > 0 && this.selectedStates.length === this.states.length;
       },
@@ -12245,123 +12261,124 @@ Only state can be modified.`);
   ];
   var _hoisted_6 = { class: "row" };
   var _hoisted_7 = { class: "col-md-8" };
-  var _hoisted_8 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "1", -1));
-  var _hoisted_9 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "States", -1));
-  var _hoisted_10 = [
-    _hoisted_8,
-    _hoisted_9
+  var _hoisted_8 = { class: "step-container" };
+  var _hoisted_9 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "1", -1));
+  var _hoisted_10 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "States", -1));
+  var _hoisted_11 = [
+    _hoisted_9,
+    _hoisted_10
   ];
-  var _hoisted_11 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "2", -1));
-  var _hoisted_12 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "Districts", -1));
-  var _hoisted_13 = [
-    _hoisted_11,
-    _hoisted_12
+  var _hoisted_12 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "2", -1));
+  var _hoisted_13 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "Districts", -1));
+  var _hoisted_14 = [
+    _hoisted_12,
+    _hoisted_13
   ];
-  var _hoisted_14 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "3", -1));
-  var _hoisted_15 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "Blocks", -1));
-  var _hoisted_16 = [
-    _hoisted_14,
-    _hoisted_15
+  var _hoisted_15 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "3", -1));
+  var _hoisted_16 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "Blocks", -1));
+  var _hoisted_17 = [
+    _hoisted_15,
+    _hoisted_16
   ];
-  var _hoisted_17 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "4", -1));
-  var _hoisted_18 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "Gram Panchayats", -1));
-  var _hoisted_19 = [
-    _hoisted_17,
-    _hoisted_18
+  var _hoisted_18 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "4", -1));
+  var _hoisted_19 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "Gram Panchayats", -1));
+  var _hoisted_20 = [
+    _hoisted_18,
+    _hoisted_19
   ];
-  var _hoisted_20 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "5", -1));
-  var _hoisted_21 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "Villages", -1));
-  var _hoisted_22 = [
-    _hoisted_20,
-    _hoisted_21
+  var _hoisted_21 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "step-number" }, "5", -1));
+  var _hoisted_22 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, "Villages", -1));
+  var _hoisted_23 = [
+    _hoisted_21,
+    _hoisted_22
   ];
-  var _hoisted_23 = { key: 0 };
-  var _hoisted_24 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available States", -1));
-  var _hoisted_25 = { class: "mb-3" };
-  var _hoisted_26 = { class: "form-check" };
-  var _hoisted_27 = ["checked"];
-  var _hoisted_28 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All States", -1));
-  var _hoisted_29 = { class: "checkbox-container" };
-  var _hoisted_30 = { class: "form-check" };
-  var _hoisted_31 = ["value"];
-  var _hoisted_32 = { class: "form-check-label" };
-  var _hoisted_33 = { key: 1 };
-  var _hoisted_34 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available Districts", -1));
-  var _hoisted_35 = { class: "mb-3" };
-  var _hoisted_36 = { class: "form-check" };
-  var _hoisted_37 = ["checked"];
-  var _hoisted_38 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All Districts", -1));
-  var _hoisted_39 = { class: "state-header mb-2" };
-  var _hoisted_40 = { class: "hierarchy-path" };
-  var _hoisted_41 = { class: "path-item" };
-  var _hoisted_42 = { class: "form-check" };
-  var _hoisted_43 = ["checked", "onChange"];
-  var _hoisted_44 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All", -1));
-  var _hoisted_45 = { class: "checkbox-container" };
-  var _hoisted_46 = { class: "form-check" };
-  var _hoisted_47 = ["value"];
-  var _hoisted_48 = { class: "form-check-label" };
-  var _hoisted_49 = { key: 2 };
-  var _hoisted_50 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available Blocks", -1));
-  var _hoisted_51 = { class: "mb-3" };
-  var _hoisted_52 = { class: "form-check" };
-  var _hoisted_53 = ["checked"];
-  var _hoisted_54 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All Blocks", -1));
-  var _hoisted_55 = { class: "district-header mb-2" };
-  var _hoisted_56 = { class: "hierarchy-path" };
-  var _hoisted_57 = { class: "path-item" };
-  var _hoisted_58 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "path-separator" }, ">", -1));
-  var _hoisted_59 = { class: "path-item" };
-  var _hoisted_60 = { class: "form-check" };
-  var _hoisted_61 = ["checked", "onChange"];
-  var _hoisted_62 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All", -1));
-  var _hoisted_63 = { class: "checkbox-container" };
-  var _hoisted_64 = { class: "form-check" };
-  var _hoisted_65 = ["value"];
-  var _hoisted_66 = { class: "form-check-label" };
-  var _hoisted_67 = { key: 3 };
-  var _hoisted_68 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available Gram Panchayats", -1));
-  var _hoisted_69 = { class: "mb-3" };
-  var _hoisted_70 = { class: "form-check" };
-  var _hoisted_71 = ["checked"];
-  var _hoisted_72 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All Gram Panchayats", -1));
-  var _hoisted_73 = { class: "block-header mb-2" };
-  var _hoisted_74 = { class: "hierarchy-path" };
-  var _hoisted_75 = { class: "path-item" };
-  var _hoisted_76 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "path-separator" }, ">", -1));
-  var _hoisted_77 = { class: "path-item" };
-  var _hoisted_78 = { class: "form-check" };
-  var _hoisted_79 = ["checked", "onChange"];
-  var _hoisted_80 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All", -1));
-  var _hoisted_81 = { class: "checkbox-container" };
-  var _hoisted_82 = { class: "form-check" };
-  var _hoisted_83 = ["value"];
-  var _hoisted_84 = { class: "form-check-label" };
-  var _hoisted_85 = { key: 4 };
-  var _hoisted_86 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available Villages", -1));
-  var _hoisted_87 = { class: "mb-3" };
-  var _hoisted_88 = { class: "form-check" };
-  var _hoisted_89 = ["checked"];
-  var _hoisted_90 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All Villages", -1));
-  var _hoisted_91 = { class: "gp-header mb-2" };
-  var _hoisted_92 = { class: "hierarchy-path" };
-  var _hoisted_93 = { class: "path-item" };
-  var _hoisted_94 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "path-separator" }, ">", -1));
-  var _hoisted_95 = { class: "path-item" };
-  var _hoisted_96 = { class: "form-check" };
-  var _hoisted_97 = ["checked", "onChange"];
-  var _hoisted_98 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All", -1));
-  var _hoisted_99 = { class: "checkbox-container" };
-  var _hoisted_100 = { class: "form-check" };
-  var _hoisted_101 = ["value"];
-  var _hoisted_102 = { class: "form-check-label" };
-  var _hoisted_103 = { class: "button-group" };
-  var _hoisted_104 = ["disabled"];
+  var _hoisted_24 = { key: 0 };
+  var _hoisted_25 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available States", -1));
+  var _hoisted_26 = { class: "mb-3" };
+  var _hoisted_27 = { class: "form-check" };
+  var _hoisted_28 = ["checked"];
+  var _hoisted_29 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All States", -1));
+  var _hoisted_30 = { class: "checkbox-container" };
+  var _hoisted_31 = { class: "form-check" };
+  var _hoisted_32 = ["value"];
+  var _hoisted_33 = { class: "form-check-label" };
+  var _hoisted_34 = { key: 1 };
+  var _hoisted_35 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available Districts", -1));
+  var _hoisted_36 = { class: "mb-3" };
+  var _hoisted_37 = { class: "form-check" };
+  var _hoisted_38 = ["checked"];
+  var _hoisted_39 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All Districts", -1));
+  var _hoisted_40 = { class: "state-header mb-2" };
+  var _hoisted_41 = { class: "hierarchy-path" };
+  var _hoisted_42 = { class: "path-item" };
+  var _hoisted_43 = { class: "form-check" };
+  var _hoisted_44 = ["checked", "onChange"];
+  var _hoisted_45 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All", -1));
+  var _hoisted_46 = { class: "checkbox-container" };
+  var _hoisted_47 = { class: "form-check" };
+  var _hoisted_48 = ["value"];
+  var _hoisted_49 = { class: "form-check-label" };
+  var _hoisted_50 = { key: 2 };
+  var _hoisted_51 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available Blocks", -1));
+  var _hoisted_52 = { class: "mb-3" };
+  var _hoisted_53 = { class: "form-check" };
+  var _hoisted_54 = ["checked"];
+  var _hoisted_55 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All Blocks", -1));
+  var _hoisted_56 = { class: "district-header mb-2" };
+  var _hoisted_57 = { class: "hierarchy-path" };
+  var _hoisted_58 = { class: "path-item" };
+  var _hoisted_59 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "path-separator" }, ">", -1));
+  var _hoisted_60 = { class: "path-item" };
+  var _hoisted_61 = { class: "form-check" };
+  var _hoisted_62 = ["checked", "onChange"];
+  var _hoisted_63 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All", -1));
+  var _hoisted_64 = { class: "checkbox-container" };
+  var _hoisted_65 = { class: "form-check" };
+  var _hoisted_66 = ["value"];
+  var _hoisted_67 = { class: "form-check-label" };
+  var _hoisted_68 = { key: 3 };
+  var _hoisted_69 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available Gram Panchayats", -1));
+  var _hoisted_70 = { class: "mb-3" };
+  var _hoisted_71 = { class: "form-check" };
+  var _hoisted_72 = ["checked"];
+  var _hoisted_73 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All Gram Panchayats", -1));
+  var _hoisted_74 = { class: "block-header mb-2" };
+  var _hoisted_75 = { class: "hierarchy-path" };
+  var _hoisted_76 = { class: "path-item" };
+  var _hoisted_77 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "path-separator" }, ">", -1));
+  var _hoisted_78 = { class: "path-item" };
+  var _hoisted_79 = { class: "form-check" };
+  var _hoisted_80 = ["checked", "onChange"];
+  var _hoisted_81 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All", -1));
+  var _hoisted_82 = { class: "checkbox-container" };
+  var _hoisted_83 = { class: "form-check" };
+  var _hoisted_84 = ["value"];
+  var _hoisted_85 = { class: "form-check-label" };
+  var _hoisted_86 = { key: 4 };
+  var _hoisted_87 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("h4", null, "Available Villages", -1));
+  var _hoisted_88 = { class: "mb-3" };
+  var _hoisted_89 = { class: "form-check" };
+  var _hoisted_90 = ["checked"];
+  var _hoisted_91 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All Villages", -1));
+  var _hoisted_92 = { class: "gp-header mb-2" };
+  var _hoisted_93 = { class: "hierarchy-path" };
+  var _hoisted_94 = { class: "path-item" };
+  var _hoisted_95 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "path-separator" }, ">", -1));
+  var _hoisted_96 = { class: "path-item" };
+  var _hoisted_97 = { class: "form-check" };
+  var _hoisted_98 = ["checked", "onChange"];
+  var _hoisted_99 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("label", { class: "form-check-label" }, "Select All", -1));
+  var _hoisted_100 = { class: "checkbox-container" };
+  var _hoisted_101 = { class: "form-check" };
+  var _hoisted_102 = ["value"];
+  var _hoisted_103 = { class: "form-check-label" };
+  var _hoisted_104 = { class: "button-group" };
   var _hoisted_105 = ["disabled"];
   var _hoisted_106 = ["disabled"];
-  var _hoisted_107 = { class: "col-md-4" };
-  var _hoisted_108 = { class: "geography-overview" };
-  var _hoisted_109 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "geography-header" }, [
+  var _hoisted_107 = ["disabled"];
+  var _hoisted_108 = { class: "col-md-4" };
+  var _hoisted_109 = { class: "geography-overview" };
+  var _hoisted_110 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", { class: "geography-header" }, [
     /* @__PURE__ */ createBaseVNode("h5", null, "Geography Overview"),
     /* @__PURE__ */ createBaseVNode("div", { class: "view-summary" }, [
       /* @__PURE__ */ createBaseVNode("svg", {
@@ -12380,42 +12397,42 @@ Only state can be modified.`);
       /* @__PURE__ */ createTextVNode(" Hierarchy View ")
     ])
   ], -1));
-  var _hoisted_110 = { class: "geography-tree" };
-  var _hoisted_111 = ["onClick"];
-  var _hoisted_112 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F4CC}", -1));
-  var _hoisted_113 = { class: "tree-label" };
-  var _hoisted_114 = {
+  var _hoisted_111 = { class: "geography-tree" };
+  var _hoisted_112 = ["onClick"];
+  var _hoisted_113 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F4CC}", -1));
+  var _hoisted_114 = { class: "tree-label" };
+  var _hoisted_115 = {
     key: 1,
     class: "tree-count"
   };
-  var _hoisted_115 = { class: "tree-children" };
-  var _hoisted_116 = ["onClick"];
-  var _hoisted_117 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F4CD}", -1));
-  var _hoisted_118 = { class: "tree-label" };
-  var _hoisted_119 = {
+  var _hoisted_116 = { class: "tree-children" };
+  var _hoisted_117 = ["onClick"];
+  var _hoisted_118 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F4CD}", -1));
+  var _hoisted_119 = { class: "tree-label" };
+  var _hoisted_120 = {
     key: 1,
     class: "tree-count"
   };
-  var _hoisted_120 = { class: "tree-children" };
-  var _hoisted_121 = ["onClick"];
-  var _hoisted_122 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F3D8}\uFE0F", -1));
-  var _hoisted_123 = { class: "tree-label" };
-  var _hoisted_124 = {
+  var _hoisted_121 = { class: "tree-children" };
+  var _hoisted_122 = ["onClick"];
+  var _hoisted_123 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F3D8}\uFE0F", -1));
+  var _hoisted_124 = { class: "tree-label" };
+  var _hoisted_125 = {
     key: 1,
     class: "tree-count"
   };
-  var _hoisted_125 = { class: "tree-children" };
-  var _hoisted_126 = ["onClick"];
-  var _hoisted_127 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F3DB}\uFE0F", -1));
-  var _hoisted_128 = { class: "tree-label" };
-  var _hoisted_129 = {
+  var _hoisted_126 = { class: "tree-children" };
+  var _hoisted_127 = ["onClick"];
+  var _hoisted_128 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F3DB}\uFE0F", -1));
+  var _hoisted_129 = { class: "tree-label" };
+  var _hoisted_130 = {
     key: 1,
     class: "tree-count"
   };
-  var _hoisted_130 = { class: "tree-children" };
-  var _hoisted_131 = { class: "tree-content" };
-  var _hoisted_132 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F3E1}", -1));
-  var _hoisted_133 = { class: "tree-label" };
+  var _hoisted_131 = { class: "tree-children" };
+  var _hoisted_132 = { class: "tree-content" };
+  var _hoisted_133 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("span", { class: "tree-icon" }, "\u{1F3E1}", -1));
+  var _hoisted_134 = { class: "tree-label" };
   function render(_ctx, _cache, $props, $setup, $data, $options) {
     return openBlock(), createElementBlock("div", _hoisted_1, [
       createBaseVNode("h1", _hoisted_2, toDisplayString($props.geography_title), 1),
@@ -12426,75 +12443,73 @@ Only state can be modified.`);
           createBaseVNode("div", {
             class: normalizeClass(["main-container", { "loading": $data.isLoading }])
           }, [
-            createBaseVNode("div", {
-              class: normalizeClass(["step-container", "progress-" + $data.currentStep])
-            }, [
+            createBaseVNode("div", _hoisted_8, [
               createBaseVNode("div", {
                 class: normalizeClass(["step", { "active": $data.currentStep >= 1, "completed": $data.currentStep > 1 }])
-              }, [..._hoisted_10], 2),
+              }, [..._hoisted_11], 2),
               $data.lowest_hierarchy !== "State" ? (openBlock(), createElementBlock("div", {
                 key: 0,
                 class: normalizeClass(["step", { "active": $data.currentStep >= 2, "completed": $data.currentStep > 2 }])
-              }, [..._hoisted_13], 2)) : createCommentVNode("v-if", true),
+              }, [..._hoisted_14], 2)) : createCommentVNode("v-if", true),
               $data.lowest_hierarchy !== "State" && $data.lowest_hierarchy !== "District" ? (openBlock(), createElementBlock("div", {
                 key: 1,
                 class: normalizeClass(["step", { "active": $data.currentStep >= 3, "completed": $data.currentStep > 3 }])
-              }, [..._hoisted_16], 2)) : createCommentVNode("v-if", true),
+              }, [..._hoisted_17], 2)) : createCommentVNode("v-if", true),
               $data.lowest_hierarchy !== "State" && $data.lowest_hierarchy !== "District" && $data.lowest_hierarchy !== "Block" ? (openBlock(), createElementBlock("div", {
                 key: 2,
                 class: normalizeClass({ "active": $data.currentStep >= 4, "completed": $data.currentStep > 4 })
-              }, [..._hoisted_19], 2)) : createCommentVNode("v-if", true),
+              }, [..._hoisted_20], 2)) : createCommentVNode("v-if", true),
               $data.lowest_hierarchy === "Village" ? (openBlock(), createElementBlock("div", {
                 key: 3,
                 class: normalizeClass({ "active": $data.currentStep >= 5, "completed": $data.currentStep > 5 })
-              }, [..._hoisted_22], 2)) : createCommentVNode("v-if", true)
-            ], 2),
-            $data.currentStep === 1 ? (openBlock(), createElementBlock("div", _hoisted_23, [
-              _hoisted_24,
-              createBaseVNode("div", _hoisted_25, [
-                createBaseVNode("div", _hoisted_26, [
+              }, [..._hoisted_23], 2)) : createCommentVNode("v-if", true)
+            ]),
+            $data.currentStep === 1 ? (openBlock(), createElementBlock("div", _hoisted_24, [
+              _hoisted_25,
+              createBaseVNode("div", _hoisted_26, [
+                createBaseVNode("div", _hoisted_27, [
                   createBaseVNode("input", {
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allStatesSelected,
                     onChange: _cache[0] || (_cache[0] = (...args) => _ctx.toggleAllStates && _ctx.toggleAllStates(...args))
-                  }, null, 40, _hoisted_27),
-                  _hoisted_28
+                  }, null, 40, _hoisted_28),
+                  _hoisted_29
                 ])
               ]),
-              createBaseVNode("div", _hoisted_29, [
+              createBaseVNode("div", _hoisted_30, [
                 (openBlock(true), createElementBlock(Fragment, null, renderList($data.states, (state, index) => {
                   return openBlock(), createElementBlock("div", {
                     class: "checkbox-item",
                     key: index
                   }, [
-                    createBaseVNode("div", _hoisted_30, [
+                    createBaseVNode("div", _hoisted_31, [
                       withDirectives(createBaseVNode("input", {
                         class: "form-check-input",
                         type: "checkbox",
                         value: state.id,
                         "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $data.selectedStates = $event),
                         onChange: _cache[2] || (_cache[2] = (...args) => $options.updateDistricts && $options.updateDistricts(...args))
-                      }, null, 40, _hoisted_31), [
+                      }, null, 40, _hoisted_32), [
                         [vModelCheckbox, $data.selectedStates]
                       ]),
-                      createBaseVNode("label", _hoisted_32, toDisplayString(state.name), 1)
+                      createBaseVNode("label", _hoisted_33, toDisplayString(state.name), 1)
                     ])
                   ]);
                 }), 128))
               ])
             ])) : createCommentVNode("v-if", true),
-            $data.currentStep === 2 ? (openBlock(), createElementBlock("div", _hoisted_33, [
-              _hoisted_34,
-              createBaseVNode("div", _hoisted_35, [
-                createBaseVNode("div", _hoisted_36, [
+            $data.currentStep === 2 ? (openBlock(), createElementBlock("div", _hoisted_34, [
+              _hoisted_35,
+              createBaseVNode("div", _hoisted_36, [
+                createBaseVNode("div", _hoisted_37, [
                   createBaseVNode("input", {
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allDistrictsSelected,
                     onChange: _cache[3] || (_cache[3] = (...args) => _ctx.toggleAllDistricts && _ctx.toggleAllDistricts(...args))
-                  }, null, 40, _hoisted_37),
-                  _hoisted_38
+                  }, null, 40, _hoisted_38),
+                  _hoisted_39
                 ])
               ]),
               (openBlock(true), createElementBlock(Fragment, null, renderList($data.selectedStates, (stateId) => {
@@ -12502,37 +12517,37 @@ Only state can be modified.`);
                   key: stateId,
                   class: "state-district-group mb-4"
                 }, [
-                  createBaseVNode("div", _hoisted_39, [
-                    createBaseVNode("div", _hoisted_40, [
-                      createBaseVNode("span", _hoisted_41, toDisplayString($options.getStateName(stateId)), 1)
+                  createBaseVNode("div", _hoisted_40, [
+                    createBaseVNode("div", _hoisted_41, [
+                      createBaseVNode("span", _hoisted_42, toDisplayString($options.getStateName(stateId)), 1)
                     ]),
-                    createBaseVNode("div", _hoisted_42, [
+                    createBaseVNode("div", _hoisted_43, [
                       createBaseVNode("input", {
                         class: "form-check-input",
                         type: "checkbox",
                         checked: $options.isAllDistrictsSelectedForState(stateId),
                         onChange: ($event) => $options.toggleAllDistrictsForState(stateId)
-                      }, null, 40, _hoisted_43),
-                      _hoisted_44
+                      }, null, 40, _hoisted_44),
+                      _hoisted_45
                     ])
                   ]),
-                  createBaseVNode("div", _hoisted_45, [
+                  createBaseVNode("div", _hoisted_46, [
                     (openBlock(true), createElementBlock(Fragment, null, renderList($options.getDistrictsForState(stateId), (district) => {
                       return openBlock(), createElementBlock("div", {
                         class: "checkbox-item",
                         key: district.id
                       }, [
-                        createBaseVNode("div", _hoisted_46, [
+                        createBaseVNode("div", _hoisted_47, [
                           withDirectives(createBaseVNode("input", {
                             class: "form-check-input",
                             type: "checkbox",
                             value: district.id,
                             "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $data.selectedDistricts = $event),
                             onChange: _cache[5] || (_cache[5] = (...args) => $options.updateBlocks && $options.updateBlocks(...args))
-                          }, null, 40, _hoisted_47), [
+                          }, null, 40, _hoisted_48), [
                             [vModelCheckbox, $data.selectedDistricts]
                           ]),
-                          createBaseVNode("label", _hoisted_48, toDisplayString(district.name), 1)
+                          createBaseVNode("label", _hoisted_49, toDisplayString(district.name), 1)
                         ])
                       ]);
                     }), 128))
@@ -12540,17 +12555,17 @@ Only state can be modified.`);
                 ]);
               }), 128))
             ])) : createCommentVNode("v-if", true),
-            $data.currentStep === 3 ? (openBlock(), createElementBlock("div", _hoisted_49, [
-              _hoisted_50,
-              createBaseVNode("div", _hoisted_51, [
-                createBaseVNode("div", _hoisted_52, [
+            $data.currentStep === 3 ? (openBlock(), createElementBlock("div", _hoisted_50, [
+              _hoisted_51,
+              createBaseVNode("div", _hoisted_52, [
+                createBaseVNode("div", _hoisted_53, [
                   createBaseVNode("input", {
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allBlocksSelected,
                     onChange: _cache[6] || (_cache[6] = (...args) => _ctx.toggleAllBlocks && _ctx.toggleAllBlocks(...args))
-                  }, null, 40, _hoisted_53),
-                  _hoisted_54
+                  }, null, 40, _hoisted_54),
+                  _hoisted_55
                 ])
               ]),
               (openBlock(true), createElementBlock(Fragment, null, renderList($data.selectedDistricts, (districtId) => {
@@ -12558,39 +12573,39 @@ Only state can be modified.`);
                   key: districtId,
                   class: "district-block-group mb-4"
                 }, [
-                  createBaseVNode("div", _hoisted_55, [
-                    createBaseVNode("div", _hoisted_56, [
-                      createBaseVNode("span", _hoisted_57, toDisplayString($options.getStateName($options.getDistrictState(districtId))), 1),
-                      _hoisted_58,
-                      createBaseVNode("span", _hoisted_59, toDisplayString($options.getDistrictName(districtId)), 1)
+                  createBaseVNode("div", _hoisted_56, [
+                    createBaseVNode("div", _hoisted_57, [
+                      createBaseVNode("span", _hoisted_58, toDisplayString($options.getStateName($options.getDistrictState(districtId))), 1),
+                      _hoisted_59,
+                      createBaseVNode("span", _hoisted_60, toDisplayString($options.getDistrictName(districtId)), 1)
                     ]),
-                    createBaseVNode("div", _hoisted_60, [
+                    createBaseVNode("div", _hoisted_61, [
                       createBaseVNode("input", {
                         class: "form-check-input",
                         type: "checkbox",
                         checked: $options.isAllBlocksSelectedForDistrict(districtId),
                         onChange: ($event) => $options.toggleAllBlocksForDistrict(districtId)
-                      }, null, 40, _hoisted_61),
-                      _hoisted_62
+                      }, null, 40, _hoisted_62),
+                      _hoisted_63
                     ])
                   ]),
-                  createBaseVNode("div", _hoisted_63, [
+                  createBaseVNode("div", _hoisted_64, [
                     (openBlock(true), createElementBlock(Fragment, null, renderList($options.getBlocksForDistrict(districtId), (block) => {
                       return openBlock(), createElementBlock("div", {
                         class: "checkbox-item",
                         key: block.id
                       }, [
-                        createBaseVNode("div", _hoisted_64, [
+                        createBaseVNode("div", _hoisted_65, [
                           withDirectives(createBaseVNode("input", {
                             class: "form-check-input",
                             type: "checkbox",
                             value: block.id,
                             "onUpdate:modelValue": _cache[7] || (_cache[7] = ($event) => $data.selectedBlocks = $event),
                             onChange: _cache[8] || (_cache[8] = (...args) => $options.updateGramPanchayats && $options.updateGramPanchayats(...args))
-                          }, null, 40, _hoisted_65), [
+                          }, null, 40, _hoisted_66), [
                             [vModelCheckbox, $data.selectedBlocks]
                           ]),
-                          createBaseVNode("label", _hoisted_66, toDisplayString(block.name), 1)
+                          createBaseVNode("label", _hoisted_67, toDisplayString(block.name), 1)
                         ])
                       ]);
                     }), 128))
@@ -12598,17 +12613,17 @@ Only state can be modified.`);
                 ]);
               }), 128))
             ])) : createCommentVNode("v-if", true),
-            $data.currentStep === 4 ? (openBlock(), createElementBlock("div", _hoisted_67, [
-              _hoisted_68,
-              createBaseVNode("div", _hoisted_69, [
-                createBaseVNode("div", _hoisted_70, [
+            $data.currentStep === 4 ? (openBlock(), createElementBlock("div", _hoisted_68, [
+              _hoisted_69,
+              createBaseVNode("div", _hoisted_70, [
+                createBaseVNode("div", _hoisted_71, [
                   createBaseVNode("input", {
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allGramPanchayatsSelected,
                     onChange: _cache[9] || (_cache[9] = (...args) => _ctx.toggleAllGramPanchayats && _ctx.toggleAllGramPanchayats(...args))
-                  }, null, 40, _hoisted_71),
-                  _hoisted_72
+                  }, null, 40, _hoisted_72),
+                  _hoisted_73
                 ])
               ]),
               (openBlock(true), createElementBlock(Fragment, null, renderList($data.selectedBlocks, (blockId) => {
@@ -12616,39 +12631,39 @@ Only state can be modified.`);
                   key: blockId,
                   class: "block-gp-group mb-4"
                 }, [
-                  createBaseVNode("div", _hoisted_73, [
-                    createBaseVNode("div", _hoisted_74, [
-                      createBaseVNode("span", _hoisted_75, toDisplayString($options.getStateName($options.getBlockState(blockId))), 1),
-                      _hoisted_76,
-                      createBaseVNode("span", _hoisted_77, toDisplayString($options.getDistrictName($options.getBlockDistrict(blockId))), 1)
+                  createBaseVNode("div", _hoisted_74, [
+                    createBaseVNode("div", _hoisted_75, [
+                      createBaseVNode("span", _hoisted_76, toDisplayString($options.getStateName($options.getBlockState(blockId))), 1),
+                      _hoisted_77,
+                      createBaseVNode("span", _hoisted_78, toDisplayString($options.getDistrictName($options.getBlockDistrict(blockId))), 1)
                     ]),
-                    createBaseVNode("div", _hoisted_78, [
+                    createBaseVNode("div", _hoisted_79, [
                       createBaseVNode("input", {
                         class: "form-check-input",
                         type: "checkbox",
                         checked: $options.isAllGramPanchayatsSelectedForBlock(blockId),
                         onChange: ($event) => $options.toggleAllGramPanchayatsForBlock(blockId)
-                      }, null, 40, _hoisted_79),
-                      _hoisted_80
+                      }, null, 40, _hoisted_80),
+                      _hoisted_81
                     ])
                   ]),
-                  createBaseVNode("div", _hoisted_81, [
+                  createBaseVNode("div", _hoisted_82, [
                     (openBlock(true), createElementBlock(Fragment, null, renderList($options.getGramPanchayatsForBlock(blockId), (gp) => {
                       return openBlock(), createElementBlock("div", {
                         class: "checkbox-item",
                         key: gp.id
                       }, [
-                        createBaseVNode("div", _hoisted_82, [
+                        createBaseVNode("div", _hoisted_83, [
                           withDirectives(createBaseVNode("input", {
                             class: "form-check-input",
                             type: "checkbox",
                             value: gp.id,
                             "onUpdate:modelValue": _cache[10] || (_cache[10] = ($event) => $data.selectedGramPanchayats = $event),
                             onChange: _cache[11] || (_cache[11] = (...args) => $options.updateVillages && $options.updateVillages(...args))
-                          }, null, 40, _hoisted_83), [
+                          }, null, 40, _hoisted_84), [
                             [vModelCheckbox, $data.selectedGramPanchayats]
                           ]),
-                          createBaseVNode("label", _hoisted_84, toDisplayString(gp.name), 1)
+                          createBaseVNode("label", _hoisted_85, toDisplayString(gp.name), 1)
                         ])
                       ]);
                     }), 128))
@@ -12656,17 +12671,17 @@ Only state can be modified.`);
                 ]);
               }), 128))
             ])) : createCommentVNode("v-if", true),
-            $data.currentStep === 5 ? (openBlock(), createElementBlock("div", _hoisted_85, [
-              _hoisted_86,
-              createBaseVNode("div", _hoisted_87, [
-                createBaseVNode("div", _hoisted_88, [
+            $data.currentStep === 5 ? (openBlock(), createElementBlock("div", _hoisted_86, [
+              _hoisted_87,
+              createBaseVNode("div", _hoisted_88, [
+                createBaseVNode("div", _hoisted_89, [
                   createBaseVNode("input", {
                     class: "form-check-input",
                     type: "checkbox",
                     checked: $options.allVillagesSelected,
                     onChange: _cache[12] || (_cache[12] = (...args) => _ctx.toggleAllVillages && _ctx.toggleAllVillages(...args))
-                  }, null, 40, _hoisted_89),
-                  _hoisted_90
+                  }, null, 40, _hoisted_90),
+                  _hoisted_91
                 ])
               ]),
               (openBlock(true), createElementBlock(Fragment, null, renderList($data.selectedGramPanchayats, (gpId) => {
@@ -12674,38 +12689,38 @@ Only state can be modified.`);
                   key: gpId,
                   class: "gp-village-group mb-4"
                 }, [
-                  createBaseVNode("div", _hoisted_91, [
-                    createBaseVNode("div", _hoisted_92, [
-                      createBaseVNode("span", _hoisted_93, toDisplayString($options.getStateName($options.getGPState(gpId))), 1),
-                      _hoisted_94,
-                      createBaseVNode("span", _hoisted_95, toDisplayString($options.getDistrictName($options.getGPDistrict(gpId))), 1)
+                  createBaseVNode("div", _hoisted_92, [
+                    createBaseVNode("div", _hoisted_93, [
+                      createBaseVNode("span", _hoisted_94, toDisplayString($options.getStateName($options.getGPState(gpId))), 1),
+                      _hoisted_95,
+                      createBaseVNode("span", _hoisted_96, toDisplayString($options.getDistrictName($options.getGPDistrict(gpId))), 1)
                     ]),
-                    createBaseVNode("div", _hoisted_96, [
+                    createBaseVNode("div", _hoisted_97, [
                       createBaseVNode("input", {
                         class: "form-check-input",
                         type: "checkbox",
                         checked: $options.isAllVillagesSelectedForGP(gpId),
                         onChange: ($event) => $options.toggleAllVillagesForGP(gpId)
-                      }, null, 40, _hoisted_97),
-                      _hoisted_98
+                      }, null, 40, _hoisted_98),
+                      _hoisted_99
                     ])
                   ]),
-                  createBaseVNode("div", _hoisted_99, [
+                  createBaseVNode("div", _hoisted_100, [
                     (openBlock(true), createElementBlock(Fragment, null, renderList($options.getVillagesForGP(gpId), (village) => {
                       return openBlock(), createElementBlock("div", {
                         class: "checkbox-item",
                         key: village.id
                       }, [
-                        createBaseVNode("div", _hoisted_100, [
+                        createBaseVNode("div", _hoisted_101, [
                           withDirectives(createBaseVNode("input", {
                             class: "form-check-input",
                             type: "checkbox",
                             value: village.id,
                             "onUpdate:modelValue": _cache[13] || (_cache[13] = ($event) => $data.selectedVillages = $event)
-                          }, null, 8, _hoisted_101), [
+                          }, null, 8, _hoisted_102), [
                             [vModelCheckbox, $data.selectedVillages]
                           ]),
-                          createBaseVNode("label", _hoisted_102, toDisplayString(village.name), 1)
+                          createBaseVNode("label", _hoisted_103, toDisplayString(village.name), 1)
                         ])
                       ]);
                     }), 128))
@@ -12713,31 +12728,32 @@ Only state can be modified.`);
                 ]);
               }), 128))
             ])) : createCommentVNode("v-if", true),
-            createBaseVNode("div", _hoisted_103, [
+            createBaseVNode("div", _hoisted_104, [
               $data.currentStep > 1 ? (openBlock(), createElementBlock("button", {
                 key: 0,
                 class: "btn btn-outline-secondary",
                 onClick: _cache[14] || (_cache[14] = (...args) => $options.goBack && $options.goBack(...args)),
                 disabled: $data.isLoading
-              }, "Back", 8, _hoisted_104)) : createCommentVNode("v-if", true),
-              createBaseVNode("button", {
+              }, "Back", 8, _hoisted_105)) : createCommentVNode("v-if", true),
+              $options.isAtLowestHierarchy ? (openBlock(), createElementBlock("button", {
+                key: 1,
                 class: "btn btn-save",
                 onClick: _cache[15] || (_cache[15] = (...args) => $options.saveSelection && $options.saveSelection(...args)),
                 disabled: $data.isLoading
-              }, "Save", 8, _hoisted_105),
+              }, "Save", 8, _hoisted_106)) : createCommentVNode("v-if", true),
               $data.currentStep < $options.totalSteps ? (openBlock(), createElementBlock("button", {
-                key: 1,
+                key: 2,
                 class: "btn btn-next",
                 onClick: _cache[16] || (_cache[16] = (...args) => $options.goNext && $options.goNext(...args)),
                 disabled: $data.isLoading
-              }, "Next", 8, _hoisted_106)) : createCommentVNode("v-if", true)
+              }, "Next", 8, _hoisted_107)) : createCommentVNode("v-if", true)
             ])
           ], 2)
         ]),
-        createBaseVNode("div", _hoisted_107, [
-          createBaseVNode("div", _hoisted_108, [
-            _hoisted_109,
-            createBaseVNode("div", _hoisted_110, [
+        createBaseVNode("div", _hoisted_108, [
+          createBaseVNode("div", _hoisted_109, [
+            _hoisted_110,
+            createBaseVNode("div", _hoisted_111, [
               (openBlock(true), createElementBlock(Fragment, null, renderList($data.selectedStates, (stateId) => {
                 return openBlock(), createElementBlock("div", {
                   key: stateId,
@@ -12751,11 +12767,11 @@ Only state can be modified.`);
                       key: 0,
                       class: normalizeClass(["tree-icon toggle-icon", { "expanded": $options.isStateExpanded(stateId) }])
                     }, toDisplayString($options.isStateExpanded(stateId) ? "\u25BC" : "\u25B6"), 3)) : createCommentVNode("v-if", true),
-                    _hoisted_112,
-                    createBaseVNode("span", _hoisted_113, toDisplayString($options.getStateName(stateId)), 1),
-                    $data.lowest_hierarchy !== "State" ? (openBlock(), createElementBlock("span", _hoisted_114, " (" + toDisplayString($options.getSelectedDistrictsForState(stateId).length) + ") ", 1)) : createCommentVNode("v-if", true)
-                  ], 8, _hoisted_111),
-                  withDirectives(createBaseVNode("div", _hoisted_115, [
+                    _hoisted_113,
+                    createBaseVNode("span", _hoisted_114, toDisplayString($options.getStateName(stateId)), 1),
+                    $data.lowest_hierarchy !== "State" ? (openBlock(), createElementBlock("span", _hoisted_115, " (" + toDisplayString($options.getSelectedDistrictsForState(stateId).length) + ") ", 1)) : createCommentVNode("v-if", true)
+                  ], 8, _hoisted_112),
+                  withDirectives(createBaseVNode("div", _hoisted_116, [
                     (openBlock(true), createElementBlock(Fragment, null, renderList($options.getDistrictsForState(stateId), (district) => {
                       return withDirectives((openBlock(), createElementBlock("div", {
                         key: district.id,
@@ -12769,11 +12785,11 @@ Only state can be modified.`);
                             key: 0,
                             class: normalizeClass(["tree-icon toggle-icon", { "expanded": $options.isDistrictExpanded(district.id) }])
                           }, toDisplayString($options.isDistrictExpanded(district.id) ? "\u25BC" : "\u25B6"), 3)) : createCommentVNode("v-if", true),
-                          _hoisted_117,
-                          createBaseVNode("span", _hoisted_118, toDisplayString(district.name), 1),
-                          $data.lowest_hierarchy !== "District" ? (openBlock(), createElementBlock("span", _hoisted_119, " (" + toDisplayString($options.getSelectedBlocksForDistrict(district.id).length) + ") ", 1)) : createCommentVNode("v-if", true)
-                        ], 8, _hoisted_116),
-                        withDirectives(createBaseVNode("div", _hoisted_120, [
+                          _hoisted_118,
+                          createBaseVNode("span", _hoisted_119, toDisplayString(district.name), 1),
+                          $data.lowest_hierarchy !== "District" ? (openBlock(), createElementBlock("span", _hoisted_120, " (" + toDisplayString($options.getSelectedBlocksForDistrict(district.id).length) + ") ", 1)) : createCommentVNode("v-if", true)
+                        ], 8, _hoisted_117),
+                        withDirectives(createBaseVNode("div", _hoisted_121, [
                           (openBlock(true), createElementBlock(Fragment, null, renderList($options.getBlocksForDistrict(district.id), (block) => {
                             return withDirectives((openBlock(), createElementBlock("div", {
                               key: block.id,
@@ -12787,11 +12803,11 @@ Only state can be modified.`);
                                   key: 0,
                                   class: normalizeClass(["tree-icon toggle-icon", { "expanded": $options.isBlockExpanded(block.id) }])
                                 }, toDisplayString($options.isBlockExpanded(block.id) ? "\u25BC" : "\u25B6"), 3)) : createCommentVNode("v-if", true),
-                                _hoisted_122,
-                                createBaseVNode("span", _hoisted_123, toDisplayString(block.name), 1),
-                                $data.lowest_hierarchy !== "Block" ? (openBlock(), createElementBlock("span", _hoisted_124, " (" + toDisplayString($options.getSelectedGramPanchayatsForBlock(block.id).length) + ") ", 1)) : createCommentVNode("v-if", true)
-                              ], 8, _hoisted_121),
-                              withDirectives(createBaseVNode("div", _hoisted_125, [
+                                _hoisted_123,
+                                createBaseVNode("span", _hoisted_124, toDisplayString(block.name), 1),
+                                $data.lowest_hierarchy !== "Block" ? (openBlock(), createElementBlock("span", _hoisted_125, " (" + toDisplayString($options.getSelectedGramPanchayatsForBlock(block.id).length) + ") ", 1)) : createCommentVNode("v-if", true)
+                              ], 8, _hoisted_122),
+                              withDirectives(createBaseVNode("div", _hoisted_126, [
                                 (openBlock(true), createElementBlock(Fragment, null, renderList($options.getGramPanchayatsForBlock(block.id), (gp) => {
                                   return withDirectives((openBlock(), createElementBlock("div", {
                                     key: gp.id,
@@ -12805,19 +12821,19 @@ Only state can be modified.`);
                                         key: 0,
                                         class: normalizeClass(["tree-icon toggle-icon", { "expanded": $options.isGPExpanded(gp.id) }])
                                       }, toDisplayString($options.isGPExpanded(gp.id) ? "\u25BC" : "\u25B6"), 3)) : createCommentVNode("v-if", true),
-                                      _hoisted_127,
-                                      createBaseVNode("span", _hoisted_128, toDisplayString(gp.name), 1),
-                                      $data.lowest_hierarchy !== "Gram Panchayat" ? (openBlock(), createElementBlock("span", _hoisted_129, " (" + toDisplayString($options.getSelectedVillagesForGP(gp.id).length) + ") ", 1)) : createCommentVNode("v-if", true)
-                                    ], 8, _hoisted_126),
-                                    withDirectives(createBaseVNode("div", _hoisted_130, [
+                                      _hoisted_128,
+                                      createBaseVNode("span", _hoisted_129, toDisplayString(gp.name), 1),
+                                      $data.lowest_hierarchy !== "Gram Panchayat" ? (openBlock(), createElementBlock("span", _hoisted_130, " (" + toDisplayString($options.getSelectedVillagesForGP(gp.id).length) + ") ", 1)) : createCommentVNode("v-if", true)
+                                    ], 8, _hoisted_127),
+                                    withDirectives(createBaseVNode("div", _hoisted_131, [
                                       (openBlock(true), createElementBlock(Fragment, null, renderList($options.getVillagesForGP(gp.id), (village) => {
                                         return withDirectives((openBlock(), createElementBlock("div", {
                                           key: village.id,
                                           class: "tree-item village-item"
                                         }, [
-                                          createBaseVNode("div", _hoisted_131, [
-                                            _hoisted_132,
-                                            createBaseVNode("span", _hoisted_133, toDisplayString(village.name), 1)
+                                          createBaseVNode("div", _hoisted_132, [
+                                            _hoisted_133,
+                                            createBaseVNode("span", _hoisted_134, toDisplayString(village.name), 1)
                                           ])
                                         ])), [
                                           [vShow, $data.selectedVillages.includes(village.id)]
@@ -12962,4 +12978,4 @@ Only state can be modified.`);
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-//# sourceMappingURL=geography_details.bundle.6J5GYC7O.js.map
+//# sourceMappingURL=geography_details.bundle.NTF34PXI.js.map

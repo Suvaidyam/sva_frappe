@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="main-container" :class="{ 'loading': isLoading }">
-                    <div class="step-container" :class="'progress-' + currentStep">
+                    <div class="step-container">
                         <div class="step" :class="{ 'active': currentStep >= 1, 'completed': currentStep > 1 }">
                             <div class="step-number">1</div>
                             <div>States</div>
@@ -207,7 +207,8 @@
                     <div class="button-group">
                         <button class="btn btn-outline-secondary" @click="goBack" v-if="currentStep > 1"
                             :disabled="isLoading">Back</button>
-                        <button class="btn btn-save" @click="saveSelection" :disabled="isLoading">Save</button>
+                        <button class="btn btn-save" @click="saveSelection" v-if="isAtLowestHierarchy"
+                            :disabled="isLoading">Save</button>
                         <button class="btn btn-next" @click="goNext" v-if="currentStep < totalSteps"
                             :disabled="isLoading">Next</button>
                     </div>
@@ -381,6 +382,22 @@ export default {
                     return 5;
                 default:
                     return 5;
+            }
+        },
+        isAtLowestHierarchy() {
+            switch (this.lowest_hierarchy) {
+                case 'State':
+                    return this.currentStep === 1;
+                case 'District':
+                    return this.currentStep === 2;
+                case 'Block':
+                    return this.currentStep === 3;
+                case 'Gram Panchayat':
+                    return this.currentStep === 4;
+                case 'Village':
+                    return this.currentStep === 5;
+                default:
+                    return false;
             }
         },
         allStatesSelected() {
@@ -1501,17 +1518,6 @@ select.form-control:focus {
     margin-right: 0;
 }
 
-.step-container::before {
-    content: '';
-    position: absolute;
-    top: 8px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #e9ecef;
-    z-index: 0;
-}
-
 .step {
     display: flex;
     flex-direction: row;
@@ -1540,7 +1546,7 @@ select.form-control:focus {
 }
 
 .step>div:last-child {
-    font-size: 11px;
+    font-size: 12px;
     color: #6c757d;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -1567,41 +1573,6 @@ select.form-control:focus {
 
 .step.completed>div:last-child {
     color: #8C1D40 !important;
-}
-
-/* Update progress bar position */
-.step-container::after {
-    content: '';
-    position: absolute;
-    top: 8px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #8C1D40;
-    z-index: 0;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
-}
-
-.step-container.progress-1::after {
-    transform: scaleX(0.25);
-}
-
-.step-container.progress-2::after {
-    transform: scaleX(0.5);
-}
-
-.step-container.progress-3::after {
-    transform: scaleX(0.75);
-}
-
-.step-container.progress-4::after {
-    transform: scaleX(1);
-}
-
-.step-container.progress-5::after {
-    transform: scaleX(1);
 }
 
 /* Keep existing layout styles */
