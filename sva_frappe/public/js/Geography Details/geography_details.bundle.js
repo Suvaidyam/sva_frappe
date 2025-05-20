@@ -2,13 +2,14 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./geography_details.vue";
 class GeographyDetails {
-    constructor({ wrapper, hierarchy_level_field, geography_details_field, geography_title, frm }) {
+    constructor({ wrapper, hierarchy_level_field, geography_details_field, geography_title, frm, read_only }) {
         this.$wrapper = $(wrapper);
         this.app = null;
         this.hierarchy_level_field = hierarchy_level_field;
         this.geography_details_field = geography_details_field;
         this.geography_title = geography_title;
         this.frm = frm;
+        this.read_only = read_only;
         this.init();
     }
 
@@ -40,7 +41,8 @@ class GeographyDetails {
             hierarchy_level_field: this.hierarchy_level_field,
             geography_details_field: this.geography_details_field,
             geography_title: this.geography_title,
-            frm: this.frm
+            frm: this.frm,
+            read_only: this.read_only
         });
         SetVueGlobals(this.app);
         this.app.use(pinia);
