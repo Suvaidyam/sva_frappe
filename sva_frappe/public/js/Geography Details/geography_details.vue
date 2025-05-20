@@ -358,7 +358,7 @@ export default {
             availableVillages: [],
             isLoading: false,
             expandedStateId: null,
-            watershed_management_name: null,
+            current_docname: null,
             lowest_hierarchy: 'District',
             isDataLoaded: false,
             expandedStates: new Set(),
@@ -429,7 +429,7 @@ export default {
 
         const route = frappe.get_route();
         if (route[1] === this.doctype && route[2]) {
-            this.watershed_management_name = route[2];
+            this.current_docname = route[2];
             await this.loadExistingData();
         } else {
             await this.loadDefaultLowestHierarchy();
@@ -446,9 +446,10 @@ export default {
     watch: {
         '$route': {
             handler: async function (to, from) {
-                if (to[1] === this.doctype && to[2] && to[2] !== this.watershed_management_name) {
+                const route = frappe.get_route();
+                if (route[1] === this.doctype && route[2] && route[2] !== this.current_docname) {
                     this.resetData();
-                    this.watershed_management_name = to[2];
+                    this.current_docname = route[2];
                     await this.loadExistingData();
                 }
             },
@@ -475,11 +476,11 @@ export default {
             }
         },
         async loadExistingData() {
-            if (!this.watershed_management_name || this.isLoading) return;
+            if (!this.current_docname || this.isLoading) return;
 
             await this.withLoading(async () => {
                 try {
-                    const doc = await frappe.get_doc(this.doctype, this.watershed_management_name);
+                    const doc = await frappe.get_doc(this.doctype, this.current_docname);
                     if (doc) {
                         this.resetData();
 
@@ -549,13 +550,6 @@ export default {
                 return;
             }
 
-            console.log('Selected states:', this.selectedStates);
-            console.log('States data:', this.states);
-            console.log('Selected states details:', this.selectedStates.map(stateId => {
-                const state = this.states.find(s => s.id === stateId);
-                return state ? { id: state.id, name: state.name } : null;
-            }));
-
             await this.withLoading(async () => {
                 try {
                     const response = await frappe.call({
@@ -564,21 +558,14 @@ export default {
                             state: this.selectedStates
                         },
                         callback: (r) => {
-                            console.log('API Response:', r);
-                            console.log('API Response message:', r.message);
                             if (r.message) {
                                 this.districts = {};
-                                this.availableDistricts = r.message.map(district => {
-                                    console.log('Processing district:', district);
-                                    return {
-                                        id: district.name,
-                                        name: district.district_name,
-                                        code: district.district_code,
-                                        state: district.state
-                                    };
-                                });
-
-                                console.log('Processed districts:', this.availableDistricts);
+                                this.availableDistricts = r.message.map(district => ({
+                                    id: district.name,
+                                    name: district.district_name,
+                                    code: district.district_code,
+                                    state: district.state
+                                }));
 
                                 this.availableDistricts.forEach(district => {
                                     if (!this.districts[district.state]) {
@@ -587,21 +574,10 @@ export default {
                                     this.districts[district.state].push(district);
                                 });
 
-                                console.log('Grouped districts:', this.districts);
-                                console.log('Districts by state:', Object.keys(this.districts).map(stateId => ({
-                                    stateId,
-                                    count: this.districts[stateId].length,
-                                    districts: this.districts[stateId]
-                                })));
-
                                 this.selectedDistricts = this.selectedDistricts.filter(districtId => {
                                     const district = this.availableDistricts.find(d => d.id === districtId);
                                     return district && this.selectedStates.includes(district.state);
                                 });
-
-                                console.log('Final selected districts:', this.selectedDistricts);
-                            } else {
-                                console.error('No message in API response');
                             }
                         }
                     });
@@ -1029,7 +1005,7 @@ export default {
                     method: 'sva_frappe.api.save_geography_details',
                     args: {
                         selection_data: JSON.stringify(selection),
-                        docname: this.watershed_management_name,
+                        docname: this.current_docname,
                         lowest_hierarchy: this.lowest_hierarchy,
                         doctype: this.doctype,
                         hierarchy_level_field: this.hierarchy_level_field,
@@ -1037,8 +1013,8 @@ export default {
                     },
                     callback: (r) => {
                         if (r.message && r.message.status === 'success') {
-                            if (!this.watershed_management_name && r.message.docname) {
-                                this.watershed_management_name = r.message.docname;
+                            if (!this.current_docname && r.message.docname) {
+                                this.current_docname = r.message.docname;
                             }
 
                             frappe.show_alert({
@@ -1046,7 +1022,7 @@ export default {
                                 indicator: 'green'
                             });
 
-                            if (!this.watershed_management_name && r.message.docname) {
+                            if (!this.current_docname && r.message.docname) {
                                 frappe.set_route('Form', this.doctype, r.message.docname);
                             }
                         } else {
