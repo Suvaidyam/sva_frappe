@@ -50,7 +50,7 @@
                                 <label>
                                     <span class="input-area">
                                         <input type="checkbox" :checked="allStatesSelected" @change="toggleAllStates"
-                                            class="input-with-feedback">
+                                            class="input-with-feedback" :disabled="read_only">
                                     </span>
                                     <span class="disp-area" style="display: none;">
                                         <input type="checkbox" disabled class="disabled-deselected">
@@ -67,7 +67,8 @@
                                     <label>
                                         <span class="input-area">
                                             <input type="checkbox" :value="state.id" v-model="selectedStates"
-                                                @change="updateDistricts" class="input-with-feedback">
+                                                @change="updateDistricts" class="input-with-feedback"
+                                                :disabled="read_only">
                                         </span>
                                         <span class="disp-area" style="display: none;">
                                             <input type="checkbox" disabled class="disabled-deselected">
@@ -88,7 +89,8 @@
                                 <label>
                                     <span class="input-area">
                                         <input type="checkbox" :checked="allDistrictsSelected"
-                                            @change="toggleAllDistricts" class="input-with-feedback">
+                                            @change="toggleAllDistricts" class="input-with-feedback"
+                                            :disabled="read_only">
                                     </span>
                                     <span class="disp-area" style="display: none;">
                                         <input type="checkbox" disabled class="disabled-deselected">
@@ -109,7 +111,7 @@
                                         <span class="input-area">
                                             <input type="checkbox" :checked="isAllDistrictsSelectedForState(stateId)"
                                                 @change="toggleAllDistrictsForState(stateId)"
-                                                class="input-with-feedback">
+                                                class="input-with-feedback" :disabled="read_only">
                                         </span>
                                         <span class="disp-area" style="display: none;">
                                             <input type="checkbox" disabled class="disabled-deselected">
@@ -127,7 +129,8 @@
                                         <label>
                                             <span class="input-area">
                                                 <input type="checkbox" :value="district.id" v-model="selectedDistricts"
-                                                    @change="updateBlocks" class="input-with-feedback">
+                                                    @change="updateBlocks" class="input-with-feedback"
+                                                    :disabled="read_only">
                                             </span>
                                             <span class="disp-area" style="display: none;">
                                                 <input type="checkbox" disabled class="disabled-deselected">
@@ -147,7 +150,7 @@
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" :checked="allBlocksSelected"
-                                    @change="toggleAllBlocks">
+                                    @change="toggleAllBlocks" :disabled="read_only">
                                 <label class="form-check-label">Select All Blocks</label>
                             </div>
                         </div>
@@ -162,7 +165,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
                                         :checked="isAllBlocksSelectedForDistrict(districtId)"
-                                        @change="toggleAllBlocksForDistrict(districtId)">
+                                        @change="toggleAllBlocksForDistrict(districtId)" :disabled="read_only">
                                     <label class="form-check-label">Select All</label>
                                 </div>
                             </div>
@@ -171,7 +174,8 @@
                                     :key="block.id">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" :value="block.id"
-                                            v-model="selectedBlocks" @change="updateGramPanchayats">
+                                            v-model="selectedBlocks" @change="updateGramPanchayats"
+                                            :disabled="read_only">
                                         <label class="form-check-label">{{ block.name }}</label>
                                     </div>
                                 </div>
@@ -184,7 +188,7 @@
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" :checked="allGramPanchayatsSelected"
-                                    @change="toggleAllGramPanchayats">
+                                    @change="toggleAllGramPanchayats" :disabled="read_only">
                                 <label class="form-check-label">Select All Gram Panchayats</label>
                             </div>
                         </div>
@@ -198,7 +202,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
                                         :checked="isAllGramPanchayatsSelectedForBlock(blockId)"
-                                        @change="toggleAllGramPanchayatsForBlock(blockId)">
+                                        @change="toggleAllGramPanchayatsForBlock(blockId)" :disabled="read_only">
                                     <label class="form-check-label">Select All</label>
                                 </div>
                             </div>
@@ -207,7 +211,8 @@
                                     :key="gp.id">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" :value="gp.id"
-                                            v-model="selectedGramPanchayats" @change="updateVillages">
+                                            v-model="selectedGramPanchayats" @change="updateVillages"
+                                            :disabled="read_only">
                                         <label class="form-check-label">{{ gp.name }}</label>
                                     </div>
                                 </div>
@@ -220,7 +225,7 @@
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" :checked="allVillagesSelected"
-                                    @change="toggleAllVillages">
+                                    @change="toggleAllVillages" :disabled="read_only">
                                 <label class="form-check-label">Select All Villages</label>
                             </div>
                         </div>
@@ -234,7 +239,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
                                         :checked="isAllVillagesSelectedForGP(gpId)"
-                                        @change="toggleAllVillagesForGP(gpId)">
+                                        @change="toggleAllVillagesForGP(gpId)" :disabled="read_only">
                                     <label class="form-check-label">Select All</label>
                                 </div>
                             </div>
@@ -242,7 +247,7 @@
                                 <div class="checkbox-item" v-for="village in getVillagesForGP(gpId)" :key="village.id">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" :value="village.id"
-                                            v-model="selectedVillages">
+                                            v-model="selectedVillages" :disabled="read_only">
                                         <label class="form-check-label">{{ village.name }}</label>
                                     </div>
                                 </div>
@@ -253,7 +258,7 @@
                     <div class="button-group">
                         <button class="btn btn-default" @click="goBack" v-if="currentStep > 1"
                             :disabled="isLoading">Back</button>
-                        <button class="btn btn-primary" @click="saveSelection" v-if="isAtLowestHierarchy"
+                        <button class="btn btn-primary" @click="saveSelection" v-if="isAtLowestHierarchy && !read_only"
                             :disabled="isLoading">Save</button>
                         <button class="btn btn-primary" @click="goNext" v-if="currentStep < totalSteps"
                             :disabled="isLoading">Next</button>
@@ -268,7 +273,7 @@
                     <div class="geography-tree">
                         <div v-for="stateId in selectedStates" :key="stateId" class="tree-item state-item">
                             <div class="tree-content"
-                                @click="lowest_hierarchy !== 'State' && toggleStateExpansion(stateId)">
+                                @click="!read_only && lowest_hierarchy !== 'State' && toggleStateExpansion(stateId)">
                                 <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'State'"
                                     :class="{ 'expanded': isStateExpanded(stateId) }">
                                     {{ isStateExpanded(stateId) ? '▼' : '▶' }}
@@ -284,7 +289,7 @@
                                 <div v-for="district in getDistrictsForState(stateId)" :key="district.id"
                                     class="tree-item district-item" v-show="selectedDistricts.includes(district.id)">
                                     <div class="tree-content"
-                                        @click="lowest_hierarchy !== 'District' && toggleDistrictExpansion(district.id)">
+                                        @click="!read_only && lowest_hierarchy !== 'District' && toggleDistrictExpansion(district.id)">
                                         <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'District'"
                                             :class="{ 'expanded': isDistrictExpanded(district.id) }">
                                             {{ isDistrictExpanded(district.id) ? '▼' : '▶' }}
@@ -300,7 +305,7 @@
                                         <div v-for="block in getBlocksForDistrict(district.id)" :key="block.id"
                                             class="tree-item block-item" v-show="selectedBlocks.includes(block.id)">
                                             <div class="tree-content"
-                                                @click="lowest_hierarchy !== 'Block' && toggleBlockExpansion(block.id)">
+                                                @click="!read_only && lowest_hierarchy !== 'Block' && toggleBlockExpansion(block.id)">
                                                 <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'Block'"
                                                     :class="{ 'expanded': isBlockExpanded(block.id) }">
                                                     {{ isBlockExpanded(block.id) ? '▼' : '▶' }}
@@ -317,7 +322,7 @@
                                                     class="tree-item gp-item"
                                                     v-show="selectedGramPanchayats.includes(gp.id)">
                                                     <div class="tree-content"
-                                                        @click="lowest_hierarchy !== 'Gram Panchayat' && toggleGPExpansion(gp.id)">
+                                                        @click="!read_only && lowest_hierarchy !== 'Gram Panchayat' && toggleGPExpansion(gp.id)">
                                                         <span class="tree-icon toggle-icon"
                                                             v-if="lowest_hierarchy !== 'Gram Panchayat'"
                                                             :class="{ 'expanded': isGPExpanded(gp.id) }">
@@ -374,6 +379,10 @@ export default {
         geography_title: {
             type: String,
             required: false
+        },
+        read_only: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -424,8 +433,8 @@ export default {
         },
         themeColors() {
             return {
-                primary: frappe.boot.my_theme?.button_background_color || '#CB2929',
-                primaryLight: this.getLightColor(frappe.boot.my_theme?.button_background_color || '#CB2929')
+                primary: frappe.boot.my_theme?.button_background_color || '#171717',
+                primaryLight: this.getLightColor(frappe.boot.my_theme?.button_background_color || '#171717')
             };
         },
         isAtLowestHierarchy() {
