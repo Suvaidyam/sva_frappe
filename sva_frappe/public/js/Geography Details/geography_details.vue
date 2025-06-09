@@ -46,18 +46,37 @@
                     <div v-if="currentStep === 1">
                         <h4>Available States</h4>
                         <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" :checked="allStatesSelected"
-                                    @change="toggleAllStates">
-                                <label class="form-check-label">Select All States</label>
+                            <div class="checkbox">
+                                <label>
+                                    <span class="input-area">
+                                        <input type="checkbox" :checked="allStatesSelected" @change="toggleAllStates"
+                                            class="input-with-feedback" :disabled="read_only">
+                                    </span>
+                                    <span class="disp-area" style="display: none;">
+                                        <input type="checkbox" disabled class="disabled-deselected">
+                                    </span>
+                                    <span class="label-area">Select All States</span>
+                                    <span class="ml-1 help"></span>
+                                </label>
+                                <p class="help-box small text-extra-muted"></p>
                             </div>
                         </div>
                         <div class="checkbox-container">
                             <div class="checkbox-item" v-for="(state, index) in states" :key="index">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" :value="state.id"
-                                        v-model="selectedStates" @change="updateDistricts">
-                                    <label class="form-check-label">{{ state.name }}</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <span class="input-area">
+                                            <input type="checkbox" :value="state.id" v-model="selectedStates"
+                                                @change="updateDistricts" class="input-with-feedback"
+                                                :disabled="read_only">
+                                        </span>
+                                        <span class="disp-area" style="display: none;">
+                                            <input type="checkbox" disabled class="disabled-deselected">
+                                        </span>
+                                        <span class="label-area">{{ state.name }}</span>
+                                        <span class="ml-1 help"></span>
+                                    </label>
+                                    <p class="help-box small text-extra-muted"></p>
                                 </div>
                             </div>
                         </div>
@@ -66,10 +85,20 @@
                     <div v-if="currentStep === 2">
                         <h4>Available Districts</h4>
                         <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" :checked="allDistrictsSelected"
-                                    @change="toggleAllDistricts">
-                                <label class="form-check-label">Select All Districts</label>
+                            <div class="checkbox">
+                                <label>
+                                    <span class="input-area">
+                                        <input type="checkbox" :checked="allDistrictsSelected"
+                                            @change="toggleAllDistricts" class="input-with-feedback"
+                                            :disabled="read_only">
+                                    </span>
+                                    <span class="disp-area" style="display: none;">
+                                        <input type="checkbox" disabled class="disabled-deselected">
+                                    </span>
+                                    <span class="label-area">Select All Districts</span>
+                                    <span class="ml-1 help"></span>
+                                </label>
+                                <p class="help-box small text-extra-muted"></p>
                             </div>
                         </div>
                         <div v-for="stateId in selectedStates" :key="stateId" class="state-district-group mb-4">
@@ -77,20 +106,39 @@
                                 <div class="hierarchy-path">
                                     <span class="path-item">{{ getStateName(stateId) }}</span>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox"
-                                        :checked="isAllDistrictsSelectedForState(stateId)"
-                                        @change="toggleAllDistrictsForState(stateId)">
-                                    <label class="form-check-label">Select All</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <span class="input-area">
+                                            <input type="checkbox" :checked="isAllDistrictsSelectedForState(stateId)"
+                                                @change="toggleAllDistrictsForState(stateId)"
+                                                class="input-with-feedback" :disabled="read_only">
+                                        </span>
+                                        <span class="disp-area" style="display: none;">
+                                            <input type="checkbox" disabled class="disabled-deselected">
+                                        </span>
+                                        <span class="label-area">Select All</span>
+                                        <span class="ml-1 help"></span>
+                                    </label>
+                                    <p class="help-box small text-extra-muted"></p>
                                 </div>
                             </div>
                             <div class="checkbox-container">
                                 <div class="checkbox-item" v-for="district in getDistrictsForState(stateId)"
                                     :key="district.id">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" :value="district.id"
-                                            v-model="selectedDistricts" @change="updateBlocks">
-                                        <label class="form-check-label">{{ district.name }}</label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <span class="input-area">
+                                                <input type="checkbox" :value="district.id" v-model="selectedDistricts"
+                                                    @change="updateBlocks" class="input-with-feedback"
+                                                    :disabled="read_only">
+                                            </span>
+                                            <span class="disp-area" style="display: none;">
+                                                <input type="checkbox" disabled class="disabled-deselected">
+                                            </span>
+                                            <span class="label-area">{{ district.name }}</span>
+                                            <span class="ml-1 help"></span>
+                                        </label>
+                                        <p class="help-box small text-extra-muted"></p>
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +150,7 @@
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" :checked="allBlocksSelected"
-                                    @change="toggleAllBlocks">
+                                    @change="toggleAllBlocks" :disabled="read_only">
                                 <label class="form-check-label">Select All Blocks</label>
                             </div>
                         </div>
@@ -117,7 +165,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
                                         :checked="isAllBlocksSelectedForDistrict(districtId)"
-                                        @change="toggleAllBlocksForDistrict(districtId)">
+                                        @change="toggleAllBlocksForDistrict(districtId)" :disabled="read_only">
                                     <label class="form-check-label">Select All</label>
                                 </div>
                             </div>
@@ -126,7 +174,8 @@
                                     :key="block.id">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" :value="block.id"
-                                            v-model="selectedBlocks" @change="updateGramPanchayats">
+                                            v-model="selectedBlocks" @change="updateGramPanchayats"
+                                            :disabled="read_only">
                                         <label class="form-check-label">{{ block.name }}</label>
                                     </div>
                                 </div>
@@ -139,7 +188,7 @@
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" :checked="allGramPanchayatsSelected"
-                                    @change="toggleAllGramPanchayats">
+                                    @change="toggleAllGramPanchayats" :disabled="read_only">
                                 <label class="form-check-label">Select All Gram Panchayats</label>
                             </div>
                         </div>
@@ -153,7 +202,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
                                         :checked="isAllGramPanchayatsSelectedForBlock(blockId)"
-                                        @change="toggleAllGramPanchayatsForBlock(blockId)">
+                                        @change="toggleAllGramPanchayatsForBlock(blockId)" :disabled="read_only">
                                     <label class="form-check-label">Select All</label>
                                 </div>
                             </div>
@@ -162,7 +211,8 @@
                                     :key="gp.id">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" :value="gp.id"
-                                            v-model="selectedGramPanchayats" @change="updateVillages">
+                                            v-model="selectedGramPanchayats" @change="updateVillages"
+                                            :disabled="read_only">
                                         <label class="form-check-label">{{ gp.name }}</label>
                                     </div>
                                 </div>
@@ -175,7 +225,7 @@
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" :checked="allVillagesSelected"
-                                    @change="toggleAllVillages">
+                                    @change="toggleAllVillages" :disabled="read_only">
                                 <label class="form-check-label">Select All Villages</label>
                             </div>
                         </div>
@@ -189,7 +239,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
                                         :checked="isAllVillagesSelectedForGP(gpId)"
-                                        @change="toggleAllVillagesForGP(gpId)">
+                                        @change="toggleAllVillagesForGP(gpId)" :disabled="read_only">
                                     <label class="form-check-label">Select All</label>
                                 </div>
                             </div>
@@ -197,7 +247,7 @@
                                 <div class="checkbox-item" v-for="village in getVillagesForGP(gpId)" :key="village.id">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" :value="village.id"
-                                            v-model="selectedVillages">
+                                            v-model="selectedVillages" :disabled="read_only">
                                         <label class="form-check-label">{{ village.name }}</label>
                                     </div>
                                 </div>
@@ -206,11 +256,11 @@
                     </div>
 
                     <div class="button-group">
-                        <button class="btn btn-outline-secondary" @click="goBack" v-if="currentStep > 1"
+                        <button class="btn btn-default" @click="goBack" v-if="currentStep > 1"
                             :disabled="isLoading">Back</button>
-                        <button class="btn btn-save" @click="saveSelection" v-if="isAtLowestHierarchy"
+                        <button class="btn btn-primary" @click="saveSelection" v-if="isAtLowestHierarchy && !read_only"
                             :disabled="isLoading">Save</button>
-                        <button class="btn btn-next" @click="goNext" v-if="currentStep < totalSteps"
+                        <button class="btn btn-primary" @click="goNext" v-if="currentStep < totalSteps"
                             :disabled="isLoading">Next</button>
                     </div>
                 </div>
@@ -219,19 +269,11 @@
                 <div class="geography-overview">
                     <div class="geography-header">
                         <h5>Geography Overview</h5>
-                        <div class="view-summary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-diagram-3" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd"
-                                    d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zM8.5 5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1zM0 11.5A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z" />
-                            </svg>
-                            Hierarchy View
-                        </div>
                     </div>
                     <div class="geography-tree">
                         <div v-for="stateId in selectedStates" :key="stateId" class="tree-item state-item">
                             <div class="tree-content"
-                                @click="lowest_hierarchy !== 'State' && toggleStateExpansion(stateId)">
+                                @click="!read_only && lowest_hierarchy !== 'State' && toggleStateExpansion(stateId)">
                                 <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'State'"
                                     :class="{ 'expanded': isStateExpanded(stateId) }">
                                     {{ isStateExpanded(stateId) ? '▼' : '▶' }}
@@ -247,7 +289,7 @@
                                 <div v-for="district in getDistrictsForState(stateId)" :key="district.id"
                                     class="tree-item district-item" v-show="selectedDistricts.includes(district.id)">
                                     <div class="tree-content"
-                                        @click="lowest_hierarchy !== 'District' && toggleDistrictExpansion(district.id)">
+                                        @click="!read_only && lowest_hierarchy !== 'District' && toggleDistrictExpansion(district.id)">
                                         <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'District'"
                                             :class="{ 'expanded': isDistrictExpanded(district.id) }">
                                             {{ isDistrictExpanded(district.id) ? '▼' : '▶' }}
@@ -263,7 +305,7 @@
                                         <div v-for="block in getBlocksForDistrict(district.id)" :key="block.id"
                                             class="tree-item block-item" v-show="selectedBlocks.includes(block.id)">
                                             <div class="tree-content"
-                                                @click="lowest_hierarchy !== 'Block' && toggleBlockExpansion(block.id)">
+                                                @click="!read_only && lowest_hierarchy !== 'Block' && toggleBlockExpansion(block.id)">
                                                 <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'Block'"
                                                     :class="{ 'expanded': isBlockExpanded(block.id) }">
                                                     {{ isBlockExpanded(block.id) ? '▼' : '▶' }}
@@ -280,7 +322,7 @@
                                                     class="tree-item gp-item"
                                                     v-show="selectedGramPanchayats.includes(gp.id)">
                                                     <div class="tree-content"
-                                                        @click="lowest_hierarchy !== 'Gram Panchayat' && toggleGPExpansion(gp.id)">
+                                                        @click="!read_only && lowest_hierarchy !== 'Gram Panchayat' && toggleGPExpansion(gp.id)">
                                                         <span class="tree-icon toggle-icon"
                                                             v-if="lowest_hierarchy !== 'Gram Panchayat'"
                                                             :class="{ 'expanded': isGPExpanded(gp.id) }">
@@ -337,6 +379,10 @@ export default {
         geography_title: {
             type: String,
             required: false
+        },
+        read_only: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -358,7 +404,7 @@ export default {
             availableVillages: [],
             isLoading: false,
             expandedStateId: null,
-            watershed_management_name: null,
+            current_docname: null,
             lowest_hierarchy: 'District',
             isDataLoaded: false,
             expandedStates: new Set(),
@@ -384,6 +430,12 @@ export default {
                 default:
                     return 2;
             }
+        },
+        themeColors() {
+            return {
+                primary: frappe.boot.my_theme?.button_background_color || '#171717',
+                primaryLight: this.getLightColor(frappe.boot.my_theme?.button_background_color || '#171717')
+            };
         },
         isAtLowestHierarchy() {
             switch (this.lowest_hierarchy) {
@@ -429,7 +481,7 @@ export default {
 
         const route = frappe.get_route();
         if (route[1] === this.doctype && route[2]) {
-            this.watershed_management_name = route[2];
+            this.current_docname = route[2];
             await this.loadExistingData();
         } else {
             await this.loadDefaultLowestHierarchy();
@@ -446,9 +498,10 @@ export default {
     watch: {
         '$route': {
             handler: async function (to, from) {
-                if (to[1] === this.doctype && to[2] && to[2] !== this.watershed_management_name) {
+                const route = frappe.get_route();
+                if (route[1] === this.doctype && route[2] && route[2] !== this.current_docname) {
                     this.resetData();
-                    this.watershed_management_name = to[2];
+                    this.current_docname = route[2];
                     await this.loadExistingData();
                 }
             },
@@ -475,11 +528,11 @@ export default {
             }
         },
         async loadExistingData() {
-            if (!this.watershed_management_name || this.isLoading) return;
+            if (!this.current_docname || this.isLoading) return;
 
             await this.withLoading(async () => {
                 try {
-                    const doc = await frappe.get_doc(this.doctype, this.watershed_management_name);
+                    const doc = await frappe.get_doc(this.doctype, this.current_docname);
                     if (doc) {
                         this.resetData();
 
@@ -549,13 +602,6 @@ export default {
                 return;
             }
 
-            console.log('Selected states:', this.selectedStates);
-            console.log('States data:', this.states);
-            console.log('Selected states details:', this.selectedStates.map(stateId => {
-                const state = this.states.find(s => s.id === stateId);
-                return state ? { id: state.id, name: state.name } : null;
-            }));
-
             await this.withLoading(async () => {
                 try {
                     const response = await frappe.call({
@@ -564,21 +610,14 @@ export default {
                             state: this.selectedStates
                         },
                         callback: (r) => {
-                            console.log('API Response:', r);
-                            console.log('API Response message:', r.message);
                             if (r.message) {
                                 this.districts = {};
-                                this.availableDistricts = r.message.map(district => {
-                                    console.log('Processing district:', district);
-                                    return {
-                                        id: district.name,
-                                        name: district.district_name,
-                                        code: district.district_code,
-                                        state: district.state
-                                    };
-                                });
-
-                                console.log('Processed districts:', this.availableDistricts);
+                                this.availableDistricts = r.message.map(district => ({
+                                    id: district.name,
+                                    name: district.district_name,
+                                    code: district.district_code,
+                                    state: district.state
+                                }));
 
                                 this.availableDistricts.forEach(district => {
                                     if (!this.districts[district.state]) {
@@ -587,21 +626,10 @@ export default {
                                     this.districts[district.state].push(district);
                                 });
 
-                                console.log('Grouped districts:', this.districts);
-                                console.log('Districts by state:', Object.keys(this.districts).map(stateId => ({
-                                    stateId,
-                                    count: this.districts[stateId].length,
-                                    districts: this.districts[stateId]
-                                })));
-
                                 this.selectedDistricts = this.selectedDistricts.filter(districtId => {
                                     const district = this.availableDistricts.find(d => d.id === districtId);
                                     return district && this.selectedStates.includes(district.state);
                                 });
-
-                                console.log('Final selected districts:', this.selectedDistricts);
-                            } else {
-                                console.error('No message in API response');
                             }
                         }
                     });
@@ -1029,7 +1057,7 @@ export default {
                     method: 'sva_frappe.api.save_geography_details',
                     args: {
                         selection_data: JSON.stringify(selection),
-                        docname: this.watershed_management_name,
+                        docname: this.current_docname,
                         lowest_hierarchy: this.lowest_hierarchy,
                         doctype: this.doctype,
                         hierarchy_level_field: this.hierarchy_level_field,
@@ -1037,8 +1065,8 @@ export default {
                     },
                     callback: (r) => {
                         if (r.message && r.message.status === 'success') {
-                            if (!this.watershed_management_name && r.message.docname) {
-                                this.watershed_management_name = r.message.docname;
+                            if (!this.current_docname && r.message.docname) {
+                                this.current_docname = r.message.docname;
                             }
 
                             frappe.show_alert({
@@ -1046,7 +1074,7 @@ export default {
                                 indicator: 'green'
                             });
 
-                            if (!this.watershed_management_name && r.message.docname) {
+                            if (!this.current_docname && r.message.docname) {
                                 frappe.set_route('Form', this.doctype, r.message.docname);
                             }
                         } else {
@@ -1430,164 +1458,303 @@ export default {
                 this.selectedVillages = this.availableVillages.map(village => village.id);
             }
         },
+        getLightColor(color) {
+            // Convert hex to RGB
+            const r = parseInt(color.slice(1, 3), 16);
+            const g = parseInt(color.slice(3, 5), 16);
+            const b = parseInt(color.slice(5, 7), 16);
+
+            // Create a lighter version
+            const lightR = Math.min(r + 40, 255);
+            const lightG = Math.min(g + 40, 255);
+            const lightB = Math.min(b + 40, 255);
+
+            return `rgb(${lightR}, ${lightG}, ${lightB})`;
+        },
     }
 };
 </script>
 
 <style scoped>
-/* Direct color values for better compatibility */
-.primary-color {
-    color: #8C1D40 !important;
+/* Core Layout */
+.container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
-.primary-bg {
-    background-color: #8C1D40 !important;
+/* Header */
+.header {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: v-bind('themeColors.primary');
+    font-weight: 600;
 }
 
-.primary-border {
-    border-color: #8C1D40 !important;
+/* Main Container */
+.main-container {
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: var(--bg-color);
+    transition: opacity 0.3s ease;
 }
 
-/* Form Controls */
-.form-control {
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    padding: 0.5rem;
-    width: 100%;
-    color: #495057;
+.main-container h4 {
+    font-size: var(--text-md);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.02em;
+    color: var(--text-color);
+    margin-bottom: 15px;
 }
 
-.form-control:focus {
-    border-color: #8C1D40 !important;
-    box-shadow: 0 0 0 0.2rem rgba(140, 29, 64, 0.15) !important;
+.main-container.loading {
+    opacity: 0.7;
+    pointer-events: none;
 }
 
-/* Form Labels */
-.form-group label,
+/* Button Group */
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    gap: 8px;
+}
+
+/* Geography Overview */
+.geography-overview {
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 20px;
+    background-color: var(--bg-color);
+}
+
+.geography-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.geography-header h5 {
+    font-size: var(--text-md);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.02em;
+    color: var(--text-color);
+}
+
+/* Checkbox Styles */
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.checkbox-item {
+    min-width: 200px;
+    flex: 0 1 auto;
+    margin-bottom: 10px;
+}
+
+.checkbox,
+.form-check {
+    display: flex;
+    align-items: flex-start;
+}
+
+.checkbox label,
+.form-check {
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    cursor: pointer;
+}
+
+.checkbox .input-area,
+.form-check-input {
+    margin-top: 2px;
+    /* margin-right: 4px; */
+}
+
+.checkbox .label-area,
 .form-check-label {
-    color: #8C1D40 !important;
-    font-weight: 500;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.02em;
+    color: var(--text-color);
+    line-height: 1.4;
 }
 
-/* Buttons */
-.btn-save,
-.btn-next {
-    background-color: #8C1D40 !important;
-    color: white !important;
-    border-color: #8C1D40 !important;
-    margin-left: 10px;
+.checkbox .help {
+    margin-left: 4px;
 }
 
-.btn-save:hover,
-.btn-next:hover {
-    background-color: #6b1630 !important;
-    border-color: #6b1630 !important;
-    color: white !important;
+.checkbox .help-box {
+    margin-top: 4px;
+    margin-bottom: 0;
 }
 
-.btn-outline-secondary {
-    color: #8C1D40 !important;
-    border-color: #8C1D40 !important;
+/* Override Bootstrap form-check styles */
+.form-check {
+    padding-left: 0;
+    margin-bottom: 0;
 }
 
-.btn-outline-secondary:hover {
-    background-color: #8C1D40 !important;
-    color: white !important;
+.form-check-input {
+    margin-left: 0;
+    margin-top: 2px;
+    /* margin-right: 4px; */
 }
 
-/* Checkboxes */
-.form-check-input:checked {
-    background-color: #8C1D40 !important;
-    border-color: #8C1D40 !important;
+.form-check-label {
+    margin-bottom: 0;
 }
 
-.form-check-input:focus {
-    border-color: #8C1D40 !important;
-    box-shadow: 0 0 0 0.2rem rgba(140, 29, 64, 0.15) !important;
+/* Group Headers */
+.state-district-group,
+.district-block-group,
+.block-gp-group,
+.gp-village-group {
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 15px;
+    margin-bottom: 20px;
 }
 
-/* Select Dropdown */
-select.form-control {
-    color: #495057;
-    background-color: white;
-    height: auto;
-    min-height: 38px;
-    padding: 0.375rem 0.75rem;
-    font-size: 14px;
-    line-height: 1.5;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%238C1D40' d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' transform='rotate(90 4 4)'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 8px 10px;
-    padding-right: 2rem;
-}
-
-select.form-control option {
-    color: #495057;
-    background-color: white;
-    padding: 8px;
-    font-size: 14px;
-    min-height: 30px;
-    display: block;
-}
-
-select.form-control:focus {
-    border-color: #8C1D40 !important;
-    box-shadow: 0 0 0 0.2rem rgba(140, 29, 64, 0.15) !important;
-    outline: none;
-}
-
-/* Tree View */
-.tree-content {
-    color: #495057;
-}
-
-.tree-icon {
-    color: #8C1D40 !important;
-}
-
-.tree-label {
-    color: #495057;
-}
-
-.state-item .tree-content {
-    background-color: #fff3f3;
-    border: 1px solid #ffe0e0;
-}
-
-.state-item .tree-content:hover {
-    background-color: #ffe6e6;
-    border-color: #ffcccc;
-}
-
-/* Loading Spinner */
-.loading-text {
-    color: #8C1D40 !important;
-}
-
-.spinner-border {
-    color: #8C1D40 !important;
-}
-
-/* Scrollbar */
-.geography-tree::-webkit-scrollbar-thumb {
-    background: #8C1D40 !important;
-}
-
-.geography-tree::-webkit-scrollbar-thumb:hover {
-    background: #6b1630 !important;
+.state-header,
+.district-header,
+.block-header,
+.gp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 15px;
 }
 
 /* Hierarchy Path */
+.hierarchy-path {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
 .path-item {
-    color: #8C1D40 !important;
+    color: v-bind('themeColors.primary');
     font-weight: 500;
 }
 
-/* Step Indicators */
+.path-separator {
+    color: var(--text-muted);
+    margin: 0 5px;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    text-align: center;
+    background: var(--bg-color);
+    padding: 2rem;
+    border-radius: 3px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Tree View */
+.geography-tree {
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.tree-item {
+    margin-bottom: 4px;
+}
+
+.tree-content {
+    padding: 8px 12px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    user-select: none;
+}
+
+.tree-children {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid v-bind('themeColors.primary');
+    transition: all 0.3s ease;
+}
+
+/* Tree Icons */
+.tree-icon {
+    margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-icon {
+    color: v-bind('themeColors.primary');
+    font-size: 12px;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+/* .toggle-icon.expanded {
+    transform: rotate(0deg);
+}
+
+.toggle-icon:not(.expanded) {
+    transform: rotate(-90deg);
+} */
+
+/* Tree Labels */
+.tree-label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.02em;
+    color: var(--text-color);
+}
+
+/* Remove hover effect for labels */
+/* .tree-content:hover .tree-label {
+    color: v-bind('themeColors.primary');
+} */
+
+/* Tree Count */
+.tree-count {
+    margin-left: auto;
+    font-size: var(--text-sm);
+    color: v-bind('themeColors.primary');
+    opacity: 0.8;
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.02em;
+}
+
+/* Step Container */
 .step-container {
     display: flex;
     justify-content: space-between;
@@ -1606,9 +1773,22 @@ select.form-control:focus {
     left: 0;
     right: 0;
     height: 1px;
-    background: #e9ecef;
+    background: var(--border-color);
     transform: translateY(-50%);
     z-index: 0;
+}
+
+.step-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 1px;
+    background: v-bind('themeColors.primary');
+    transform: translateY(-50%);
+    z-index: 0;
+    transition: width 0.3s ease;
+    width: calc((100% / (v-bind('totalSteps') - 1)) * (v-bind('currentStep') - 1));
 }
 
 .step {
@@ -1617,8 +1797,7 @@ select.form-control:focus {
     align-items: center;
     position: relative;
     z-index: 1;
-    background: white;
-    padding: 0 8px;
+    background: var(--bg-color);
     min-width: 80px;
     gap: 6px;
 }
@@ -1627,8 +1806,8 @@ select.form-control:focus {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: #fff;
-    border: 1.5px solid #e9ecef;
+    background-color: var(--bg-color);
+    border: 1.5px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1639,609 +1818,59 @@ select.form-control:focus {
 }
 
 .step>div:last-child {
-    font-size: 14px;
-    color: #495057;
-    font-weight: 500;
+    font-size: var(--text-md);
+    color: var(--text-color);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.02em;
     transition: all 0.3s ease;
     white-space: nowrap;
 }
 
 .step.active .step-number {
-    background-color: #8C1D40 !important;
-    border-color: #8C1D40 !important;
-    color: white !important;
-    box-shadow: 0 0 0 2px rgba(140, 29, 64, 0.1);
+    background-color: v-bind('themeColors.primary');
+    border-color: v-bind('themeColors.primary');
+    color: white;
+    box-shadow: 0 0 0 2px v-bind('themeColors.primaryLight');
 }
 
 .step.active>div:last-child {
-    color: #8C1D40 !important;
+    color: var(--text-color);
     font-weight: 600;
-    font-size: 14px;
 }
 
 .step.completed .step-number {
-    background-color: #8C1D40 !important;
-    border-color: #8C1D40 !important;
-    color: white !important;
+    background-color: v-bind('themeColors.primary');
+    border-color: v-bind('themeColors.primary');
+    color: white;
 }
 
 .step.completed>div:last-child {
-    color: #8C1D40 !important;
-    font-size: 14px;
+    color: var(--text-color);
 }
 
-/* Updated progress line styles */
-.step-container::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: #8C1D40;
-    transform: translateY(-50%);
-    z-index: 0;
-    width: 0;
-    transition: width 0.3s ease;
-}
-
-/* Calculate width based on current step and total steps */
-.step-container[data-progress="1"]::after {
-    width: 0%;
-}
-
-.step-container[data-progress="2"]::after {
-    width: 33.33%;
-}
-
-.step-container[data-progress="3"]::after {
-    width: 66.66%;
-}
-
-.step-container[data-progress="4"]::after {
-    width: 100%;
-}
-
-.step-container[data-progress="5"]::after {
-    width: 100%;
-}
-
-/* Add dynamic step width calculation */
-.step-container[data-total-steps="1"]::after {
-    width: 0%;
-}
-
-.step-container[data-total-steps="2"][data-progress="1"]::after {
-    width: 0%;
-}
-
-.step-container[data-total-steps="2"][data-progress="2"]::after {
-    width: 100%;
-}
-
-.step-container[data-total-steps="3"][data-progress="1"]::after {
-    width: 0%;
-}
-
-.step-container[data-total-steps="3"][data-progress="2"]::after {
-    width: 50%;
-}
-
-.step-container[data-total-steps="3"][data-progress="3"]::after {
-    width: 100%;
-}
-
-.step-container[data-total-steps="4"][data-progress="1"]::after {
-    width: 0%;
-}
-
-.step-container[data-total-steps="4"][data-progress="2"]::after {
-    width: 33.33%;
-}
-
-.step-container[data-total-steps="4"][data-progress="3"]::after {
-    width: 66.66%;
-}
-
-.step-container[data-total-steps="4"][data-progress="4"]::after {
-    width: 100%;
-}
-
-.step-container[data-total-steps="5"][data-progress="1"]::after {
-    width: 0%;
-}
-
-.step-container[data-total-steps="5"][data-progress="2"]::after {
-    width: 25%;
-}
-
-.step-container[data-total-steps="5"][data-progress="3"]::after {
-    width: 50%;
-}
-
-.step-container[data-total-steps="5"][data-progress="4"]::after {
-    width: 75%;
-}
-
-.step-container[data-total-steps="5"][data-progress="5"]::after {
-    width: 100%;
-}
-
-/* Keep existing layout styles */
-.container {
-    max-width: 1200px;
-}
-
-.row {
-    margin-left: -15px;
-    margin-right: -15px;
-}
-
-.col-md-6,
-.col-md-8,
-.col-md-4 {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.loading-spinner {
-    text-align: center;
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.main-container {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.button-group {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-}
-
-.geography-overview {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-}
-
-.geography-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.view-summary {
-    color: #8C1D40 !important;
-    display: flex;
-    align-items: center;
-}
-
-.view-summary svg {
-    margin-right: 5px;
-}
-
-.state-district-group {
-    border: 1px solid #eee;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-.state-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 15px;
-}
-
-.state-header h5 {
-    margin: 0;
-    color: #8C1D40 !important;
-}
-
-.district-block-group,
-.block-gp-group,
-.gp-village-group {
-    border: 1px solid #eee;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-.district-header,
-.block-header,
-.gp-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 15px;
-}
-
-.district-header h5,
-.block-header h5,
-.gp-header h5 {
-    margin: 0;
-    color: #8C1D40 !important;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #8C1D40 !important;
-}
-
-.form-control:disabled {
-    background-color: var(--hover-bg);
-    cursor: not-allowed;
-}
-
-.main-container.loading {
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-.main-container {
-    transition: opacity 0.3s ease;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.spinner-border {
-    width: 3rem;
-    height: 3rem;
-    border: 0.25em solid currentColor;
-    border-right-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.75s linear infinite;
-}
-
-.form-check {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    margin-bottom: 0;
-}
-
-.form-check-label {
-    color: #000000 !important;
-    margin-left: 0.5rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.checkbox-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.checkbox-item {
-    min-width: 200px;
-    flex: 0 1 auto;
-    margin-bottom: 10px;
-}
-
-.state-header,
-.district-header,
-.block-header,
-.gp-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 15px;
-    flex-wrap: nowrap;
-}
-
-.state-header h5,
-.district-header h5,
-.block-header h5,
-.gp-header h5 {
-    margin: 0;
-    color: #8C1D40 !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-right: 10px;
-}
-
-.state-header .form-check,
-.district-header .form-check,
-.block-header .form-check,
-.gp-header .form-check {
-    flex-shrink: 0;
-}
-
-.hierarchy-path {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 5px;
-    font-size: 0.9rem;
-    color: #666;
-}
-
+/* Update other elements that use primary color */
 .path-item {
-    color: #8C1D40 !important;
+    color: v-bind('themeColors.primary');
     font-weight: 500;
-}
-
-.path-separator {
-    color: #999;
-    margin: 0 5px;
-}
-
-.state-header,
-.district-header,
-.block-header,
-.gp-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.state-header .hierarchy-path,
-.district-header .hierarchy-path,
-.block-header .hierarchy-path,
-.gp-header .hierarchy-path {
-    flex: 1;
-    min-width: 200px;
-}
-
-.state-header .form-check,
-.district-header .form-check,
-.block-header .form-check,
-.gp-header .form-check {
-    flex-shrink: 0;
-}
-
-.geography-tree {
-    max-height: 600px;
-    overflow-y: auto;
-    padding-right: 10px;
-}
-
-.tree-item {
-    margin-bottom: 5px;
-}
-
-.tree-content {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    border-radius: 4px;
-    background-color: #f8f9fa;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    user-select: none;
-}
-
-.tree-content:hover {
-    background-color: #e9ecef;
-}
-
-.tree-icon {
-    margin-right: 8px;
-    font-size: 10px;
-    color: #8C1D40 !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 14px;
-    height: 14px;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: bold;
-}
-
-.tree-label {
-    flex: 1;
-    font-size: 0.9rem;
-    color: #495057;
-}
-
-.tree-count {
-    font-size: 0.8rem;
-    color: #6c757d;
-    margin-left: 8px;
-}
-
-.tree-children {
-    margin-left: 20px;
-    padding-left: 10px;
-    border-left: 2px solid #dee2e6;
-    transition: all 0.3s ease;
-}
-
-.state-item .tree-content {
-    background-color: #fff3f3;
-    border: 1px solid #ffe0e0;
-}
-
-.state-item .tree-content:hover {
-    background-color: #ffe6e6;
-    border-color: #ffcccc;
-}
-
-.district-item .tree-content {
-    background-color: #f8f9fa;
-}
-
-.block-item .tree-content {
-    background-color: #f0f7ff;
-}
-
-.gp-item .tree-content {
-    background-color: #f0fff4;
-}
-
-.village-item .tree-content {
-    background-color: #fffaf0;
-}
-
-.geography-overview {
-    position: sticky;
-    top: 20px;
-}
-
-.geography-tree::-webkit-scrollbar {
-    width: 6px;
-}
-
-.geography-tree::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
 }
 
 .geography-tree::-webkit-scrollbar-thumb {
-    background: #8C1D40 !important;
+    background: v-bind('themeColors.primary');
     border-radius: 3px;
 }
 
 .geography-tree::-webkit-scrollbar-thumb:hover {
-    background: #6b1630 !important;
+    background: v-bind('themeColors.primaryLight');
 }
 
-/* .toggle-icon.expanded {
-    transform: rotate(90deg);
-} */
-
-/* Ensure container has proper width */
-.container-fluid {
-    padding-left: 15px;
-    padding-right: 15px;
+/* Update button styles */
+.btn-primary {
+    background-color: v-bind('themeColors.primary');
+    border-color: v-bind('themeColors.primary');
 }
 
-.col-md-6 {
-    width: 100%;
-    max-width: 400px;
+.btn-primary:hover {
+    background-color: v-bind('themeColors.primaryLight');
+    border-color: v-bind('themeColors.primaryLight');
 }
-
-/* Add new styles for collapsible tree */
-.tree-content {
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.2s ease;
-}
-
-.tree-content:hover {
-    background-color: rgba(140, 29, 64, 0.05);
-}
-
-.toggle-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    margin-right: 4px;
-    transition: transform 0.2s ease;
-}
-
-/* .toggle-icon.expanded {
-    transform: rotate(90deg);
-} */
-
-.tree-children {
-    margin-left: 20px;
-    padding-left: 10px;
-    border-left: 2px solid #dee2e6;
-    transition: all 0.3s ease;
-}
-
-.tree-item {
-    margin-bottom: 4px;
-}
-
-.tree-content {
-    padding: 8px 12px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-}
-
-/* Hierarchy-specific styles */
-.state-item .tree-content {
-    background-color: #fff3f3;
-    border: 1px solid #ffe0e0;
-}
-
-.district-item .tree-content {
-    background-color: #f8f9fa;
-}
-
-.block-item .tree-content {
-    background-color: #f0f7ff;
-}
-
-.gp-item .tree-content {
-    background-color: #f0fff4;
-}
-
-.village-item .tree-content {
-    background-color: #fffaf0;
-}
-
-/* Headers */
-.state-header h5,
-.district-header h5,
-.block-header h5,
-.gp-header h5 {
-    color: #8C1D40 !important;
-}
-
-/* Keep other existing styles but update colors */
-.header {
-    color: #8C1D40 !important;
-    font-size: 16px !important;
-    font-weight: 500;
-}
-
-/* Add !important to all color-related properties */
 </style>
