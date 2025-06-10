@@ -60,8 +60,6 @@ class SVAUser(Document):
 		for name in unallocated_permissions:
 			frappe.delete_doc("User Permission", name, ignore_permissions=True)
 
-
-
 	def validate(self):
 		# Check if password and confirm password match
 		if self.is_new():
@@ -91,14 +89,7 @@ class SVAUser(Document):
 			roles_profiles = frappe.db.get_list(
 				"User Role Profile", filters={'parent': self.email}, fields=['name', 'role_profile'], ignore_permissions=True
 			)
-			roles = frappe.db.get_list(
-				"Has Role", filters={'parent': self.email}, fields=['name', 'role'], ignore_permissions=True
-			)
-
 			# Delete roles that do not match the current role profile
-			for role in roles:
-				if role.role != self.role_profile:
-					frappe.delete_doc("Has Role", role.name, ignore_permissions=True)
 
 			for role_pro in roles_profiles:
 				if role_pro.role_profile != self.role_profile:
