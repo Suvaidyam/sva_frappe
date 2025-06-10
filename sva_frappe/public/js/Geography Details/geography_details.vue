@@ -18,87 +18,65 @@
                     <div class="step-container" :data-progress="currentStep" :data-total-steps="totalSteps">
                         <div class="step" :class="{ 'active': currentStep >= 1, 'completed': currentStep > 1 }">
                             <div class="step-number">1</div>
-                            <div>{{__("States")}}</div>
+                            <div>{{ __("States") }}</div>
                         </div>
                         <div class="step" v-if="lowest_hierarchy !== 'State'"
                             :class="{ 'active': currentStep >= 2, 'completed': currentStep > 2 }">
                             <div class="step-number">2</div>
-                            <div>{{__("Districts")}}</div>
+                            <div>{{ __("Districts") }}</div>
                         </div>
                         <div class="step" v-if="lowest_hierarchy !== 'State' && lowest_hierarchy !== 'District'"
                             :class="{ 'active': currentStep >= 3, 'completed': currentStep > 3 }">
                             <div class="step-number">3</div>
-                            <div>{{__("Blocks")}}</div>
+                            <div>{{ __("Blocks") }}</div>
                         </div>
                         <div class="step"
                             v-if="lowest_hierarchy !== 'State' && lowest_hierarchy !== 'District' && lowest_hierarchy !== 'Block'"
                             :class="{ 'active': currentStep >= 4, 'completed': currentStep > 4 }">
                             <div class="step-number">4</div>
-                            <div>{{__("Gram Panchayats")}}</div>
+                            <div>{{ __("Gram Panchayats") }}</div>
                         </div>
                         <div class="step" v-if="lowest_hierarchy === 'Village'"
                             :class="{ 'active': currentStep >= 5, 'completed': currentStep > 5 }">
                             <div class="step-number">5</div>
-                            <div>{{__("Villages")}}</div>
+                            <div>{{ __("Villages") }}</div>
                         </div>
                     </div>
 
                     <div v-if="currentStep === 1">
                         <h4>Available States</h4>
                         <div class="mb-3">
-                            <div class="checkbox">
-                                <label>
-                                    <span class="input-area">
-                                        <input type="checkbox" :checked="allStatesSelected" @change="toggleAllStates"
-                                            class="input-with-feedback" :disabled="read_only">
-                                    </span>
-                                    <span class="disp-area" style="display: none;">
-                                        <input type="checkbox" disabled class="disabled-deselected">
-                                    </span>
-                                    <span class="label-area">Select All {{__("States")}}</span>
-                                    <span class="ml-1 help"></span>
+                            <div class="form-check">
+                                <input type="checkbox" :id="`select-all-states`" :checked="allStatesSelected"
+                                    @change="toggleAllStates" class="form-check-input" :disabled="read_only">
+                                <label class="form-check-label" :for="`select-all-states`">
+                                    Select All {{ __("States") }}
                                 </label>
-                                <p class="help-box small text-extra-muted"></p>
                             </div>
                         </div>
                         <div class="checkbox-container">
                             <div class="checkbox-item" v-for="(state, index) in states" :key="index">
-                                <div class="checkbox">
-                                    <label>
-                                        <span class="input-area">
-                                            <input type="checkbox" :value="state.id" v-model="selectedStates"
-                                                @change="updateDistricts" class="input-with-feedback"
-                                                :disabled="read_only">
-                                        </span>
-                                        <span class="disp-area" style="display: none;">
-                                            <input type="checkbox" disabled class="disabled-deselected">
-                                        </span>
-                                        <span class="label-area">{{ state.name }}</span>
-                                        <span class="ml-1 help"></span>
+                                <div class="form-check">
+                                    <input type="checkbox" :id="`state-${state.id}`" :value="state.id"
+                                        v-model="selectedStates" @change="updateDistricts" class="form-check-input"
+                                        :disabled="read_only">
+                                    <label class="form-check-label" :for="`state-${state.id}`">
+                                        {{ state.name }}
                                     </label>
-                                    <p class="help-box small text-extra-muted"></p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div v-if="currentStep === 2">
-                        <h4>Available {{__("Districts")}}</h4>
+                        <h4>Available {{ __("Districts") }}</h4>
                         <div class="mb-3">
-                            <div class="checkbox">
-                                <label>
-                                    <span class="input-area">
-                                        <input type="checkbox" :checked="allDistrictsSelected"
-                                            @change="toggleAllDistricts" class="input-with-feedback"
-                                            :disabled="read_only">
-                                    </span>
-                                    <span class="disp-area" style="display: none;">
-                                        <input type="checkbox" disabled class="disabled-deselected">
-                                    </span>
-                                    <span class="label-area">Select All {{__("Districts")}}</span>
-                                    <span class="ml-1 help"></span>
+                            <div class="form-check">
+                                <input type="checkbox" :id="`select-all-districts`" :checked="allDistrictsSelected"
+                                    @change="toggleAllDistricts" class="form-check-input" :disabled="read_only">
+                                <label class="form-check-label" :for="`select-all-districts`">
+                                    Select All {{ __("Districts") }}
                                 </label>
-                                <p class="help-box small text-extra-muted"></p>
                             </div>
                         </div>
                         <div v-for="stateId in selectedStates" :key="stateId" class="state-district-group mb-4">
@@ -106,39 +84,26 @@
                                 <div class="hierarchy-path">
                                     <span class="path-item">{{ getStateName(stateId) }}</span>
                                 </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <span class="input-area">
-                                            <input type="checkbox" :checked="isAllDistrictsSelectedForState(stateId)"
-                                                @change="toggleAllDistrictsForState(stateId)"
-                                                class="input-with-feedback" :disabled="read_only">
-                                        </span>
-                                        <span class="disp-area" style="display: none;">
-                                            <input type="checkbox" disabled class="disabled-deselected">
-                                        </span>
-                                        <span class="label-area">Select All {{__("Districts")}}</span>
-                                        <span class="ml-1 help"></span>
+                                <div class="form-check">
+                                    <input type="checkbox" :id="`select-all-districts-${stateId}`"
+                                        :checked="isAllDistrictsSelectedForState(stateId)"
+                                        @change="toggleAllDistrictsForState(stateId)" class="form-check-input"
+                                        :disabled="read_only">
+                                    <label class="form-check-label" :for="`select-all-districts-${stateId}`">
+                                        Select All {{ __("Districts") }}
                                     </label>
-                                    <p class="help-box small text-extra-muted"></p>
                                 </div>
                             </div>
                             <div class="checkbox-container">
                                 <div class="checkbox-item" v-for="district in getDistrictsForState(stateId)"
                                     :key="district.id">
-                                    <div class="checkbox">
-                                        <label>
-                                            <span class="input-area">
-                                                <input type="checkbox" :value="district.id" v-model="selectedDistricts"
-                                                    @change="updateBlocks" class="input-with-feedback"
-                                                    :disabled="read_only">
-                                            </span>
-                                            <span class="disp-area" style="display: none;">
-                                                <input type="checkbox" disabled class="disabled-deselected">
-                                            </span>
-                                            <span class="label-area">{{ district.name }}</span>
-                                            <span class="ml-1 help"></span>
+                                    <div class="form-check">
+                                        <input type="checkbox" :id="`district-${district.id}`" :value="district.id"
+                                            v-model="selectedDistricts" @change="updateBlocks" class="form-check-input"
+                                            :disabled="read_only">
+                                        <label class="form-check-label" :for="`district-${district.id}`">
+                                            {{ district.name }}
                                         </label>
-                                        <p class="help-box small text-extra-muted"></p>
                                     </div>
                                 </div>
                             </div>
@@ -149,9 +114,11 @@
                         <h4>Available Blocks</h4>
                         <div class="mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" :checked="allBlocksSelected"
-                                    @change="toggleAllBlocks" :disabled="read_only">
-                                <label class="form-check-label">Select All {{__("Blocks")}}</label>
+                                <input class="form-check-input" type="checkbox" :id="`select-all-blocks`"
+                                    :checked="allBlocksSelected" @change="toggleAllBlocks" :disabled="read_only">
+                                <label class="form-check-label" :for="`select-all-blocks`">
+                                    Select All {{ __("Blocks") }}
+                                </label>
                             </div>
                         </div>
                         <div v-for="districtId in selectedDistricts" :key="districtId"
@@ -164,19 +131,24 @@
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
+                                        :id="`select-all-blocks-${districtId}`"
                                         :checked="isAllBlocksSelectedForDistrict(districtId)"
                                         @change="toggleAllBlocksForDistrict(districtId)" :disabled="read_only">
-                                    <label class="form-check-label">Select All {{__("Blocks")}}</label>
+                                    <label class="form-check-label" :for="`select-all-blocks-${districtId}`">
+                                        Select All {{ __("Blocks") }}
+                                    </label>
                                 </div>
                             </div>
                             <div class="checkbox-container">
                                 <div class="checkbox-item" v-for="block in getBlocksForDistrict(districtId)"
                                     :key="block.id">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" :value="block.id"
-                                            v-model="selectedBlocks" @change="updateGramPanchayats"
+                                        <input class="form-check-input" type="checkbox" :id="`block-${block.id}`"
+                                            :value="block.id" v-model="selectedBlocks" @change="updateGramPanchayats"
                                             :disabled="read_only">
-                                        <label class="form-check-label">{{ block.name }}</label>
+                                        <label class="form-check-label" :for="`block-${block.id}`">
+                                            {{ block.name }}
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -184,12 +156,15 @@
                     </div>
 
                     <div v-if="currentStep === 4">
-                        <h4>Available {{__("Gram Panchayats")}}</h4>
+                        <h4>Available {{ __("Gram Panchayats") }}</h4>
                         <div class="mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" :checked="allGramPanchayatsSelected"
-                                    @change="toggleAllGramPanchayats" :disabled="read_only">
-                                <label class="form-check-label">Select All {{__("Gram Panchayats")}}</label>
+                                <input class="form-check-input" type="checkbox" :id="`select-all-gps`"
+                                    :checked="allGramPanchayatsSelected" @change="toggleAllGramPanchayats"
+                                    :disabled="read_only">
+                                <label class="form-check-label" :for="`select-all-gps`">
+                                    Select All {{ __("Gram Panchayats") }}
+                                </label>
                             </div>
                         </div>
                         <div v-for="blockId in selectedBlocks" :key="blockId" class="block-gp-group mb-4">
@@ -198,22 +173,28 @@
                                     <span class="path-item">{{ getStateName(getBlockState(blockId)) }}</span>
                                     <span class="path-separator">></span>
                                     <span class="path-item">{{ getDistrictName(getBlockDistrict(blockId)) }}</span>
+                                    <span class="path-separator">></span>
+                                    <span class="path-item">{{ getBlockName(blockId) }}</span>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox"
+                                    <input class="form-check-input" type="checkbox" :id="`select-all-gps-${blockId}`"
                                         :checked="isAllGramPanchayatsSelectedForBlock(blockId)"
                                         @change="toggleAllGramPanchayatsForBlock(blockId)" :disabled="read_only">
-                                    <label class="form-check-label">Select All {{__("Gram Panchayats")}}</label>
+                                    <label class="form-check-label" :for="`select-all-gps-${blockId}`">
+                                        Select All {{ __("Gram Panchayats") }}
+                                    </label>
                                 </div>
                             </div>
                             <div class="checkbox-container">
                                 <div class="checkbox-item" v-for="gp in getGramPanchayatsForBlock(blockId)"
                                     :key="gp.id">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" :value="gp.id"
-                                            v-model="selectedGramPanchayats" @change="updateVillages"
+                                        <input class="form-check-input" type="checkbox" :id="`gp-${gp.id}`"
+                                            :value="gp.id" v-model="selectedGramPanchayats" @change="updateVillages"
                                             :disabled="read_only">
-                                        <label class="form-check-label">{{ gp.name }}</label>
+                                        <label class="form-check-label" :for="`gp-${gp.id}`">
+                                            {{ gp.name }}
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -221,12 +202,14 @@
                     </div>
 
                     <div v-if="currentStep === 5">
-                        <h4>Available {{__("Villages")}}</h4>
+                        <h4>Available {{ __("Villages") }}</h4>
                         <div class="mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" :checked="allVillagesSelected"
-                                    @change="toggleAllVillages" :disabled="read_only">
-                                <label class="form-check-label">Select All {{__("Villages")}}</label>
+                                <input class="form-check-input" type="checkbox" :id="`select-all-villages`"
+                                    :checked="allVillagesSelected" @change="toggleAllVillages" :disabled="read_only">
+                                <label class="form-check-label" :for="`select-all-villages`">
+                                    Select All {{ __("Villages") }}
+                                </label>
                             </div>
                         </div>
                         <div v-for="gpId in selectedGramPanchayats" :key="gpId" class="gp-village-group mb-4">
@@ -235,20 +218,28 @@
                                     <span class="path-item">{{ getStateName(getGPState(gpId)) }}</span>
                                     <span class="path-separator">></span>
                                     <span class="path-item">{{ getDistrictName(getGPDistrict(gpId)) }}</span>
+                                    <span class="path-separator">></span>
+                                    <span class="path-item">{{ getBlockName(getGPBlock(gpId)) }}</span>
+                                    <span class="path-separator">></span>
+                                    <span class="path-item">{{ getGramPanchayatName(gpId) }}</span>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox"
+                                    <input class="form-check-input" type="checkbox" :id="`select-all-villages-${gpId}`"
                                         :checked="isAllVillagesSelectedForGP(gpId)"
                                         @change="toggleAllVillagesForGP(gpId)" :disabled="read_only">
-                                    <label class="form-check-label">Select All {{__("Villages")}}</label>
+                                    <label class="form-check-label" :for="`select-all-villages-${gpId}`">
+                                        Select All {{ __("Villages") }}
+                                    </label>
                                 </div>
                             </div>
                             <div class="checkbox-container">
                                 <div class="checkbox-item" v-for="village in getVillagesForGP(gpId)" :key="village.id">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" :value="village.id"
-                                            v-model="selectedVillages" :disabled="read_only">
-                                        <label class="form-check-label">{{ village.name }}</label>
+                                        <input class="form-check-input" type="checkbox" :id="`village-${village.id}`"
+                                            :value="village.id" v-model="selectedVillages" :disabled="read_only">
+                                        <label class="form-check-label" :for="`village-${village.id}`">
+                                            {{ village.name }}
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -840,6 +831,14 @@ export default {
         goNext() {
             if (this.currentStep >= this.totalSteps) return;
 
+            // Validate current step selection before proceeding
+            const validationResult = this.validateCurrentStepSelection();
+            console.log(validationResult,'validationResult')
+            if (!validationResult.isValid) {
+                this.showValidationError(validationResult);
+                return;
+            }
+
             const canProceed = (() => {
                 switch (this.currentStep) {
                     case 1:
@@ -880,8 +879,15 @@ export default {
             }
         },
         async saveSelection() {
+            
+            // Comprehensive validation for all levels based on lowest_hierarchy
+            const validationResult = this.validateAllLevelsForSave();
+            if (!validationResult.isValid) {
+                this.showValidationError(validationResult);
+                return;
+            }
+            
             const selectionMap = new Map();
-
             this.selectedStates.forEach(stateId => {
                 const state = this.states.find(s => s.id === stateId);
                 if (state) {
@@ -1094,6 +1100,38 @@ export default {
             }
 
             return selection;
+        },
+        getSelectedBlocksForStateRecursive(stateId) {
+            const selectedBlocks = [];
+            const selectedDistrictsForState = this.getSelectedDistrictsForState(stateId);
+
+            selectedDistrictsForState.forEach(district => {
+                const blocksForDistrict = this.getSelectedBlocksForDistrict(district.id);
+                selectedBlocks.push(...blocksForDistrict);
+            });
+
+            return selectedBlocks;
+        },
+        getSelectedGPsForStateRecursive(stateId) {
+            const selectedGPs = [];
+            const selectedBlocksForState = this.getSelectedBlocksForStateRecursive(stateId);
+
+            selectedBlocksForState.forEach(block => {
+                const gpsForBlock = this.getSelectedGramPanchayatsForBlock(block.id);
+                selectedGPs.push(...gpsForBlock);
+            });
+
+            return selectedGPs;
+        },
+        getHierarchyDisplayName(hierarchy) {
+            const displayNames = {
+                'State': __('States'),
+                'District': __('Districts'),
+                'Block': __('Blocks'),
+                'Gram Panchayat': __('Gram Panchayats'),
+                'Village': __('Villages')
+            };
+            return displayNames[hierarchy] || hierarchy;
         },
         getStateName(stateId) {
             const state = this.states.find(s => s.id === stateId);
@@ -1471,6 +1509,330 @@ export default {
 
             return `rgb(${lightR}, ${lightG}, ${lightB})`;
         },
+        validateCurrentStepSelection() {
+            const validation = {
+                isValid: true,
+                message: '',
+                missingItems: []
+            };
+
+            switch (this.currentStep) {
+                case 1: // States step
+                    if (this.selectedStates.length === 0) {
+                        validation.isValid = false;
+                        validation.message = 'Please select at least one state to continue.';
+                    }
+                    break;
+
+                case 2: // Districts step
+                    if (this.lowest_hierarchy === 'State') {
+                        break; // Skip validation for State level
+                    }
+                    
+                    // Check each selected state has at least one district selected
+                    const statesWithoutDistricts = [];
+                    this.selectedStates.forEach(stateId => {
+                        const stateName = this.getStateName(stateId);
+                        const districtsForState = this.getDistrictsForState(stateId);
+                        const selectedDistrictsForState = districtsForState.filter(d => 
+                            this.selectedDistricts.includes(d.id)
+                        );
+
+                        if (selectedDistrictsForState.length === 0) {
+                            statesWithoutDistricts.push(stateName);
+                        }
+                    });
+
+                    if (statesWithoutDistricts.length > 0) {
+                        validation.isValid = false;
+                        validation.missingItems = statesWithoutDistricts;
+                        if (statesWithoutDistricts.length === 1) {
+                            validation.message = `Please select at least one district in ${statesWithoutDistricts[0]}.`;
+                        } else {
+                            validation.message = `Please select at least one district in each state.`;
+                        }
+                    }
+                    break;
+
+                case 3: // Blocks step
+                    if (['State', 'District'].includes(this.lowest_hierarchy)) {
+                        break; // Skip validation for State/District level
+                    }
+                    
+                    // Check each selected district has at least one block selected
+                    const districtsWithoutBlocks = [];
+                    this.selectedDistricts.forEach(districtId => {
+                        const district = this.availableDistricts.find(d => d.id === districtId);
+                        if (!district) return;
+                        
+                        const blocksForDistrict = this.getBlocksForDistrict(districtId);
+                        const selectedBlocksForDistrict = blocksForDistrict.filter(b => 
+                            this.selectedBlocks.includes(b.id)
+                        );
+                        
+                        if (selectedBlocksForDistrict.length === 0) {
+                            districtsWithoutBlocks.push(district.name);
+                        }
+                    });
+
+                    if (districtsWithoutBlocks.length > 0) {
+                        validation.isValid = false;
+                        validation.missingItems = districtsWithoutBlocks;
+                        if (districtsWithoutBlocks.length === 1) {
+                            validation.message = `Please select at least one block in ${districtsWithoutBlocks[0]}.`;
+                        } else {
+                            validation.message = `Please select at least one block in each district.`;
+                        }
+                    }
+                    break;
+
+                case 4: // Gram Panchayats step
+                    if (['State', 'District', 'Block'].includes(this.lowest_hierarchy)) {
+                        break; // Skip validation for higher levels
+                    }
+                    
+                    // Check each selected block has at least one gram panchayat selected
+                    const blocksWithoutGPs = [];
+                    this.selectedBlocks.forEach(blockId => {
+                        const block = this.availableBlocks.find(b => b.id === blockId);
+                        if (!block) return;
+                        
+                        const gpsForBlock = this.getGramPanchayatsForBlock(blockId);
+                        const selectedGPsForBlock = gpsForBlock.filter(gp => 
+                            this.selectedGramPanchayats.includes(gp.id)
+                        );
+                        
+                        if (selectedGPsForBlock.length === 0) {
+                            blocksWithoutGPs.push(block.name);
+                        }
+                    });
+
+                    if (blocksWithoutGPs.length > 0) {
+                        validation.isValid = false;
+                        validation.missingItems = blocksWithoutGPs;
+                        if (blocksWithoutGPs.length === 1) {
+                            validation.message = `Please select at least one gram panchayat in ${blocksWithoutGPs[0]}.`;
+                        } else {
+                            validation.message = `Please select at least one gram panchayat in each block.`;
+                        }
+                    }
+                    break;
+
+                case 5: // Villages step
+                    if (this.lowest_hierarchy !== 'Village') {
+                        break; // Skip validation if not targeting Village level
+                    }
+                    
+                    // Check each selected gram panchayat has at least one village selected
+                    const gpsWithoutVillages = [];
+                    this.selectedGramPanchayats.forEach(gpId => {
+                        const gp = this.availableGramPanchayats.find(g => g.id === gpId);
+                        if (!gp) return;
+                        
+                        const villagesForGP = this.getVillagesForGP(gpId);
+                        const selectedVillagesForGP = villagesForGP.filter(village => 
+                            this.selectedVillages.includes(village.id)
+                        );
+                        
+                        if (selectedVillagesForGP.length === 0) {
+                            gpsWithoutVillages.push(gp.name);
+                        }
+                    });
+
+                    if (gpsWithoutVillages.length > 0) {
+                        validation.isValid = false;
+                        validation.missingItems = gpsWithoutVillages;
+                        if (gpsWithoutVillages.length === 1) {
+                            validation.message = `Please select at least one village in ${gpsWithoutVillages[0]}.`;
+                        } else {
+                            validation.message = `Please select at least one village in each gram panchayat.`;
+                        }
+                    }
+                    break;
+            }
+
+            return validation;
+        },
+        validateAllLevelsForSave() {
+            const validation = {
+                isValid: true,
+                message: '',
+                missingItems: []
+            };
+
+            // Always validate states first
+            if (this.selectedStates.length === 0) {
+                validation.isValid = false;
+                validation.message = 'Please select at least one state to save.';
+                return validation;
+            }
+
+            // Validate districts if lowest_hierarchy requires them
+            if (['District', 'Block', 'Gram Panchayat', 'Village'].includes(this.lowest_hierarchy)) {
+                const statesWithoutDistricts = [];
+                this.selectedStates.forEach(stateId => {
+                    const stateName = this.getStateName(stateId);
+                    const districtsForState = this.getDistrictsForState(stateId);
+                    const selectedDistrictsForState = districtsForState.filter(d => 
+                        this.selectedDistricts.includes(d.id)
+                    );
+
+                    if (selectedDistrictsForState.length === 0) {
+                        statesWithoutDistricts.push(stateName);
+                    }
+                });
+
+                if (statesWithoutDistricts.length > 0) {
+                    validation.isValid = false;
+                    validation.missingItems = statesWithoutDistricts;
+                    if (statesWithoutDistricts.length === 1) {
+                        validation.message = `Please select at least one district in ${statesWithoutDistricts[0]}.`;
+                    } else {
+                        validation.message = `Please select at least one district in each state.`;
+                    }
+                    return validation;
+                }
+            }
+
+            // Validate blocks if lowest_hierarchy requires them
+            if (['Block', 'Gram Panchayat', 'Village'].includes(this.lowest_hierarchy)) {
+                const districtsWithoutBlocks = [];
+                this.selectedDistricts.forEach(districtId => {
+                    const district = this.availableDistricts.find(d => d.id === districtId);
+                    if (!district) return;
+                    
+                    const blocksForDistrict = this.getBlocksForDistrict(districtId);
+                    const selectedBlocksForDistrict = blocksForDistrict.filter(b => 
+                        this.selectedBlocks.includes(b.id)
+                    );
+                    
+                    if (selectedBlocksForDistrict.length === 0) {
+                        districtsWithoutBlocks.push(district.name);
+                    }
+                });
+
+                if (districtsWithoutBlocks.length > 0) {
+                    validation.isValid = false;
+                    validation.missingItems = districtsWithoutBlocks;
+                    if (districtsWithoutBlocks.length === 1) {
+                        validation.message = `Please select at least one block in ${districtsWithoutBlocks[0]}.`;
+                    } else {
+                        validation.message = `Please select at least one block in each district.`;
+                    }
+                    return validation;
+                }
+            }
+
+            // Validate gram panchayats if lowest_hierarchy requires them
+            if (['Gram Panchayat', 'Village'].includes(this.lowest_hierarchy)) {
+                const blocksWithoutGPs = [];
+                this.selectedBlocks.forEach(blockId => {
+                    const block = this.availableBlocks.find(b => b.id === blockId);
+                    if (!block) return;
+                    
+                    const gpsForBlock = this.getGramPanchayatsForBlock(blockId);
+                    const selectedGPsForBlock = gpsForBlock.filter(gp => 
+                        this.selectedGramPanchayats.includes(gp.id)
+                    );
+                    
+                    if (selectedGPsForBlock.length === 0) {
+                        blocksWithoutGPs.push(block.name);
+                    }
+                });
+
+                if (blocksWithoutGPs.length > 0) {
+                    validation.isValid = false;
+                    validation.missingItems = blocksWithoutGPs;
+                    if (blocksWithoutGPs.length === 1) {
+                        validation.message = `Please select at least one gram panchayat in ${blocksWithoutGPs[0]}.`;
+                    } else {
+                        validation.message = `Please select at least one gram panchayat in each block.`;
+                    }
+                    return validation;
+                }
+            }
+
+            // Validate villages if lowest_hierarchy requires them
+            if (this.lowest_hierarchy === 'Village') {
+                const gpsWithoutVillages = [];
+                this.selectedGramPanchayats.forEach(gpId => {
+                    const gp = this.availableGramPanchayats.find(g => g.id === gpId);
+                    if (!gp) return;
+                    
+                    const villagesForGP = this.getVillagesForGP(gpId);
+                    const selectedVillagesForGP = villagesForGP.filter(village => 
+                        this.selectedVillages.includes(village.id)
+                    );
+                    
+                    if (selectedVillagesForGP.length === 0) {
+                        gpsWithoutVillages.push(gp.name);
+                    }
+                });
+
+                if (gpsWithoutVillages.length > 0) {
+                    validation.isValid = false;
+                    validation.missingItems = gpsWithoutVillages;
+                    if (gpsWithoutVillages.length === 1) {
+                        validation.message = `Please select at least one village in ${gpsWithoutVillages[0]}.`;
+                    } else {
+                        validation.message = `Please select at least one village in each gram panchayat.`;
+                    }
+                    return validation;
+                }
+            }
+
+            return validation;
+        },
+        showValidationError(validationResult) {
+            const { message, missingItems } = validationResult;
+
+            // Simple, compact error message
+            let errorHtml = `
+                <div style="text-align: left; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                    <div style="display: flex; align-items: flex-start; gap: 10px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px;">
+                        <span style="color: #e17055; font-size: 20px; flex-shrink: 0;">⚠️</span>
+                        <div style="flex: 1;">
+                            <p style="margin: 0; font-size: 14px; color: #6c5700; line-height: 1.4;">
+                                <strong>Selection Required:</strong> ${message}
+                            </p>
+            `;
+
+            // Add compact list if there are multiple missing items
+            if (missingItems && missingItems.length > 1) {
+                errorHtml += `
+                    <div style="margin-top: 10px; padding: 8px; background-color: #fff; border: 1px solid #ffeaa7; border-radius: 3px;">
+                        <div style="font-size: 12px; color: #6c5700; font-weight: 500; margin-bottom: 5px;">
+                            Missing selections in:
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                `;
+                
+                missingItems.forEach(item => {
+                    errorHtml += `
+                        <span style="background-color: #ffeaa7; color: #6c5700; padding: 2px 6px; border-radius: 2px; font-size: 11px; font-weight: 500;">
+                            ${item}
+                        </span>
+                    `;
+                });
+                
+                errorHtml += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            errorHtml += `
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            frappe.msgprint({
+                title: __('Selection Required'),
+                message: errorHtml,
+                indicator: 'orange'
+            });
+        },
     }
 };
 </script>
@@ -1556,46 +1918,10 @@ export default {
     margin-bottom: 10px;
 }
 
-.checkbox,
+/* Standardized Form Check Styles */
 .form-check {
     display: flex;
     align-items: flex-start;
-}
-
-.checkbox label,
-.form-check {
-    display: flex;
-    align-items: flex-start;
-    margin: 0;
-    cursor: pointer;
-}
-
-.checkbox .input-area,
-.form-check-input {
-    margin-top: 2px;
-    /* margin-right: 4px; */
-}
-
-.checkbox .label-area,
-.form-check-label {
-    font-size: var(--text-sm);
-    font-weight: var(--weight-medium);
-    letter-spacing: 0.02em;
-    color: var(--text-color);
-    line-height: 1.4;
-}
-
-.checkbox .help {
-    margin-left: 4px;
-}
-
-.checkbox .help-box {
-    margin-top: 4px;
-    margin-bottom: 0;
-}
-
-/* Override Bootstrap form-check styles */
-.form-check {
     padding-left: 0;
     margin-bottom: 0;
 }
@@ -1603,11 +1929,33 @@ export default {
 .form-check-input {
     margin-left: 0;
     margin-top: 2px;
-    /* margin-right: 4px; */
+    margin-right: 8px;
+    flex-shrink: 0;
 }
 
 .form-check-label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.02em;
+    color: var(--text-color);
+    line-height: 1.4;
     margin-bottom: 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.form-check-label:hover {
+    color: v-bind('themeColors.primary');
+}
+
+/* Disabled state styling */
+.form-check-input:disabled+.form-check-label {
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.form-check-input:disabled+.form-check-label:hover {
+    color: var(--text-muted);
 }
 
 /* Group Headers */
@@ -1723,14 +2071,6 @@ export default {
     transition: transform 0.2s ease;
 }
 
-/* .toggle-icon.expanded {
-    transform: rotate(0deg);
-}
-
-.toggle-icon:not(.expanded) {
-    transform: rotate(-90deg);
-} */
-
 /* Tree Labels */
 .tree-label {
     font-size: var(--text-sm);
@@ -1738,11 +2078,6 @@ export default {
     letter-spacing: 0.02em;
     color: var(--text-color);
 }
-
-/* Remove hover effect for labels */
-/* .tree-content:hover .tree-label {
-    color: v-bind('themeColors.primary');
-} */
 
 /* Tree Count */
 .tree-count {
