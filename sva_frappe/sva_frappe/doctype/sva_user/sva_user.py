@@ -8,7 +8,8 @@ class SVAUser(Document):
 			self.full_name = self.first_name + ' ' + self.last_name
 		else:
 			self.full_name = self.first_name
-
+		if isinstance(self.email,tuple):
+			self.email = self.email[0]
 		# Insert new permissions if they don’t exist
 		for table in self.get("table_pdop", []):
 			user_permission = None
