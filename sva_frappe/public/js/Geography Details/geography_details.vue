@@ -18,28 +18,28 @@
                     <div class="step-container" :data-progress="currentStep" :data-total-steps="totalSteps">
                         <div class="step" :class="{ 'active': currentStep >= 1, 'completed': currentStep > 1 }">
                             <div class="step-number">1</div>
-                            <div>States</div>
+                            <div>{{__("States")}}</div>
                         </div>
                         <div class="step" v-if="lowest_hierarchy !== 'State'"
                             :class="{ 'active': currentStep >= 2, 'completed': currentStep > 2 }">
                             <div class="step-number">2</div>
-                            <div>Districts</div>
+                            <div>{{__("Districts")}}</div>
                         </div>
                         <div class="step" v-if="lowest_hierarchy !== 'State' && lowest_hierarchy !== 'District'"
                             :class="{ 'active': currentStep >= 3, 'completed': currentStep > 3 }">
                             <div class="step-number">3</div>
-                            <div>Blocks</div>
+                            <div>{{__("Blocks")}}</div>
                         </div>
                         <div class="step"
                             v-if="lowest_hierarchy !== 'State' && lowest_hierarchy !== 'District' && lowest_hierarchy !== 'Block'"
                             :class="{ 'active': currentStep >= 4, 'completed': currentStep > 4 }">
                             <div class="step-number">4</div>
-                            <div>Gram Panchayats</div>
+                            <div>{{__("Gram Panchayats")}}</div>
                         </div>
                         <div class="step" v-if="lowest_hierarchy === 'Village'"
                             :class="{ 'active': currentStep >= 5, 'completed': currentStep > 5 }">
                             <div class="step-number">5</div>
-                            <div>Villages</div>
+                            <div>{{__("Villages")}}</div>
                         </div>
                     </div>
 
@@ -55,7 +55,7 @@
                                     <span class="disp-area" style="display: none;">
                                         <input type="checkbox" disabled class="disabled-deselected">
                                     </span>
-                                    <span class="label-area">Select All States</span>
+                                    <span class="label-area">Select All {{__("States")}}</span>
                                     <span class="ml-1 help"></span>
                                 </label>
                                 <p class="help-box small text-extra-muted"></p>
@@ -83,7 +83,7 @@
                     </div>
 
                     <div v-if="currentStep === 2">
-                        <h4>Available Districts</h4>
+                        <h4>Available {{__("Districts")}}</h4>
                         <div class="mb-3">
                             <div class="checkbox">
                                 <label>
@@ -95,7 +95,7 @@
                                     <span class="disp-area" style="display: none;">
                                         <input type="checkbox" disabled class="disabled-deselected">
                                     </span>
-                                    <span class="label-area">Select All Districts</span>
+                                    <span class="label-area">Select All {{__("Districts")}}</span>
                                     <span class="ml-1 help"></span>
                                 </label>
                                 <p class="help-box small text-extra-muted"></p>
@@ -116,7 +116,7 @@
                                         <span class="disp-area" style="display: none;">
                                             <input type="checkbox" disabled class="disabled-deselected">
                                         </span>
-                                        <span class="label-area">Select All</span>
+                                        <span class="label-area">Select All {{__("Districts")}}</span>
                                         <span class="ml-1 help"></span>
                                     </label>
                                     <p class="help-box small text-extra-muted"></p>
@@ -151,7 +151,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" :checked="allBlocksSelected"
                                     @change="toggleAllBlocks" :disabled="read_only">
-                                <label class="form-check-label">Select All Blocks</label>
+                                <label class="form-check-label">Select All {{__("Blocks")}}</label>
                             </div>
                         </div>
                         <div v-for="districtId in selectedDistricts" :key="districtId"
@@ -166,7 +166,7 @@
                                     <input class="form-check-input" type="checkbox"
                                         :checked="isAllBlocksSelectedForDistrict(districtId)"
                                         @change="toggleAllBlocksForDistrict(districtId)" :disabled="read_only">
-                                    <label class="form-check-label">Select All</label>
+                                    <label class="form-check-label">Select All {{__("Blocks")}}</label>
                                 </div>
                             </div>
                             <div class="checkbox-container">
@@ -184,12 +184,12 @@
                     </div>
 
                     <div v-if="currentStep === 4">
-                        <h4>Available Gram Panchayats</h4>
+                        <h4>Available {{__("Gram Panchayats")}}</h4>
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" :checked="allGramPanchayatsSelected"
                                     @change="toggleAllGramPanchayats" :disabled="read_only">
-                                <label class="form-check-label">Select All Gram Panchayats</label>
+                                <label class="form-check-label">Select All {{__("Gram Panchayats")}}</label>
                             </div>
                         </div>
                         <div v-for="blockId in selectedBlocks" :key="blockId" class="block-gp-group mb-4">
@@ -203,7 +203,7 @@
                                     <input class="form-check-input" type="checkbox"
                                         :checked="isAllGramPanchayatsSelectedForBlock(blockId)"
                                         @change="toggleAllGramPanchayatsForBlock(blockId)" :disabled="read_only">
-                                    <label class="form-check-label">Select All</label>
+                                    <label class="form-check-label">Select All {{__("Gram Panchayats")}}</label>
                                 </div>
                             </div>
                             <div class="checkbox-container">
@@ -221,12 +221,12 @@
                     </div>
 
                     <div v-if="currentStep === 5">
-                        <h4>Available Villages</h4>
+                        <h4>Available {{__("Villages")}}</h4>
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" :checked="allVillagesSelected"
                                     @change="toggleAllVillages" :disabled="read_only">
-                                <label class="form-check-label">Select All Villages</label>
+                                <label class="form-check-label">Select All {{__("Villages")}}</label>
                             </div>
                         </div>
                         <div v-for="gpId in selectedGramPanchayats" :key="gpId" class="gp-village-group mb-4">
@@ -240,7 +240,7 @@
                                     <input class="form-check-input" type="checkbox"
                                         :checked="isAllVillagesSelectedForGP(gpId)"
                                         @change="toggleAllVillagesForGP(gpId)" :disabled="read_only">
-                                    <label class="form-check-label">Select All</label>
+                                    <label class="form-check-label">Select All {{__("Villages")}}</label>
                                 </div>
                             </div>
                             <div class="checkbox-container">
