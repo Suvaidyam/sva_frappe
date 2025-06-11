@@ -1547,9 +1547,9 @@ export default {
                         validation.isValid = false;
                         validation.missingItems = statesWithoutDistricts;
                         if (statesWithoutDistricts.length === 1) {
-                            validation.message = `Please select at least one district in ${statesWithoutDistricts[0]}.`;
+                            validation.message = `Please select ${__("Districts").toLowerCase()} in ${statesWithoutDistricts[0]}.`;
                         } else {
-                            validation.message = `Please select at least one district in each state.`;
+                            validation.message = `Please select ${__("Districts").toLowerCase()} all ${__("States").toLowerCase()}.`;
                         }
                     }
                     break;
@@ -1579,9 +1579,9 @@ export default {
                         validation.isValid = false;
                         validation.missingItems = districtsWithoutBlocks;
                         if (districtsWithoutBlocks.length === 1) {
-                            validation.message = `Please select at least one block in ${districtsWithoutBlocks[0]}.`;
+                            validation.message = `Please select ${__("Blocks").toLowerCase()} in ${districtsWithoutBlocks[0]}.`;
                         } else {
-                            validation.message = `Please select at least one block in each district.`;
+                            validation.message = `Please select ${__("Blocks").toLowerCase()} all ${__("Districts").toLowerCase()}.`;
                         }
                     }
                     break;
@@ -1611,9 +1611,9 @@ export default {
                         validation.isValid = false;
                         validation.missingItems = blocksWithoutGPs;
                         if (blocksWithoutGPs.length === 1) {
-                            validation.message = `Please select at least one gram panchayat in ${blocksWithoutGPs[0]}.`;
+                            validation.message = `Please select ${__("Gram Panchayats").toLowerCase()} in ${blocksWithoutGPs[0]}.`;
                         } else {
-                            validation.message = `Please select at least one gram panchayat in each block.`;
+                            validation.message = `Please select ${__("Gram Panchayats").toLowerCase()} all ${__("Blocks").toLowerCase()}.`;
                         }
                     }
                     break;
@@ -1643,9 +1643,9 @@ export default {
                         validation.isValid = false;
                         validation.missingItems = gpsWithoutVillages;
                         if (gpsWithoutVillages.length === 1) {
-                            validation.message = `Please select at least one village in ${gpsWithoutVillages[0]}.`;
+                            validation.message = `Please select ${__("Villages").toLowerCase()} in ${gpsWithoutVillages[0]}.`;
                         } else {
-                            validation.message = `Please select at least one village in each gram panchayat.`;
+                            validation.message = `Please select ${__("Villages").toLowerCase()} all ${__("Gram Panchayats").toLowerCase()}.`;
                         }
                     }
                     break;
@@ -1686,9 +1686,9 @@ export default {
                     validation.isValid = false;
                     validation.missingItems = statesWithoutDistricts;
                     if (statesWithoutDistricts.length === 1) {
-                        validation.message = `Please select at least one district in ${statesWithoutDistricts[0]}.`;
+                        validation.message = `Please select ${__("Districts").toLowerCase()} in ${statesWithoutDistricts[0]}.`;
                     } else {
-                        validation.message = `Please select at least one district in each state.`;
+                        validation.message = `Please select ${__("Districts").toLowerCase()} all ${__("States").toLowerCase()}.`;
                     }
                     return validation;
                 }
@@ -1715,9 +1715,9 @@ export default {
                     validation.isValid = false;
                     validation.missingItems = districtsWithoutBlocks;
                     if (districtsWithoutBlocks.length === 1) {
-                        validation.message = `Please select at least one block in ${districtsWithoutBlocks[0]}.`;
+                        validation.message = `Please select ${__("Blocks").toLowerCase()} in ${districtsWithoutBlocks[0]}.`;
                     } else {
-                        validation.message = `Please select at least one block in each district.`;
+                        validation.message = `Please select ${__("Blocks").toLowerCase()} all ${__("Districts").toLowerCase()}.`;
                     }
                     return validation;
                 }
@@ -1744,9 +1744,9 @@ export default {
                     validation.isValid = false;
                     validation.missingItems = blocksWithoutGPs;
                     if (blocksWithoutGPs.length === 1) {
-                        validation.message = `Please select at least one gram panchayat in ${blocksWithoutGPs[0]}.`;
+                        validation.message = `Please select ${__("Gram Panchayats").toLowerCase()} in ${blocksWithoutGPs[0]}.`;
                     } else {
-                        validation.message = `Please select at least one gram panchayat in each block.`;
+                        validation.message = `Please select ${__("Gram Panchayats").toLowerCase()} all ${__("Blocks").toLowerCase()}.`;
                     }
                     return validation;
                 }
@@ -1773,9 +1773,9 @@ export default {
                     validation.isValid = false;
                     validation.missingItems = gpsWithoutVillages;
                     if (gpsWithoutVillages.length === 1) {
-                        validation.message = `Please select at least one village in ${gpsWithoutVillages[0]}.`;
+                        validation.message = `Please select ${__("Villages").toLowerCase()} in ${gpsWithoutVillages[0]}.`;
                     } else {
-                        validation.message = `Please select at least one village in each gram panchayat.`;
+                        validation.message = `Please select ${__("Villages").toLowerCase()} all ${__("Gram Panchayats").toLowerCase()}.`;
                     }
                     return validation;
                 }
