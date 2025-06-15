@@ -10,6 +10,7 @@ frappe.ui.form.on("District", {
         if (frm.fields_dict.zone.df.reqd) {
             depended_dropdown(frm, frm.doc.zone, 'state', 'zone')
         }
+        depended_dropdown(frm, frm.doc.country, 'state', 'country')
     },
     zone: function (frm) {
         if (frm.fields_dict.zone.df.reqd) {
@@ -22,4 +23,8 @@ frappe.ui.form.on("District", {
             frm.set_df_property('district_code', 'read_only', 1)
         }
     },
+    country(frm) {
+        depended_dropdown(frm, frm.doc.country, 'state', 'country')
+        frm.set_value('state')
+    }
 });
