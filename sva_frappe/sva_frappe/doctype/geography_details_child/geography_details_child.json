@@ -7,10 +7,15 @@
  "engine": "InnoDB",
  "field_order": [
   "state",
+  "state_name",
   "district",
+  "district_name",
   "block",
+  "block_name",
   "gram_panchayat",
-  "village"
+  "gram_panchayat_name",
+  "village",
+  "village_name"
  ],
  "fields": [
   {
@@ -47,19 +52,52 @@
    "in_list_view": 1,
    "label": "Gram Panchayat",
    "options": "Gram Panchayat"
+  },
+  {
+   "fetch_from": "state.state_name",
+   "fieldname": "state_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "State Name"
+  },
+  {
+   "fetch_from": "district.district_name",
+   "fieldname": "district_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "District Name"
+  },
+  {
+   "fetch_from": "block.block_name",
+   "fieldname": "block_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Block Name"
+  },
+  {
+   "fetch_from": "gram_panchayat.gram_pachayat_name",
+   "fieldname": "gram_panchayat_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Gram Panchayat Name"
+  },
+  {
+   "fetch_from": "village.village_name",
+   "fieldname": "village_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Village Name"
   }
  ],
- "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-17 16:36:23.230313",
+ "modified": "2025-06-14 19:00:57.677375",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "Geography Details Child",
  "owner": "Administrator",
  "permissions": [],
- "row_format": "Dynamic",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": []
