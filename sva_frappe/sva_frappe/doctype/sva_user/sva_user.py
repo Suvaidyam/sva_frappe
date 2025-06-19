@@ -64,9 +64,11 @@ class SVAUser(Document):
 
 	def validate(self):
 		# Check if password and confirm password match
-		if self.is_new():
-			if self.password != self.confirm_password:
-				frappe.throw("Password and Confirm password do not match")
+		is_disabled_usr_pass_login = frappe.db.get_single_value('My Theme', 'disable_usr_pass_login')
+		if not is_disabled_usr_pass_login:
+			if self.is_new():
+				if self.password != self.confirm_password:
+					frappe.throw("Password and Confirm password do not match")
 
 	def after_insert(self):
 		# Create a new User document after SVAUser is inserted
