@@ -8,7 +8,8 @@ class SVAUser(Document):
 			self.full_name = self.first_name + ' ' + self.last_name
 		else:
 			self.full_name = self.first_name
-
+		if isinstance(self.email,tuple):
+			self.email = self.email[0]
 		# Insert new permissions if they don’t exist
 		for table in self.get("table_pdop", []):
 			user_permission = None
@@ -50,8 +51,8 @@ class SVAUser(Document):
 
 		# Find and delete unallocated permissions
 		unallocated_permissions = frappe.get_list(
-			"User Permission", 
-			filters={'name': ['NOT IN', up_list], 'user': self.email}, 
+			"User Permission",
+			filters={'name': ['NOT IN', up_list], 'user': self.email},
 			pluck='name',
 			ignore_permissions=True
 		)
@@ -63,9 +64,11 @@ class SVAUser(Document):
 
 	def validate(self):
 		# Check if password and confirm password match
-		if self.is_new():
-			if self.password != self.confirm_password:
-				frappe.throw("Password and Confirm password do not match")
+		is_disabled_usr_pass_login = frappe.db.get_single_value('My Theme', 'disable_usr_pass_login')
+		if not is_disabled_usr_pass_login:
+			if self.is_new():
+				if self.password != self.confirm_password:
+					frappe.throw("Password and Confirm password do not match")
 
 	def after_insert(self):
 		# Create a new User document after SVAUser is inserted
@@ -74,49 +77,27 @@ class SVAUser(Document):
 		new_user.first_name = self.first_name
 		new_user.middle_name = self.middle_name
 		new_user.last_name = self.last_name
-		new_user.username = self.username
+		new_user.username = self.username if self.username else self.email
 		new_user.mobile_no = self.mobile_number
 		new_user.role_profile_name = self.role_profile
 		new_user.user_image = self.user_image
 		new_user.new_password = self.confirm_password
 		new_user.insert(ignore_permissions=True)  # Insert to trigger 'before_insert' or 'after_insert' for User
-
 	def on_update(self):
-		# Update the existing User document
 		if not self.get('localname'):
 			user_doc = frappe.get_doc("User", self.email)
-
-			# Get existing roles and role profiles
-			roles_profiles = frappe.db.get_list(
-				"User Role Profile", filters={'parent': self.email}, fields=['name', 'role_profile'], ignore_permissions=True
-			)
-			roles = frappe.db.get_list(
-				"Has Role", filters={'parent': self.email}, fields=['name', 'role'], ignore_permissions=True
-			)
-
-			# Delete roles that do not match the current role profile
-			for role in roles:
-				if role.role != self.role_profile:
-					frappe.delete_doc("Has Role", role.name, ignore_permissions=True)
-
-			for role_pro in roles_profiles:
-				if role_pro.role_profile != self.role_profile:
-					frappe.delete_doc("User Role Profile", role_pro.name, ignore_permissions=True)
-
-			# Update user status
-			user_doc.enabled = self.status == 'Active'
-
 			# Update user details
+			user_doc.enabled = self.status == 'Active'
 			user_doc.email = self.email
 			user_doc.first_name = self.first_name
 			user_doc.middle_name = self.middle_name
 			user_doc.last_name = self.last_name
-			user_doc.username = self.username
+			user_doc.username = self.username if self.username else self.email
 			user_doc.mobile_no = self.mobile_number
-			user_doc.role_profile_name = self.role_profile
 			user_doc.user_image = self.user_image
 			user_doc.new_password = self.confirm_password
-			user_doc.save(ignore_permissions=True)  # Save with ignore_permissions
+			user_doc.role_profiles = [frappe.get_doc({"doctype":"User Role Profile","role_profile": self.role_profile,"parent": self.email,"parenttype":"User",'parentfield':'role_profiles'}).save(ignore_permissions=True)]
+			user_doc.save(ignore_permissions=True)
 
 	def on_trash(self):
 		# Delete the associated User document if it exists
