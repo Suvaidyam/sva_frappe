@@ -91,8 +91,7 @@
    "fieldname": "country",
    "fieldtype": "Link",
    "label": "Country",
-   "options": "Country",
-   "reqd": 1
+   "options": "Country"
   }
  ],
  "hide_toolbar": 1,
@@ -119,7 +118,7 @@
    "link_fieldname": "state"
   }
  ],
- "modified": "2025-04-05 12:56:32.973839",
+ "modified": "2025-06-24 14:52:59.413902",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "State",
