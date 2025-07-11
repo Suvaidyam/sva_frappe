@@ -89,8 +89,7 @@
    "fieldname": "country",
    "fieldtype": "Link",
    "label": "Country",
-   "options": "Country",
-   "reqd": 1
+   "options": "Country"
   }
  ],
  "hide_toolbar": 1,
@@ -112,7 +111,7 @@
    "link_fieldname": "district"
   }
  ],
- "modified": "2025-04-05 12:57:01.466328",
+ "modified": "2025-06-24 15:05:59.958341",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "District",
