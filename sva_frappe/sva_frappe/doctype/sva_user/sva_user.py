@@ -51,8 +51,8 @@ class SVAUser(Document):
 
 		# Find and delete unallocated permissions
 		unallocated_permissions = frappe.get_list(
-			"User Permission", 
-			filters={'name': ['NOT IN', up_list], 'user': self.email}, 
+			"User Permission",
+			filters={'name': ['NOT IN', up_list], 'user': self.email},
 			pluck='name',
 			ignore_permissions=True
 		)
@@ -64,9 +64,11 @@ class SVAUser(Document):
 
 	def validate(self):
 		# Check if password and confirm password match
-		if self.is_new():
-			if self.password != self.confirm_password:
-				frappe.throw("Password and Confirm password do not match")
+		is_disabled_usr_pass_login = frappe.db.get_single_value('My Theme', 'disable_usr_pass_login')
+		if not is_disabled_usr_pass_login:
+			if self.is_new():
+				if self.password != self.confirm_password:
+					frappe.throw("Password and Confirm password do not match")
 
 	def after_insert(self):
 		# Create a new User document after SVAUser is inserted
@@ -75,7 +77,7 @@ class SVAUser(Document):
 		new_user.first_name = self.first_name
 		new_user.middle_name = self.middle_name
 		new_user.last_name = self.last_name
-		new_user.username = self.username
+		new_user.username = self.username if self.username else self.email
 		new_user.mobile_no = self.mobile_number
 		new_user.role_profile_name = self.role_profile
 		new_user.user_image = self.user_image
@@ -90,7 +92,7 @@ class SVAUser(Document):
 			user_doc.first_name = self.first_name
 			user_doc.middle_name = self.middle_name
 			user_doc.last_name = self.last_name
-			user_doc.username = self.username
+			user_doc.username = self.username if self.username else self.email
 			user_doc.mobile_no = self.mobile_number
 			user_doc.user_image = self.user_image
 			user_doc.new_password = self.confirm_password
