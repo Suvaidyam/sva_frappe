@@ -125,7 +125,6 @@
    "write": 1
   }
  ],
- "row_format": "Dynamic",
  "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",

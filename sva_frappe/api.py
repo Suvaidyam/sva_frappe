@@ -1,6 +1,7 @@
 import frappe
 from frappe import _
 import json
+
 @frappe.whitelist()
 def get_states():
     """Get all active states"""
@@ -76,43 +77,36 @@ def get_villages(gram_panchayat=None):
     return villages
 
 @frappe.whitelist()
-def save_geography_details(selection_data, docname=None, lowest_hierarchy=None, doctype=None, hierarchy_level_field=None, geography_details_field=None):
+def save_geography_details(selection_data, document_type=None, docname=None, lowest_hierarchy=None):
     try:
         selection = json.loads(selection_data)
-        
+        filters = {
+            'document_type': document_type,
+            'docname': docname
+        }
         # Check if document exists
-        if docname and frappe.db.exists(doctype, docname):
+        exists = frappe.db.exists('Geography Details', filters)
+        if exists:
             # Update existing document
-            doc = frappe.get_doc(doctype, docname)
+            doc = frappe.get_doc('Geography Details', exists)
         else:
             # Create new document with a proper name
-            doc = frappe.new_doc(doctype)
-            # Set a default name if not provided
-            if not docname:
-                doc.name = frappe.generate_hash(doctype, 10)
-        
-        # Set the lowest hierarchy
-        if lowest_hierarchy and hierarchy_level_field:
-            doc.set(hierarchy_level_field, lowest_hierarchy)
-        
-        # Clear existing geography details
-        if geography_details_field:
-            doc.set(geography_details_field, [])
-        
+            doc = frappe.new_doc('Geography Details')
+            doc.update(filters)
+        doc.set('lowest_geography_level', lowest_hierarchy)
         # Add new geography details
+        doc.geography_details = []
         for item in selection:
-            geography_detail = {
+            doc.append('geography_details', {
                 "state": item.get("state", {}).get("id"),
                 "district": item.get("district", {}).get("id"),
                 "block": item.get("block", {}).get("id"),
                 "gram_panchayat": item.get("gramPanchayat", {}).get("id"),
                 "village": item.get("village", {}).get("id")
-            }
-            doc.append(geography_details_field, geography_detail)
-        
+            })
         # Save the document
-        doc.insert() if not docname else doc.save()
-        
+        doc.insert(ignore_permissions=True) if doc.is_new() else doc.save(ignore_permissions=True)
+        frappe.db.commit()
         return {
             "status": "success",
             "message": "Geography details saved successfully",
@@ -123,4 +117,17 @@ def save_geography_details(selection_data, docname=None, lowest_hierarchy=None, 
         return {
             "status": "error",
             "message": str(e)
+        }
+
+@frappe.whitelist()
+def get_geography_details(filters):
+    filters = json.loads(filters) if isinstance(filters, str) else filters
+    exists = frappe.db.exists('Geography Details', filters)
+    if exists:
+        doc = frappe.get_cached_doc('Geography Details', exists)
+        return doc.as_dict()
+    else:
+        return {
+            "status": "error",
+            "message": "Geography details not found"
         }
