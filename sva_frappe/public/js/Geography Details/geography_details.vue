@@ -507,22 +507,7 @@ export default {
     },
     methods: {
         async loadDefaultLowestHierarchy() {
-            try {
-                const response = await frappe.call({
-                    method: 'frappe.client.get',
-                    args: {
-                        doctype: this.doctype,
-                        name: this.doctype
-                    },
-                    callback: (r) => {
-                        if (r.message && r.message[this.hierarchy_level_field]) {
-                            this.lowest_hierarchy = r.message[this.hierarchy_level_field];
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error loading default lowest hierarchy:', error);
-            }
+            this.lowest_hierarchy = this.frm.doc[this.hierarchy_level_field];
         },
         async loadExistingData() {
             if (this.isLoading) return;
