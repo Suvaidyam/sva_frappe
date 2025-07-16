@@ -250,7 +250,12 @@
                         <button class="btn btn-default" @click="goBack" v-if="currentStep > 1"
                             :disabled="isLoading">Back</button>
                         <button class="btn btn-primary" @click="saveSelection" v-if="isAtLowestHierarchy && !read_only"
-                            :disabled="isLoading">Save</button>
+                            :disabled="isLoading || isSaving">
+                            <span v-if="isSaving" class="spinner-border spinner-border-sm me-2" role="status"
+                                aria-hidden="true"></span>
+                            <span v-if="!isSaving">Save</span>
+                            <span v-else>Saving...</span>
+                        </button>
                         <button class="btn btn-primary" @click="goNext" v-if="currentStep < totalSteps"
                             :disabled="isLoading">Next</button>
                     </div>
@@ -402,7 +407,8 @@ export default {
             expandedDistricts: new Set(),
             expandedBlocks: new Set(),
             expandedGPs: new Set(),
-            doctype: null
+            doctype: 'Geography Details',
+            isSaving: false,
         };
     },
     computed: {
@@ -519,26 +525,30 @@ export default {
             }
         },
         async loadExistingData() {
-            if (!this.current_docname || this.isLoading) return;
-
+            if (this.isLoading) return;
             await this.withLoading(async () => {
                 try {
-                    const doc = await frappe.get_doc(this.doctype, this.current_docname);
+                    const doc = await frappe.xcall('sva_frappe.api.get_geography_details', {
+                        filters: JSON.stringify({
+                            document_type: this.frm.doctype,
+                            docname: this.frm.docname
+                        })
+                    });
                     if (doc) {
                         this.resetData();
 
-                        if (doc[this.hierarchy_level_field]) {
-                            this.lowest_hierarchy = doc[this.hierarchy_level_field];
+                        if (this.frm.doc[this.hierarchy_level_field]) {
+                            this.lowest_hierarchy = this.frm.doc[this.hierarchy_level_field];
                         }
 
-                        if (doc[this.geography_details_field]) {
+                        if (doc.geography_details) {
                             const stateSet = new Set();
                             const districtSet = new Set();
                             const blockSet = new Set();
                             const gpSet = new Set();
                             const villageSet = new Set();
 
-                            doc[this.geography_details_field].forEach(detail => {
+                            doc.geography_details.forEach(detail => {
                                 if (detail.state) stateSet.add(detail.state);
                                 if (detail.district) districtSet.add(detail.district);
                                 if (detail.block) blockSet.add(detail.block);
@@ -833,7 +843,6 @@ export default {
 
             // Validate current step selection before proceeding
             const validationResult = this.validateCurrentStepSelection();
-            console.log(validationResult,'validationResult')
             if (!validationResult.isValid) {
                 this.showValidationError(validationResult);
                 return;
@@ -879,14 +888,15 @@ export default {
             }
         },
         async saveSelection() {
-            
+            this.isSaving = true;
             // Comprehensive validation for all levels based on lowest_hierarchy
             const validationResult = this.validateAllLevelsForSave();
             if (!validationResult.isValid) {
                 this.showValidationError(validationResult);
+                this.isSaving = false;
                 return;
             }
-            
+
             const selectionMap = new Map();
             this.selectedStates.forEach(stateId => {
                 const state = this.states.find(s => s.id === stateId);
@@ -1057,46 +1067,31 @@ export default {
                     selection = selection.filter(item => item.state && item.district && item.block && item.gramPanchayat && item.village);
                     break;
             }
-
             try {
-                const response = await frappe.call({
-                    method: 'sva_frappe.api.save_geography_details',
-                    args: {
-                        selection_data: JSON.stringify(selection),
-                        docname: this.current_docname,
-                        lowest_hierarchy: this.lowest_hierarchy,
-                        doctype: this.doctype,
-                        hierarchy_level_field: this.hierarchy_level_field,
-                        geography_details_field: this.geography_details_field
-                    },
-                    callback: (r) => {
-                        if (r.message && r.message.status === 'success') {
-                            if (!this.current_docname && r.message.docname) {
-                                this.current_docname = r.message.docname;
-                            }
-
-                            frappe.show_alert({
-                                message: r.message.message,
-                                indicator: 'green'
-                            });
-
-                            if (!this.current_docname && r.message.docname) {
-                                frappe.set_route('Form', this.doctype, r.message.docname);
-                            }
-                        } else {
-                            frappe.show_alert({
-                                message: r.message?.message || __('Error saving geography details'),
-                                indicator: 'red'
-                            });
-                        }
-                    }
+                const r = await frappe.xcall('sva_frappe.api.save_geography_details', {
+                    selection_data: JSON.stringify(selection),
+                    document_type: this.frm.doctype,
+                    docname: this.frm.docname,
+                    lowest_hierarchy: this.lowest_hierarchy
                 });
+                if (r.status === 'success') {
+                    frappe.show_alert({
+                        message: r.message,
+                        indicator: 'green'
+                    });
+                } else {
+                    frappe.show_alert({
+                        message: r.message || __('Error saving geography details'),
+                        indicator: 'red'
+                    });
+                }
             } catch (error) {
-                console.error('Error saving geography details:', error);
                 frappe.show_alert({
-                    message: __('Error saving geography details'),
+                    message: error.message || __('Error saving geography details'),
                     indicator: 'red'
                 });
+            } finally {
+                this.isSaving = false;
             }
 
             return selection;
@@ -1302,7 +1297,7 @@ export default {
                 this.selectedVillages = [...new Set([...this.selectedVillages, ...villageIds])];
             }
         },
-        updateAvailableItems() {
+        async updateAvailableItems() {
             this.updateDistricts();
             if (this.lowest_hierarchy !== 'State') {
                 this.updateBlocks();
@@ -1528,13 +1523,13 @@ export default {
                     if (this.lowest_hierarchy === 'State') {
                         break; // Skip validation for State level
                     }
-                    
+
                     // Check each selected state has at least one district selected
                     const statesWithoutDistricts = [];
                     this.selectedStates.forEach(stateId => {
                         const stateName = this.getStateName(stateId);
                         const districtsForState = this.getDistrictsForState(stateId);
-                        const selectedDistrictsForState = districtsForState.filter(d => 
+                        const selectedDistrictsForState = districtsForState.filter(d =>
                             this.selectedDistricts.includes(d.id)
                         );
 
@@ -1558,18 +1553,18 @@ export default {
                     if (['State', 'District'].includes(this.lowest_hierarchy)) {
                         break; // Skip validation for State/District level
                     }
-                    
+
                     // Check each selected district has at least one block selected
                     const districtsWithoutBlocks = [];
                     this.selectedDistricts.forEach(districtId => {
                         const district = this.availableDistricts.find(d => d.id === districtId);
                         if (!district) return;
-                        
+
                         const blocksForDistrict = this.getBlocksForDistrict(districtId);
-                        const selectedBlocksForDistrict = blocksForDistrict.filter(b => 
+                        const selectedBlocksForDistrict = blocksForDistrict.filter(b =>
                             this.selectedBlocks.includes(b.id)
                         );
-                        
+
                         if (selectedBlocksForDistrict.length === 0) {
                             districtsWithoutBlocks.push(district.name);
                         }
@@ -1590,18 +1585,18 @@ export default {
                     if (['State', 'District', 'Block'].includes(this.lowest_hierarchy)) {
                         break; // Skip validation for higher levels
                     }
-                    
+
                     // Check each selected block has at least one gram panchayat selected
                     const blocksWithoutGPs = [];
                     this.selectedBlocks.forEach(blockId => {
                         const block = this.availableBlocks.find(b => b.id === blockId);
                         if (!block) return;
-                        
+
                         const gpsForBlock = this.getGramPanchayatsForBlock(blockId);
-                        const selectedGPsForBlock = gpsForBlock.filter(gp => 
+                        const selectedGPsForBlock = gpsForBlock.filter(gp =>
                             this.selectedGramPanchayats.includes(gp.id)
                         );
-                        
+
                         if (selectedGPsForBlock.length === 0) {
                             blocksWithoutGPs.push(block.name);
                         }
@@ -1622,18 +1617,18 @@ export default {
                     if (this.lowest_hierarchy !== 'Village') {
                         break; // Skip validation if not targeting Village level
                     }
-                    
+
                     // Check each selected gram panchayat has at least one village selected
                     const gpsWithoutVillages = [];
                     this.selectedGramPanchayats.forEach(gpId => {
                         const gp = this.availableGramPanchayats.find(g => g.id === gpId);
                         if (!gp) return;
-                        
+
                         const villagesForGP = this.getVillagesForGP(gpId);
-                        const selectedVillagesForGP = villagesForGP.filter(village => 
+                        const selectedVillagesForGP = villagesForGP.filter(village =>
                             this.selectedVillages.includes(village.id)
                         );
-                        
+
                         if (selectedVillagesForGP.length === 0) {
                             gpsWithoutVillages.push(gp.name);
                         }
@@ -1673,7 +1668,7 @@ export default {
                 this.selectedStates.forEach(stateId => {
                     const stateName = this.getStateName(stateId);
                     const districtsForState = this.getDistrictsForState(stateId);
-                    const selectedDistrictsForState = districtsForState.filter(d => 
+                    const selectedDistrictsForState = districtsForState.filter(d =>
                         this.selectedDistricts.includes(d.id)
                     );
 
@@ -1700,12 +1695,12 @@ export default {
                 this.selectedDistricts.forEach(districtId => {
                     const district = this.availableDistricts.find(d => d.id === districtId);
                     if (!district) return;
-                    
+
                     const blocksForDistrict = this.getBlocksForDistrict(districtId);
-                    const selectedBlocksForDistrict = blocksForDistrict.filter(b => 
+                    const selectedBlocksForDistrict = blocksForDistrict.filter(b =>
                         this.selectedBlocks.includes(b.id)
                     );
-                    
+
                     if (selectedBlocksForDistrict.length === 0) {
                         districtsWithoutBlocks.push(district.name);
                     }
@@ -1729,12 +1724,12 @@ export default {
                 this.selectedBlocks.forEach(blockId => {
                     const block = this.availableBlocks.find(b => b.id === blockId);
                     if (!block) return;
-                    
+
                     const gpsForBlock = this.getGramPanchayatsForBlock(blockId);
-                    const selectedGPsForBlock = gpsForBlock.filter(gp => 
+                    const selectedGPsForBlock = gpsForBlock.filter(gp =>
                         this.selectedGramPanchayats.includes(gp.id)
                     );
-                    
+
                     if (selectedGPsForBlock.length === 0) {
                         blocksWithoutGPs.push(block.name);
                     }
@@ -1758,12 +1753,12 @@ export default {
                 this.selectedGramPanchayats.forEach(gpId => {
                     const gp = this.availableGramPanchayats.find(g => g.id === gpId);
                     if (!gp) return;
-                    
+
                     const villagesForGP = this.getVillagesForGP(gpId);
-                    const selectedVillagesForGP = villagesForGP.filter(village => 
+                    const selectedVillagesForGP = villagesForGP.filter(village =>
                         this.selectedVillages.includes(village.id)
                     );
-                    
+
                     if (selectedVillagesForGP.length === 0) {
                         gpsWithoutVillages.push(gp.name);
                     }
@@ -1806,7 +1801,7 @@ export default {
                         </div>
                         <div style="display: flex; flex-wrap: wrap; gap: 5px;">
                 `;
-                
+
                 missingItems.forEach(item => {
                     errorHtml += `
                         <span style="background-color: #ffeaa7; color: #6c5700; padding: 2px 6px; border-radius: 2px; font-size: 11px; font-weight: 500;">
@@ -1814,7 +1809,7 @@ export default {
                         </span>
                     `;
                 });
-                
+
                 errorHtml += `
                         </div>
                     </div>
