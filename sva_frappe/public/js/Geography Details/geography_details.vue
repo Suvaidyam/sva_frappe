@@ -411,6 +411,9 @@ export default {
             isSaving: false,
         };
     },
+    mounted(){
+        this.loadDefaultLowestHierarchy();
+    },
     computed: {
         totalSteps() {
             switch (this.lowest_hierarchy) {
@@ -478,7 +481,6 @@ export default {
 
         const route = frappe.get_route();
         if (route[1] === this.doctype && route[2]) {
-            this.current_docname = route[2];
             await this.loadExistingData();
         } else {
             await this.loadDefaultLowestHierarchy();
@@ -492,19 +494,19 @@ export default {
         // Expand tree based on initial step
         this.expandTreeBasedOnStep();
     },
-    watch: {
-        '$route': {
-            handler: async function (to, from) {
-                const route = frappe.get_route();
-                if (route[1] === this.doctype && route[2] && route[2] !== this.current_docname) {
-                    this.resetData();
-                    this.current_docname = route[2];
-                    await this.loadExistingData();
-                }
-            },
-            immediate: true
-        }
-    },
+    // watch: {
+    //     '$route': {
+    //         handler: async function (to, from) {
+    //             const route = frappe.get_route();
+    //             if (route[1] === this.doctype && route[2] && route[2] !== this.current_docname) {
+    //                 this.resetData();
+    //                 this.current_docname = route[2];
+    //                 await this.loadExistingData();
+    //             }
+    //         },
+    //         immediate: true
+    //     }
+    // },
     methods: {
         async loadDefaultLowestHierarchy() {
             this.lowest_hierarchy = this.frm.doc[this.hierarchy_level_field];
@@ -551,6 +553,8 @@ export default {
                             // Expand tree based on current step after loading data
                             this.expandTreeBasedOnStep();
                         }
+                    }else{
+                        
                     }
                 } catch (error) {
                     console.error('Error loading existing data:', error);
