@@ -535,7 +535,6 @@ export default {
                         })
                     });
                     if (doc) {
-                        console.log(doc,'doc');
                         this.resetData();
 
                         if (this.frm.doc[this.hierarchy_level_field]) {
@@ -844,7 +843,6 @@ export default {
 
             // Validate current step selection before proceeding
             const validationResult = this.validateCurrentStepSelection();
-            console.log(validationResult, 'validationResult')
             if (!validationResult.isValid) {
                 this.showValidationError(validationResult);
                 return;
