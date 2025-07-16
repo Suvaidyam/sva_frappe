@@ -127,7 +127,4 @@ def get_geography_details(filters):
         doc = frappe.get_cached_doc('Geography Details', exists)
         return doc.as_dict()
     else:
-        return {
-            "status": "error",
-            "message": "Geography details not found"
-        }
+        return None

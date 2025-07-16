@@ -525,8 +525,7 @@ export default {
             }
         },
         async loadExistingData() {
-            if (!this.current_docname || this.isLoading) return;
-
+            if (this.isLoading) return;
             await this.withLoading(async () => {
                 try {
                     const doc = await frappe.xcall('sva_frappe.api.get_geography_details', {
@@ -535,15 +534,15 @@ export default {
                             docname: this.frm.docname
                         })
                     });
-                    // const doc = await frappe.get_doc(this.doctype, this.current_docname);
                     if (doc) {
+                        console.log(doc,'doc');
                         this.resetData();
 
                         if (this.frm.doc[this.hierarchy_level_field]) {
                             this.lowest_hierarchy = this.frm.doc[this.hierarchy_level_field];
                         }
 
-                        if (this.frm.doc[this.geography_details_field]) {
+                        if (doc.geography_details) {
                             const stateSet = new Set();
                             const districtSet = new Set();
                             const blockSet = new Set();
@@ -564,7 +563,7 @@ export default {
                             this.selectedGramPanchayats = Array.from(gpSet);
                             this.selectedVillages = Array.from(villageSet);
 
-                            this.updateAvailableItems();
+                            await this.updateAvailableItems();
                             // Expand tree based on current step after loading data
                             this.expandTreeBasedOnStep();
                         }
@@ -1078,18 +1077,10 @@ export default {
                     lowest_hierarchy: this.lowest_hierarchy
                 });
                 if (r.status === 'success') {
-                    if (!this.current_docname && r.docname) {
-                        this.current_docname = r.docname;
-                    }
-
                     frappe.show_alert({
                         message: r.message,
                         indicator: 'green'
                     });
-
-                    // if (!this.current_docname && r.docname) {
-                    //     frappe.set_route('Form', this.doctype, r.docname);
-                    // }
                 } else {
                     frappe.show_alert({
                         message: r.message || __('Error saving geography details'),
@@ -1308,7 +1299,7 @@ export default {
                 this.selectedVillages = [...new Set([...this.selectedVillages, ...villageIds])];
             }
         },
-        updateAvailableItems() {
+        async updateAvailableItems() {
             this.updateDistricts();
             if (this.lowest_hierarchy !== 'State') {
                 this.updateBlocks();
