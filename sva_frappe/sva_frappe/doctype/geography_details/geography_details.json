@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "autoname": "format:GD-{document_type}-{docname}",
+ "creation": "2025-07-16 14:07:08.040046",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "document_type",
+  "column_break_wwjo",
+  "docname",
+  "column_break_uiyg",
+  "lowest_geography_level",
+  "section_break_otsk",
+  "geography_details"
+ ],
+ "fields": [
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Link",
+   "label": "Document Type",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "fieldname": "docname",
+   "fieldtype": "Dynamic Link",
+   "label": "Docname",
+   "options": "document_type",
+   "read_only": 1
+  },
+  {
+   "default": "District",
+   "fieldname": "lowest_geography_level",
+   "fieldtype": "Select",
+   "label": "Lowest Geography Level",
+   "options": "State\nDistrict\nBlock\nGram Panchayat\nVillage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_wwjo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_uiyg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_otsk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "geography_details",
+   "fieldtype": "Table",
+   "label": "Geography Details",
+   "options": "Geography Details Child",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-16 20:25:49.625911",
+ "modified_by": "Administrator",
+ "module": "Sva Frappe",
+ "name": "Geography Details",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
