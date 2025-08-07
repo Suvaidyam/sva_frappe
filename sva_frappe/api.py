@@ -3,42 +3,54 @@ from frappe import _
 import json
 
 @frappe.whitelist()
-def get_states():
+def get_states(filters):
+    if isinstance(filters, str):
+        filters = json.loads(filters)
     """Get all active states"""
     states = frappe.get_all('State',
         fields=['name', 'state_name', 'state_code'],
-        filters={'status': 'Active'},
+        filters=[
+            ["status", "=", "Active"]
+        ] + filters if filters else [],
         order_by='state_name',
         limit=50
     )
     return states
 
 @frappe.whitelist()
-def get_districts(state=None):
+def get_districts(state=None,filters=None):
     """Get districts for given state(s)"""
-    filters = {'status': 'Active'}
+    if isinstance(filters, str):
+        filters = json.loads(filters)
+    _filters = [["District",'status',"=", 'Active']]
     if state:
-        state = json.loads(state)
-        filters['state'] = ['in', state]
+        if isinstance(state, str):
+            state = json.loads(state)
+        
+        _filters.append(["District", "state", "in", state])
+    
     districts = frappe.get_all('District',
         fields=['name', 'district_name', 'district_code', 'state'],
-        filters=filters,
+        filters=_filters + filters if filters else [],
         order_by='district_name',
         limit=200
     )
     return districts
 
 @frappe.whitelist()
-def get_blocks(district=None):
+def get_blocks(district=None, filters=None):
     """Get blocks for given district(s)"""
-    filters = {'status': 'Active'}
+    if isinstance(filters, str):
+        filters = json.loads(filters)
+    _filters = [["Block",'status',"=", 'Active']]
     if district:
-       district = json.loads(district)
-       filters['district'] = ['in', district]
-    
+        if isinstance(district, str):
+            district = json.loads(district)
+        _filters.append(["Block", "district", "in", district])
+
     blocks = frappe.get_all('Block',
         fields=['name', 'block_name', 'block_code', 'district', 'state'],
-        filters=filters,
+        filters=_filters + filters if filters else [],
         order_by='block_name',
         limit=300
     )

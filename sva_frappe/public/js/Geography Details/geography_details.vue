@@ -249,7 +249,7 @@
                     <div class="button-group">
                         <button class="btn btn-default" @click="goBack" v-if="currentStep > 1"
                             :disabled="isLoading">Back</button>
-                        <button class="btn btn-primary" @click="saveSelection" v-if="isAtLowestHierarchy && !read_only"
+                        <button class="btn btn-primary" @click="saveSelection" v-if="isAtLowestHierarchy && !read_only && !disable_save_btn"
                             :disabled="isLoading || isSaving">
                             <span v-if="isSaving" class="spinner-border spinner-border-sm me-2" role="status"
                                 aria-hidden="true"></span>
@@ -357,9 +357,18 @@
 </template>
 
 <script>
+import { toRaw } from 'vue'
 export default {
     name: 'GeographyDetails',
     props: {
+        filters:{
+            type: Object,
+            default: () => ({})
+        },
+        disable_save_btn: {
+            type: Boolean,
+            default: false
+        },
         hierarchy_level_field: {
             type: String,
             required: true
@@ -566,9 +575,16 @@ export default {
             });
         },
         async loadStates() {
+            let filters = []
+            if (this.filters.state){
+                filters = this.filters.state;
+            }
             await this.withLoading(async () => {
                 const response = await frappe.call({
                     method: 'sva_frappe.api.get_states',
+                    args: {
+                        filters: JSON.stringify(filters)
+                    },
                     callback: (r) => {
                         if (r.message) {
                             this.states = r.message.map(state => ({
@@ -585,6 +601,10 @@ export default {
             });
         },
         async updateDistricts() {
+            let filters = []
+            if (this.filters.district){
+                filters = this.filters.district;
+            }
             if (this.selectedStates.length === 0) {
                 this.availableDistricts = [];
                 this.selectedDistricts = [];
@@ -597,7 +617,8 @@ export default {
                     const response = await frappe.call({
                         method: 'sva_frappe.api.get_districts',
                         args: {
-                            state: this.selectedStates
+                            state: this.selectedStates,
+                            filters: JSON.stringify(filters)
                         },
                         callback: (r) => {
                             if (r.message) {
@@ -642,7 +663,8 @@ export default {
                 const response = await frappe.call({
                     method: 'sva_frappe.api.get_blocks',
                     args: {
-                        district: this.selectedDistricts
+                        district: this.selectedDistricts,
+                        filters: JSON.stringify(this.filters.block || [])
                     },
                     callback: (r) => {
                         if (r.message) {
@@ -718,6 +740,14 @@ export default {
             this.updateVillages();
         },
         async updateVillages() {
+            this.frm.geography_data = {
+                "states": toRaw(this.selectedStates),
+                "districts": toRaw(this.selectedDistricts),
+                "blocks": toRaw(this.selectedBlocks),
+                "gram_panchayats": toRaw(this.selectedGramPanchayats),
+                "villages": toRaw(this.selectedVillages)
+            };
+
             if (this.selectedGramPanchayats.length === 0) {
                 this.availableVillages = [];
                 this.selectedVillages = [];
