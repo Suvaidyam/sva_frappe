@@ -745,8 +745,7 @@ export default {
             this.updateVillages();
         },
         async updateVillages() {
-            if (this.disable_save_btn){
-               this.frm.geography_data = await this.saveSelection();
+
             // Save selection if disable_save_btn is true
             if (this.disable_save_btn) {
                 this.frm.geography_data = await this.saveSelection();
