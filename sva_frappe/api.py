@@ -66,7 +66,7 @@ def get_gram_panchayats(block=None , filters=None):
     if block:
         if isinstance(block, str):
            block = json.loads(block)
-       _filters.append(["Gram Panchayat", "block", "in", block])
+        _filters.append(["Gram Panchayat", "block", "in", block])
 
     gram_panchayats = frappe.get_all('Gram Panchayat',
         fields=['name', 'gram_pachayat_name', 'gram_panchayat_code', 'block', 'district', 'state'],
