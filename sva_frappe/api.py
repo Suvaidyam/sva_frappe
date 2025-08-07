@@ -29,7 +29,7 @@ def get_districts(state=None,filters=None):
         
         
         _filters.append(["District", "state", "in", state])
-    print(state, 100*"yyyyyyy", _filters + filters)
+
     districts = frappe.get_all('District',
         fields=['name', 'district_name', 'district_code', 'state'],
         filters=_filters + (filters if filters else []),
@@ -58,32 +58,38 @@ def get_blocks(district=None, filters=None):
     return blocks
 
 @frappe.whitelist()
-def get_gram_panchayats(block=None):
+def get_gram_panchayats(block=None , filters=None):
     """Get gram panchayats for given block(s)"""
-    filters = {'status': 'Active'}
+    if isinstance(filters, str):
+        filters = json.loads(filters)
+    _filters = [["Gram Panchayat", "status", "=", "Active"]]
     if block:
-       block = json.loads(block)
-       filters['block'] = ['in', block]
-    
+       if isinstance(block, str):
+           block = json.loads(block)
+       _filters.append(["Gram Panchayat", "block", "in", block])
+
     gram_panchayats = frappe.get_all('Gram Panchayat',
         fields=['name', 'gram_pachayat_name', 'gram_panchayat_code', 'block', 'district', 'state'],
-        filters=filters,
+        filters= _filters + (filters if filters else []),
         order_by='gram_pachayat_name',
         limit=300
     )
     return gram_panchayats
 
 @frappe.whitelist()
-def get_villages(gram_panchayat=None):
+def get_villages(gram_panchayat=None , filters=None):
     """Get villages for given gram panchayat(s)"""
-    filters = {'status': 'Active'}
+    if isinstance(filters, str):
+        filters = json.loads(filters)
+    _filters = [["Village", "status", "=", "Active"]]
     if gram_panchayat:
-       gram_panchayat = json.loads(gram_panchayat)
-       filters['gram_panchayat'] = ['in', gram_panchayat]
-    
+       if isinstance(gram_panchayat, str):
+           gram_panchayat = json.loads(gram_panchayat)
+       _filters.append(["Village", "gram_panchayat", "in", gram_panchayat])
+
     villages = frappe.get_all('Village',
         fields=['name', 'village_name', 'village_code', 'gram_panchayat', 'block', 'district', 'state'],
-        filters=filters,
+        filters=_filters + (filters if filters else []),
         order_by='village_name',
         limit=500
     )

@@ -486,12 +486,8 @@ export default {
         // Get doctype from frm
         this.doctype = this.frm.doctype;
         if (this.isDataLoaded) return;
-        
-        const route = frappe.get_route();
-        if(this.disable_save_btn){
-            await this.loadExistingData();
-        }
-        if (route[1] === this.doctype && route[2]) {
+
+        if (this.doctype) {
             await this.loadExistingData();
         } else {
             await this.loadDefaultLowestHierarchy();
@@ -523,9 +519,11 @@ export default {
             this.lowest_hierarchy = this.frm.doc[this.hierarchy_level_field];
         },
         async loadExistingData() {
-            console.log(this.frm , this.isLoading)
             if (this.isLoading) return;
             await this.withLoading(async () => {
+                if (!this.frm.doctype || !this.frm.docname) {
+                    return;
+                }
                 try {
                     const doc = await frappe.xcall('sva_frappe.api.get_geography_details', {
                         filters: JSON.stringify({
