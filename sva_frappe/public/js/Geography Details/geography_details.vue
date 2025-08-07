@@ -485,10 +485,12 @@ export default {
     async created() {
         // Get doctype from frm
         this.doctype = this.frm.doctype;
-
         if (this.isDataLoaded) return;
-
+        
         const route = frappe.get_route();
+        if(this.disable_save_btn){
+            await this.loadExistingData();
+        }
         if (route[1] === this.doctype && route[2]) {
             await this.loadExistingData();
         } else {
@@ -521,6 +523,7 @@ export default {
             this.lowest_hierarchy = this.frm.doc[this.hierarchy_level_field];
         },
         async loadExistingData() {
+            console.log(this.frm , this.isLoading)
             if (this.isLoading) return;
             await this.withLoading(async () => {
                 try {
@@ -601,9 +604,12 @@ export default {
             });
         },
         async updateDistricts() {
+            console.log("this.filters", this.filters)
             let filters = []
             if (this.filters.district){
                 filters = this.filters.district;
+            }else{
+                filters = [];
             }
             if (this.selectedStates.length === 0) {
                 this.availableDistricts = [];
@@ -740,14 +746,9 @@ export default {
             this.updateVillages();
         },
         async updateVillages() {
-            this.frm.geography_data = {
-                "states": toRaw(this.selectedStates),
-                "districts": toRaw(this.selectedDistricts),
-                "blocks": toRaw(this.selectedBlocks),
-                "gram_panchayats": toRaw(this.selectedGramPanchayats),
-                "villages": toRaw(this.selectedVillages)
-            };
-
+            if (this.disable_save_btn){
+               this.frm.geography_data = await this.saveSelection();
+            }
             if (this.selectedGramPanchayats.length === 0) {
                 this.availableVillages = [];
                 this.selectedVillages = [];
@@ -909,11 +910,13 @@ export default {
         async saveSelection() {
             this.isSaving = true;
             // Comprehensive validation for all levels based on lowest_hierarchy
-            const validationResult = this.validateAllLevelsForSave();
-            if (!validationResult.isValid) {
-                this.showValidationError(validationResult);
-                this.isSaving = false;
-                return;
+            if (!this.disable_save_btn){
+                const validationResult = this.validateAllLevelsForSave();
+                if (!validationResult.isValid) {
+                    this.showValidationError(validationResult);
+                    this.isSaving = false;
+                    return;
+                }
             }
 
             const selectionMap = new Map();
@@ -1086,33 +1089,34 @@ export default {
                     selection = selection.filter(item => item.state && item.district && item.block && item.gramPanchayat && item.village);
                     break;
             }
-            try {
-                const r = await frappe.xcall('sva_frappe.api.save_geography_details', {
-                    selection_data: JSON.stringify(selection),
-                    document_type: this.frm.doctype,
-                    docname: this.frm.docname,
-                    lowest_hierarchy: this.lowest_hierarchy
-                });
-                if (r.status === 'success') {
-                    frappe.show_alert({
-                        message: r.message,
-                        indicator: 'green'
+            if (!this.disable_save_btn){
+                try {
+                    const r = await frappe.xcall('sva_frappe.api.save_geography_details', {
+                        selection_data: JSON.stringify(selection),
+                        document_type: this.frm.doctype,
+                        docname: this.frm.docname,
+                        lowest_hierarchy: this.lowest_hierarchy
                     });
-                } else {
+                    if (r.status === 'success') {
+                        frappe.show_alert({
+                            message: r.message,
+                            indicator: 'green'
+                        });
+                    } else {
+                        frappe.show_alert({
+                            message: r.message || __('Error saving geography details'),
+                            indicator: 'red'
+                        });
+                    }
+                } catch (error) {
                     frappe.show_alert({
-                        message: r.message || __('Error saving geography details'),
+                        message: error.message || __('Error saving geography details'),
                         indicator: 'red'
                     });
+                } finally {
+                    this.isSaving = false;
                 }
-            } catch (error) {
-                frappe.show_alert({
-                    message: error.message || __('Error saving geography details'),
-                    indicator: 'red'
-                });
-            } finally {
-                this.isSaving = false;
             }
-
             return selection;
         },
         getSelectedBlocksForStateRecursive(stateId) {

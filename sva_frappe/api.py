@@ -11,7 +11,7 @@ def get_states(filters):
         fields=['name', 'state_name', 'state_code'],
         filters=[
             ["status", "=", "Active"]
-        ] + filters if filters else [],
+        ] + (filters if filters else []),
         order_by='state_name',
         limit=50
     )
@@ -22,16 +22,17 @@ def get_districts(state=None,filters=None):
     """Get districts for given state(s)"""
     if isinstance(filters, str):
         filters = json.loads(filters)
-    _filters = [["District",'status',"=", 'Active']]
+    _filters = [["District","status","=", "Active"]]
     if state:
         if isinstance(state, str):
             state = json.loads(state)
         
+        
         _filters.append(["District", "state", "in", state])
-    
+    print(state, 100*"yyyyyyy", _filters + filters)
     districts = frappe.get_all('District',
         fields=['name', 'district_name', 'district_code', 'state'],
-        filters=_filters + filters if filters else [],
+        filters=_filters + (filters if filters else []),
         order_by='district_name',
         limit=200
     )
@@ -50,7 +51,7 @@ def get_blocks(district=None, filters=None):
 
     blocks = frappe.get_all('Block',
         fields=['name', 'block_name', 'block_code', 'district', 'state'],
-        filters=_filters + filters if filters else [],
+        filters=_filters + (filters if filters else []),
         order_by='block_name',
         limit=300
     )
