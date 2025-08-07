@@ -64,7 +64,7 @@ def get_gram_panchayats(block=None , filters=None):
         filters = json.loads(filters)
     _filters = [["Gram Panchayat", "status", "=", "Active"]]
     if block:
-       if isinstance(block, str):
+        if isinstance(block, str):
            block = json.loads(block)
        _filters.append(["Gram Panchayat", "block", "in", block])
 
