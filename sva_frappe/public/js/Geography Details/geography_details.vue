@@ -604,6 +604,7 @@ export default {
         async updateDistricts() {
             console.log("this.filters", this.filters)
             let filters = []
+            
             if (this.filters.district){
                 filters = this.filters.district;
             }else{
