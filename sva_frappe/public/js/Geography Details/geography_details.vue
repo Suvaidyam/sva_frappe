@@ -747,7 +747,12 @@ export default {
         async updateVillages() {
             if (this.disable_save_btn){
                this.frm.geography_data = await this.saveSelection();
+            // Save selection if disable_save_btn is true
+            if (this.disable_save_btn) {
+                this.frm.geography_data = await this.saveSelection();
             }
+
+            // If no Gram Panchayats are selected, clear villages and return
             if (this.selectedGramPanchayats.length === 0) {
                 this.availableVillages = [];
                 this.selectedVillages = [];
