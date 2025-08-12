@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "zone",
+  "country",
   "state",
   "district",
   "block",
@@ -77,11 +78,18 @@
    "in_list_view": 1,
    "label": "Gram Panchayat",
    "options": "Gram Panchayat"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-09 09:05:28.421050",
+ "modified": "2025-03-27 14:07:32.420856",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Village",

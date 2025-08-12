@@ -7,31 +7,31 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "role_profile",
+  "column_break_hfhn",
+  "column_break_uvnf",
+  "section_break_bsyq",
   "email",
+  "mobile_number",
+  "status",
+  "column_break_lsez",
   "first_name",
   "middle_name",
-  "full_name",
   "last_name",
-  "user_image",
+  "column_break_qmkl",
+  "full_name",
   "username",
-  "column_break_lsez",
-  "mobile_number",
-  "role_profile",
+  "user_image",
+  "password_section",
+  "update_password",
   "password",
   "confirm_password",
-  "status",
-  "section_break_yevr",
-  "add_permission",
-  "column_break_sebk",
-  "delete_btn_checked",
-  "section_break_jski",
-  "html_ojrc",
-  "section_break_rxmy",
-  "select_zone",
-  "select_state",
-  "select_district",
-  "select_block",
-  "select_village"
+  "column_break_cqkl",
+  "column_break_bejo",
+  "data_permissions_tab",
+  "table_pdop",
+  "permissions_tab",
+  "module_permissions"
  ],
  "fields": [
   {
@@ -39,7 +39,10 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Email",
-   "reqd": 1
+   "options": "Email",
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
   },
   {
    "fieldname": "first_name",
@@ -50,6 +53,7 @@
   {
    "fieldname": "middle_name",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Middle Name"
   },
   {
@@ -76,79 +80,24 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval:(doc.__islocal || (!doc.__islocal && doc.update_password))",
    "fieldname": "password",
    "fieldtype": "Password",
    "label": "Password",
-   "reqd": 1
+   "mandatory_depends_on": "eval:(doc.__islocal || (!doc.__islocal && doc.update_password))"
   },
   {
+   "depends_on": "eval:(doc.__islocal || (!doc.__islocal && doc.update_password))",
    "fieldname": "confirm_password",
    "fieldtype": "Data",
    "label": "Confirm Password",
-   "reqd": 1
-  },
-  {
-   "fieldname": "section_break_yevr",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "add_permission",
-   "fieldtype": "Button",
-   "label": "Add Permission"
-  },
-  {
-   "fieldname": "section_break_rxmy",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "select_state",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select State",
-   "options": "State Child"
-  },
-  {
-   "fieldname": "select_district",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select District",
-   "options": "District Child"
-  },
-  {
-   "fieldname": "select_block",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select Block",
-   "options": "Block Child"
-  },
-  {
-   "fieldname": "select_village",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select Village",
-   "options": "Village Child"
-  },
-  {
-   "fieldname": "html_ojrc",
-   "fieldtype": "HTML",
-   "options": "<div id=\"datatable\"></div>"
-  },
-  {
-   "fieldname": "select_zone",
-   "fieldtype": "Table MultiSelect",
-   "hidden": 1,
-   "is_virtual": 1,
-   "label": "Select Zone",
-   "options": "Zone Child"
+   "mandatory_depends_on": "eval:(doc.__islocal || (!doc.__islocal && doc.update_password))"
   },
   {
    "fieldname": "full_name",
    "fieldtype": "Data",
    "hidden": 1,
+   "in_global_search": 1,
    "in_list_view": 1,
    "label": "Full Name"
   },
@@ -161,19 +110,6 @@
    "options": "\nActive\nInactive"
   },
   {
-   "fieldname": "section_break_jski",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "delete_btn_checked",
-   "fieldtype": "HTML",
-   "options": "<button id=\"delete-selected\" class=\"btn btn-danger btn-xs\" style=\"display:none;float:right;\">Delete Selected</button>"
-  },
-  {
-   "fieldname": "column_break_sebk",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "username",
    "fieldtype": "Data",
    "hidden": 1,
@@ -184,12 +120,68 @@
    "fieldtype": "Data",
    "label": "Mobile Number",
    "length": 10
+  },
+  {
+   "depends_on": "eval: doc.role_profile",
+   "fieldname": "permissions_tab",
+   "fieldtype": "Tab Break",
+   "label": "Module Permissions"
+  },
+  {
+   "fieldname": "section_break_bsyq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "password_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:!doc.__islocal",
+   "fieldname": "update_password",
+   "fieldtype": "Check",
+   "label": "Update Password"
+  },
+  {
+   "fieldname": "module_permissions",
+   "fieldtype": "HTML",
+   "label": "Module Permissions"
+  },
+  {
+   "fieldname": "data_permissions_tab",
+   "fieldtype": "Tab Break",
+   "label": "Data Permissions"
+  },
+  {
+   "fieldname": "table_pdop",
+   "fieldtype": "Table",
+   "options": "User Data Permissions"
+  },
+  {
+   "fieldname": "column_break_hfhn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_uvnf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_qmkl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_cqkl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_bejo",
+   "fieldtype": "Column Break"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-07 09:39:27.408194",
+ "modified": "2025-06-06 15:24:41.418379",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",

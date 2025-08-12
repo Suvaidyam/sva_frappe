@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "zone",
+  "country",
   "state_name",
   "state_code",
   "status",
@@ -85,6 +86,12 @@
   {
    "fieldname": "villages",
    "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
   }
  ],
  "hide_toolbar": 1,
@@ -111,7 +118,7 @@
    "link_fieldname": "state"
   }
  ],
- "modified": "2024-11-26 11:14:32.101589",
+ "modified": "2025-06-24 14:52:59.413902",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "State",

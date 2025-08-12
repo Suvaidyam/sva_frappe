@@ -1,38 +1,40 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-01-24 15:20:06.044012",
+ "creation": "2025-02-01 18:18:21.094670",
+ "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "users",
-  "user_email"
+  "module",
+  "value"
  ],
  "fields": [
   {
-   "fetch_from": "users.email",
-   "fieldname": "user_email",
-   "fieldtype": "Data",
-   "label": "User Email",
-   "options": "Email"
-  },
-  {
-   "fieldname": "users",
+   "fieldname": "module",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "User",
-   "options": "SVA User",
+   "label": "Module",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "value",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Value",
+   "options": "module",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-06-18 13:10:53.825712",
+ "modified": "2025-02-01 18:20:44.654291",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
- "name": "SVA User Child",
+ "name": "User Data Permissions",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "creation",
