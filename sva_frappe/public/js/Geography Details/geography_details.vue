@@ -1118,7 +1118,7 @@ export default {
                 }
             }
             // Set hierarchy level field if exists
-            if (this.hierarchy_level_field && this.frm.doc[this.hierarchy_level_field]){
+            if (this.hierarchy_level_field && this.frm.doc[this.hierarchy_level_field] && this.frm.docname && !this.disable_save_btn){
                 await frappe.db.set_value(this.frm.doctype, this.frm.docname, this.hierarchy_level_field, this.frm.doc[this.hierarchy_level_field]);
 
             }
