@@ -1,7 +1,6 @@
 <template>
     <div class="container-fluid mt-4">
         <h1 class="header text-center">{{ geography_title }}</h1>
-
         <!-- Add loading overlay -->
         <div class="loading-overlay" v-if="isLoading">
             <div class="loading-spinner">
@@ -357,7 +356,6 @@
 </template>
 
 <script>
-import { toRaw } from 'vue'
 export default {
     name: 'GeographyDetails',
     props: {
@@ -1118,6 +1116,11 @@ export default {
                 } finally {
                     this.isSaving = false;
                 }
+            }
+            // Set hierarchy level field if exists
+            if (this.hierarchy_level_field && this.frm.doc[this.hierarchy_level_field]){
+                await frappe.db.set_value(this.frm.doctype, this.frm.docname, this.hierarchy_level_field, this.frm.doc[this.hierarchy_level_field]);
+
             }
             return selection;
         },
