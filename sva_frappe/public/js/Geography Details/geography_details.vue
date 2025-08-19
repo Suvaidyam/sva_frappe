@@ -1,7 +1,6 @@
 <template>
     <div class="container-fluid mt-4">
         <h1 class="header text-center">{{ geography_title }}</h1>
-
         <!-- Add loading overlay -->
         <div class="loading-overlay" v-if="isLoading">
             <div class="loading-spinner">
@@ -249,7 +248,7 @@
                     <div class="button-group">
                         <button class="btn btn-default" @click="goBack" v-if="currentStep > 1"
                             :disabled="isLoading">Back</button>
-                        <button class="btn btn-primary" @click="saveSelection" v-if="isAtLowestHierarchy && !read_only"
+                        <button class="btn btn-primary" @click="saveSelection" v-if="isAtLowestHierarchy && !read_only && !disable_save_btn"
                             :disabled="isLoading || isSaving">
                             <span v-if="isSaving" class="spinner-border spinner-border-sm me-2" role="status"
                                 aria-hidden="true"></span>
@@ -360,6 +359,14 @@
 export default {
     name: 'GeographyDetails',
     props: {
+        filters:{
+            type: Object,
+            default: () => ({})
+        },
+        disable_save_btn: {
+            type: Boolean,
+            default: false
+        },
         hierarchy_level_field: {
             type: String,
             required: true
@@ -476,11 +483,9 @@ export default {
     async created() {
         // Get doctype from frm
         this.doctype = this.frm.doctype;
-
         if (this.isDataLoaded) return;
 
-        const route = frappe.get_route();
-        if (route[1] === this.doctype && route[2]) {
+        if (this.doctype) {
             await this.loadExistingData();
         } else {
             await this.loadDefaultLowestHierarchy();
@@ -514,6 +519,9 @@ export default {
         async loadExistingData() {
             if (this.isLoading) return;
             await this.withLoading(async () => {
+                if (!this.frm.doctype || !this.frm.docname) {
+                    return;
+                }
                 try {
                     const doc = await frappe.xcall('sva_frappe.api.get_geography_details', {
                         filters: JSON.stringify({
@@ -566,9 +574,16 @@ export default {
             });
         },
         async loadStates() {
+            let filters = []
+            if (this.filters.state){
+                filters = this.filters.state;
+            }
             await this.withLoading(async () => {
                 const response = await frappe.call({
                     method: 'sva_frappe.api.get_states',
+                    args: {
+                        filters: JSON.stringify(filters)
+                    },
                     callback: (r) => {
                         if (r.message) {
                             this.states = r.message.map(state => ({
@@ -585,6 +600,13 @@ export default {
             });
         },
         async updateDistricts() {
+            let filters = []
+            
+            if (this.filters.district){
+                filters = this.filters.district;
+            }else{
+                filters = [];
+            }
             if (this.selectedStates.length === 0) {
                 this.availableDistricts = [];
                 this.selectedDistricts = [];
@@ -597,7 +619,8 @@ export default {
                     const response = await frappe.call({
                         method: 'sva_frappe.api.get_districts',
                         args: {
-                            state: this.selectedStates
+                            state: this.selectedStates,
+                            filters: JSON.stringify(filters)
                         },
                         callback: (r) => {
                             if (r.message) {
@@ -642,7 +665,8 @@ export default {
                 const response = await frappe.call({
                     method: 'sva_frappe.api.get_blocks',
                     args: {
-                        district: this.selectedDistricts
+                        district: this.selectedDistricts,
+                        filters: JSON.stringify(this.filters.block || [])
                     },
                     callback: (r) => {
                         if (r.message) {
@@ -718,6 +742,13 @@ export default {
             this.updateVillages();
         },
         async updateVillages() {
+
+            // Save selection if disable_save_btn is true
+            if (this.disable_save_btn) {
+                this.frm.geography_data = await this.saveSelection();
+            }
+
+            // If no Gram Panchayats are selected, clear villages and return
             if (this.selectedGramPanchayats.length === 0) {
                 this.availableVillages = [];
                 this.selectedVillages = [];
@@ -879,11 +910,13 @@ export default {
         async saveSelection() {
             this.isSaving = true;
             // Comprehensive validation for all levels based on lowest_hierarchy
-            const validationResult = this.validateAllLevelsForSave();
-            if (!validationResult.isValid) {
-                this.showValidationError(validationResult);
-                this.isSaving = false;
-                return;
+            if (!this.disable_save_btn){
+                const validationResult = this.validateAllLevelsForSave();
+                if (!validationResult.isValid) {
+                    this.showValidationError(validationResult);
+                    this.isSaving = false;
+                    return;
+                }
             }
 
             const selectionMap = new Map();
@@ -1056,33 +1089,39 @@ export default {
                     selection = selection.filter(item => item.state && item.district && item.block && item.gramPanchayat && item.village);
                     break;
             }
-            try {
-                const r = await frappe.xcall('sva_frappe.api.save_geography_details', {
-                    selection_data: JSON.stringify(selection),
-                    document_type: this.frm.doctype,
-                    docname: this.frm.docname,
-                    lowest_hierarchy: this.lowest_hierarchy
-                });
-                if (r.status === 'success') {
-                    frappe.show_alert({
-                        message: r.message,
-                        indicator: 'green'
+            if (!this.disable_save_btn){
+                try {
+                    const r = await frappe.xcall('sva_frappe.api.save_geography_details', {
+                        selection_data: JSON.stringify(selection),
+                        document_type: this.frm.doctype,
+                        docname: this.frm.docname,
+                        lowest_hierarchy: this.lowest_hierarchy
                     });
-                } else {
+                    if (r.status === 'success') {
+                        frappe.show_alert({
+                            message: r.message,
+                            indicator: 'green'
+                        });
+                    } else {
+                        frappe.show_alert({
+                            message: r.message || __('Error saving geography details'),
+                            indicator: 'red'
+                        });
+                    }
+                } catch (error) {
                     frappe.show_alert({
-                        message: r.message || __('Error saving geography details'),
+                        message: error.message || __('Error saving geography details'),
                         indicator: 'red'
                     });
+                } finally {
+                    this.isSaving = false;
                 }
-            } catch (error) {
-                frappe.show_alert({
-                    message: error.message || __('Error saving geography details'),
-                    indicator: 'red'
-                });
-            } finally {
-                this.isSaving = false;
             }
+            // Set hierarchy level field if exists
+            if (this.hierarchy_level_field && this.frm.doc[this.hierarchy_level_field] && this.frm.docname && !this.disable_save_btn){
+                await frappe.db.set_value(this.frm.doctype, this.frm.docname, this.hierarchy_level_field, this.frm.doc[this.hierarchy_level_field]);
 
+            }
             return selection;
         },
         getSelectedBlocksForStateRecursive(stateId) {
