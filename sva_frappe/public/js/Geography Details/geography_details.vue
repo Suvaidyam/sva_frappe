@@ -517,6 +517,9 @@ const loadExistingData = async () => {
                     await updateAvailableItems();
                     expandTreeBasedOnStep();
                 }
+            }else{
+                // load state if the geography details have no record
+                await loadStates();
             }
         } catch (error) {
             console.error('Error loading existing data:', error);
