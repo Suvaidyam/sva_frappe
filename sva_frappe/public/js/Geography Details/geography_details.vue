@@ -512,7 +512,6 @@ const loadExistingData = async () => {
                     selectedBlocks.value = Array.from(blockSet);
                     selectedGramPanchayats.value = Array.from(gpSet);
                     selectedVillages.value = Array.from(villageSet);
-                    // console.warn("Load Existing Data call", selectedStates.value.length);
 
                     await loadStates();
                     await updateAvailableItems();
