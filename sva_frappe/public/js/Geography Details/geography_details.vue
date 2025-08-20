@@ -689,7 +689,6 @@ const updateGramPanchayats = async () => {
 
 const updateVillages = async () => {
     if (props.disable_save_btn) {
-        // console.log("Calling from the Update village",await saveSelection())
         props.frm.geography_data = await saveSelection();
     }
 
