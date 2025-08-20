@@ -911,7 +911,6 @@ const saveSelection = async () => {
             });
         }
     });
-    // console.log("CALLING FROM THE SAVE SECTION selectionMap vARIABLES", selectionMap)
     let selection = Array.from(selectionMap.values());
     // Filter based on lowest hierarchy
     switch (lowest_hierarchy.value) {
