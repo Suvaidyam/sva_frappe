@@ -488,7 +488,6 @@ const loadExistingData = async () => {
                     docname: props.frm.docname
                 })
             });
-            // console.log("Load existing call repeat test")
             if (doc) {
                 await resetData();
                 if (props.frm.doc[props.hierarchy_level_field]) {
