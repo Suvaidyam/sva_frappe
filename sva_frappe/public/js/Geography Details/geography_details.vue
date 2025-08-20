@@ -519,7 +519,7 @@ const loadExistingData = async () => {
                 }
             }
         } catch (error) {
-            // console.error('Error loading existing data:', error);
+            console.error('Error loading existing data:', error);
             frappe.show_alert({
                 message: __('Error loading existing data'),
                 indicator: 'red'
