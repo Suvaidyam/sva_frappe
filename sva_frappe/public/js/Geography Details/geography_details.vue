@@ -488,8 +488,7 @@ const loadExistingData = async () => {
                     docname: props.frm.docname
                 })
             });
-            console.log("Load existing call repeat test")
-            await loadStates();
+            // console.log("Load existing call repeat test")
             if (doc) {
                 await resetData();
                 if (props.frm.doc[props.hierarchy_level_field]) {
@@ -514,14 +513,15 @@ const loadExistingData = async () => {
                     selectedBlocks.value = Array.from(blockSet);
                     selectedGramPanchayats.value = Array.from(gpSet);
                     selectedVillages.value = Array.from(villageSet);
-                    console.warn("Load Existing Data call", selectedStates.value.length);
+                    // console.warn("Load Existing Data call", selectedStates.value.length);
 
+                    await loadStates();
                     await updateAvailableItems();
                     expandTreeBasedOnStep();
                 }
             }
         } catch (error) {
-            console.error('Error loading existing data:', error);
+            // console.error('Error loading existing data:', error);
             frappe.show_alert({
                 message: __('Error loading existing data'),
                 indicator: 'red'
@@ -543,7 +543,7 @@ const loadStates = async () => {
                         name: state.state_name,
                         code: state.state_code
                     }));
-                    console.log("state load", states.value.length);
+                    // console.log("state load", states.value.length);
                     if (states.value.length > 0) {
                         expandedStateId.value = states.value[0].id;
                     }
@@ -692,7 +692,7 @@ const updateGramPanchayats = async () => {
 
 const updateVillages = async () => {
     if (props.disable_save_btn) {
-        console.log("Calling from the Update village",await saveSelection())
+        // console.log("Calling from the Update village",await saveSelection())
         props.frm.geography_data = await saveSelection();
     }
 
@@ -851,11 +851,11 @@ const saveSelection = async () => {
     const selectionMap = new Map();
 
     // Build selection map for all hierarchy levels
-    console.log("SAVE SELECTION Values in saveSections", selectedStates.value);
+    // console.log("SAVE SELECTION Values in saveSections", selectedStates.value);
     selectedStates.value.forEach(stateId => {
-        console.log("State ID in save selection mmmmmmmmmmmmmmmmmm", stateId, states.value.length);
+        // console.log("State ID in save selection mmmmmmmmmmmmmmmmmm", stateId, states.value.length);
         const state = states.value.find(s => s.id == stateId);
-        console.log("State found in save selection", state);
+        // console.log("State found in save selection", state);
         if (state) {
             selectionMap.set(state.id, {
                 state: { id: state.id, name: state.name, code: state.code }
@@ -918,7 +918,7 @@ const saveSelection = async () => {
             });
         }
     });
-    console.log("CALLING FROM THE SAVE SECTION selectionMap vARIABLES", selectionMap)
+    // console.log("CALLING FROM THE SAVE SECTION selectionMap vARIABLES", selectionMap)
     let selection = Array.from(selectionMap.values());
     // Filter based on lowest hierarchy
     switch (lowest_hierarchy.value) {
