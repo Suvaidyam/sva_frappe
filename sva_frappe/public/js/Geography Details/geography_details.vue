@@ -541,7 +541,6 @@ const loadStates = async () => {
                         name: state.state_name,
                         code: state.state_code
                     }));
-                    // console.log("state load", states.value.length);
                     if (states.value.length > 0) {
                         expandedStateId.value = states.value[0].id;
                     }
