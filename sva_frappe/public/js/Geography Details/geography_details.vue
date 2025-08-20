@@ -847,7 +847,6 @@ const saveSelection = async () => {
     const selectionMap = new Map();
 
     // Build selection map for all hierarchy levels
-    // console.log("SAVE SELECTION Values in saveSections", selectedStates.value);
     selectedStates.value.forEach(stateId => {
         // console.log("State ID in save selection mmmmmmmmmmmmmmmmmm", stateId, states.value.length);
         const state = states.value.find(s => s.id == stateId);
