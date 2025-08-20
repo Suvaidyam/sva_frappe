@@ -488,10 +488,10 @@ const loadExistingData = async () => {
                     docname: props.frm.docname
                 })
             });
-
+            console.log("Load existing call repeat test")
+            await loadStates();
             if (doc) {
                 await resetData();
-                await loadStates();
                 if (props.frm.doc[props.hierarchy_level_field]) {
                     lowest_hierarchy.value = props.frm.doc[props.hierarchy_level_field];
                 }
@@ -1602,7 +1602,7 @@ const initializeComponent = async () => {
     doctype.value = props.frm.doctype;
     if (isDataLoaded.value) return;
 
-    if (doctype.value) {
+    if (props.frm.doctype && props.frm.docname) {
         await loadExistingData();
     } else {
         await loadDefaultLowestHierarchy();
