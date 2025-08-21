@@ -4,15 +4,21 @@ app_publisher = "suvaidyam"
 app_description = "customize frappe app for extra features"
 app_email = "tech@suvaidyam.com"
 app_license = "mit"
-# required_apps = []
+required_apps = ["Suvaidyam/frappe_theme"]
 
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/sva_frappe/css/sva_frappe.css"
-app_include_js = "/assets/sva_frappe/js/sva_frappe.js"
-
+app_include_js = [
+    "/assets/sva_frappe/js/sva_frappe.js",
+    "/assets/sva_frappe/js/user_permission.js"
+]
+# fixtures = [
+#     'State',
+#     'District'
+# ]
 # include js, css files in header of web template
 # web_include_css = "/assets/sva_frappe/css/sva_frappe.css"
 web_include_js = "/assets/sva_frappe/js/sva_frappe.js"
@@ -135,13 +141,12 @@ doctype_list_js = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"User Permission": {
+        "on_update": "sva_frappe.sva_frappe.doctype.sva_user.sva_user.on_user_permission_change",
+        "on_trash": "sva_frappe.sva_frappe.doctype.sva_user.sva_user.on_user_permission_change"
+    }
+}
 
 # Scheduled Tasks
 # ---------------
