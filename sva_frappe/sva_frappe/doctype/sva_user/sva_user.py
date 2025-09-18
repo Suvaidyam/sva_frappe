@@ -62,16 +62,20 @@ class SVAUser(Document):
 
 
 
-	def validate(self):
-		# Check if password and confirm password match
-		is_disabled_usr_pass_login = frappe.db.get_single_value('My Theme', 'disable_usr_pass_login')
-		if not is_disabled_usr_pass_login:
-			if self.is_new():
-				if self.password != self.confirm_password:
-					frappe.throw("Password and Confirm password do not match")
+	# def validate(self):
+	# 	# Check if password and confirm password match
+	# 	is_disabled_usr_pass_login = frappe.db.get_single_value('My Theme', 'disable_usr_pass_login')
+	# 	if not is_disabled_usr_pass_login:
+	# 		if self.is_new():
+	# 			if self.password != self.confirm_password:
+	# 				frappe.throw("Password and Confirm password do not match")
 
 	def after_insert(self):
 		# Create a new User document after SVAUser is inserted
+		if self.get('password'):
+			password = self.get_password("password")
+		else:
+			password = None
 		new_user = frappe.new_doc("User")
 		new_user.email = self.email
 		new_user.first_name = self.first_name
@@ -81,10 +85,14 @@ class SVAUser(Document):
 		new_user.mobile_no = self.mobile_number
 		new_user.role_profile_name = self.role_profile
 		new_user.user_image = self.user_image
-		new_user.new_password = self.confirm_password
+		new_user.new_password = password
 		new_user.insert(ignore_permissions=True)  # Insert to trigger 'before_insert' or 'after_insert' for User
 	def on_update(self):
 		if not self.get('localname'):
+			if self.get('password'):
+				password = self.get_password("password")
+			else:
+				password = None
 			user_doc = frappe.get_doc("User", self.email)
 			# Update user details
 			user_doc.enabled = self.status == 'Active'
@@ -95,7 +103,7 @@ class SVAUser(Document):
 			user_doc.username = self.username if self.username else self.email
 			user_doc.mobile_no = self.mobile_number
 			user_doc.user_image = self.user_image
-			user_doc.new_password = self.confirm_password
+			user_doc.new_password = password
 			user_doc.role_profiles = [frappe.get_doc({"doctype":"User Role Profile","role_profile": self.role_profile,"parent": self.email,"parenttype":"User",'parentfield':'role_profiles'}).save(ignore_permissions=True)]
 			user_doc.save(ignore_permissions=True)
 
@@ -136,4 +144,3 @@ def on_user_permission_change(doc, method):
 		for perm_name in permissions_to_delete:
 			frappe.delete_doc("User Data Permissions", perm_name, ignore_permissions=True)
 		frappe.db.commit()
-

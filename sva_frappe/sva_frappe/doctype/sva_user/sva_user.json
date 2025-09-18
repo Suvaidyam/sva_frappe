@@ -25,7 +25,6 @@
   "password_section",
   "update_password",
   "password",
-  "confirm_password",
   "column_break_cqkl",
   "column_break_bejo",
   "data_permissions_tab",
@@ -84,13 +83,6 @@
    "fieldname": "password",
    "fieldtype": "Password",
    "label": "Password",
-   "mandatory_depends_on": "eval:(doc.__islocal || (!doc.__islocal && doc.update_password))"
-  },
-  {
-   "depends_on": "eval:(doc.__islocal || (!doc.__islocal && doc.update_password))",
-   "fieldname": "confirm_password",
-   "fieldtype": "Data",
-   "label": "Confirm Password",
    "mandatory_depends_on": "eval:(doc.__islocal || (!doc.__islocal && doc.update_password))"
   },
   {
@@ -181,7 +173,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-06 15:24:41.418379",
+ "modified": "2025-08-21 16:59:39.051619",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
