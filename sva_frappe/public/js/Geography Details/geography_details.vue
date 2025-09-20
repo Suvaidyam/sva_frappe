@@ -248,7 +248,8 @@
                     <div class="button-group">
                         <button class="btn btn-default" @click="goBack" v-if="currentStep > 1"
                             :disabled="isLoading">Back</button>
-                        <button class="btn btn-primary" @click="saveSelection" v-if="isAtLowestHierarchy && !read_only && !disable_save_btn"
+                        <button class="btn btn-primary" @click="saveSelection"
+                            v-if="isAtLowestHierarchy && !read_only && !disable_save_btn"
                             :disabled="isLoading || isSaving">
                             <span v-if="isSaving" class="spinner-border spinner-border-sm me-2" role="status"
                                 aria-hidden="true"></span>
@@ -355,1509 +356,1310 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'GeographyDetails',
-    props: {
-        filters:{
-            type: Object,
-            default: () => ({})
-        },
-        disable_save_btn: {
-            type: Boolean,
-            default: false
-        },
-        hierarchy_level_field: {
-            type: String,
-            required: true
-        },
-        geography_details_field: {
-            type: String,
-            required: true
-        },
-        frm: {
-            type: Object,
-            required: true
-        },
-        geography_title: {
-            type: String,
-            required: false
-        },
-        read_only: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+import { ref, reactive, computed, onMounted, watch } from 'vue';
+
+// ============ PROPS DEFINITION ============
+const props = defineProps({
+    filters: {
+        type: Object,
+        default: () => ({})
     },
-    data() {
-        return {
-            currentStep: 1,
-            states: [],
-            districts: {},
-            blocks: {},
-            gramPanchayats: {},
-            villages: {},
-            selectedStates: [],
-            selectedDistricts: [],
-            selectedBlocks: [],
-            selectedGramPanchayats: [],
-            selectedVillages: [],
-            availableDistricts: [],
-            availableBlocks: [],
-            availableGramPanchayats: [],
-            availableVillages: [],
-            isLoading: false,
-            expandedStateId: null,
-            current_docname: null,
-            lowest_hierarchy: 'District',
-            isDataLoaded: false,
-            expandedStates: new Set(),
-            expandedDistricts: new Set(),
-            expandedBlocks: new Set(),
-            expandedGPs: new Set(),
-            doctype: 'Geography Details',
-            isSaving: false,
-        };
+    disable_save_btn: {
+        type: Boolean,
+        default: false
     },
-    mounted(){
-        this.loadDefaultLowestHierarchy();
+    hierarchy_level_field: {
+        type: String,
+        required: true
     },
-    computed: {
-        totalSteps() {
-            switch (this.lowest_hierarchy) {
-                case 'State':
-                    return 1;
-                case 'District':
-                    return 2;
-                case 'Block':
-                    return 3;
-                case 'Gram Panchayat':
-                    return 4;
-                case 'Village':
-                    return 5;
-                default:
-                    return 2;
-            }
-        },
-        themeColors() {
-            return {
-                primary: frappe.boot.my_theme?.button_background_color || '#171717',
-                primaryLight: this.getLightColor(frappe.boot.my_theme?.button_background_color || '#171717')
-            };
-        },
-        isAtLowestHierarchy() {
-            switch (this.lowest_hierarchy) {
-                case 'State':
-                    return this.currentStep === 1;
-                case 'District':
-                    return this.currentStep === 2;
-                case 'Block':
-                    return this.currentStep === 3;
-                case 'Gram Panchayat':
-                    return this.currentStep === 4;
-                case 'Village':
-                    return this.currentStep === 5;
-                default:
-                    return false;
-            }
-        },
-        allStatesSelected() {
-            return this.states.length > 0 && this.selectedStates.length === this.states.length;
-        },
-        allDistrictsSelected() {
-            return this.availableDistricts.length > 0 &&
-                this.selectedDistricts.length === this.availableDistricts.length;
-        },
-        allBlocksSelected() {
-            return this.availableBlocks.length > 0 &&
-                this.selectedBlocks.length === this.availableBlocks.length;
-        },
-        allGramPanchayatsSelected() {
-            return this.availableGramPanchayats.length > 0 &&
-                this.selectedGramPanchayats.length === this.availableGramPanchayats.length;
-        },
-        allVillagesSelected() {
-            return this.availableVillages.length > 0 &&
-                this.selectedVillages.length === this.availableVillages.length;
-        },
+    geography_details_field: {
+        type: String,
+        required: true
     },
-    async created() {
-        // Get doctype from frm
-        this.doctype = this.frm.doctype;
-        if (this.isDataLoaded) return;
-
-        if (this.doctype) {
-            await this.loadExistingData();
-        } else {
-            await this.loadDefaultLowestHierarchy();
-        }
-        await this.loadStates();
-        // Expand the first state by default if available
-        if (this.states.length > 0) {
-            this.expandedStates.add(this.states[0].id);
-        }
-        this.isDataLoaded = true;
-        // Expand tree based on initial step
-        this.expandTreeBasedOnStep();
+    frm: {
+        type: Object,
+        required: true
     },
-    // watch: {
-    //     '$route': {
-    //         handler: async function (to, from) {
-    //             const route = frappe.get_route();
-    //             if (route[1] === this.doctype && route[2] && route[2] !== this.current_docname) {
-    //                 this.resetData();
-    //                 this.current_docname = route[2];
-    //                 await this.loadExistingData();
-    //             }
-    //         },
-    //         immediate: true
-    //     }
-    // },
-    methods: {
-        async loadDefaultLowestHierarchy() {
-            this.lowest_hierarchy = this.frm.doc[this.hierarchy_level_field];
-        },
-        async loadExistingData() {
-            if (this.isLoading) return;
-            await this.withLoading(async () => {
-                if (!this.frm.doctype || !this.frm.docname) {
-                    return;
-                }
-                try {
-                    const doc = await frappe.xcall('sva_frappe.api.get_geography_details', {
-                        filters: JSON.stringify({
-                            document_type: this.frm.doctype,
-                            docname: this.frm.docname
-                        })
-                    });
-                    if (doc) {
-                        this.resetData();
+    geography_title: {
+        type: String,
+        required: false
+    },
+    read_only: {
+        type: Boolean,
+        default: false
+    }
+});
 
-                        if (this.frm.doc[this.hierarchy_level_field]) {
-                            this.lowest_hierarchy = this.frm.doc[this.hierarchy_level_field];
-                        }
+// ============ REACTIVE STATE ============
+const currentStep = ref(1);
+const states = ref([]);
+const districts = reactive({});
+const blocks = reactive({});
+const gramPanchayats = reactive({});
+const villages = reactive({});
+const selectedStates = ref([]);
+const selectedDistricts = ref([]);
+const selectedBlocks = ref([]);
+const selectedGramPanchayats = ref([]);
+const selectedVillages = ref([]);
+const availableDistricts = ref([]);
+const availableBlocks = ref([]);
+const availableGramPanchayats = ref([]);
+const availableVillages = ref([]);
+const isLoading = ref(false);
+const expandedStateId = ref(null);
+const current_docname = ref(null);
+const lowest_hierarchy = ref('District');
+const isDataLoaded = ref(false);
+const expandedStates = reactive(new Set());
+const expandedDistricts = reactive(new Set());
+const expandedBlocks = reactive(new Set());
+const expandedGPs = reactive(new Set());
+const doctype = ref('Geography Details');
+const isSaving = ref(false);
 
-                        if (doc.geography_details) {
-                            const stateSet = new Set();
-                            const districtSet = new Set();
-                            const blockSet = new Set();
-                            const gpSet = new Set();
-                            const villageSet = new Set();
+// ============ COMPUTED PROPERTIES ============
+const totalSteps = computed(() => {
+    switch (lowest_hierarchy.value) {
+        case 'State': return 1;
+        case 'District': return 2;
+        case 'Block': return 3;
+        case 'Gram Panchayat': return 4;
+        case 'Village': return 5;
+        default: return 2;
+    }
+});
 
-                            doc.geography_details.forEach(detail => {
-                                if (detail.state) stateSet.add(detail.state);
-                                if (detail.district) districtSet.add(detail.district);
-                                if (detail.block) blockSet.add(detail.block);
-                                if (detail.gram_panchayat) gpSet.add(detail.gram_panchayat);
-                                if (detail.village) villageSet.add(detail.village);
-                            });
+const themeColors = computed(() => ({
+    primary: frappe.boot.my_theme?.button_background_color || '#171717',
+    primaryLight: getLightColor(frappe.boot.my_theme?.button_background_color || '#171717')
+}));
 
-                            this.selectedStates = Array.from(stateSet);
-                            this.selectedDistricts = Array.from(districtSet);
-                            this.selectedBlocks = Array.from(blockSet);
-                            this.selectedGramPanchayats = Array.from(gpSet);
-                            this.selectedVillages = Array.from(villageSet);
+const isAtLowestHierarchy = computed(() => {
+    switch (lowest_hierarchy.value) {
+        case 'State': return currentStep.value === 1;
+        case 'District': return currentStep.value === 2;
+        case 'Block': return currentStep.value === 3;
+        case 'Gram Panchayat': return currentStep.value === 4;
+        case 'Village': return currentStep.value === 5;
+        default: return false;
+    }
+});
 
-                            await this.updateAvailableItems();
-                            // Expand tree based on current step after loading data
-                            this.expandTreeBasedOnStep();
-                        }
-                    }else{
-                        
-                    }
-                } catch (error) {
-                    console.error('Error loading existing data:', error);
-                    frappe.show_alert({
-                        message: __('Error loading existing data'),
-                        indicator: 'red'
-                    });
-                }
+const allStatesSelected = computed(() =>
+    states.value.length > 0 && selectedStates.value.length === states.value.length
+);
+
+const allDistrictsSelected = computed(() =>
+    availableDistricts.value.length > 0 &&
+    selectedDistricts.value.length === availableDistricts.value.length
+);
+
+const allBlocksSelected = computed(() =>
+    availableBlocks.value.length > 0 &&
+    selectedBlocks.value.length === availableBlocks.value.length
+);
+
+const allGramPanchayatsSelected = computed(() =>
+    availableGramPanchayats.value.length > 0 &&
+    selectedGramPanchayats.value.length === availableGramPanchayats.value.length
+);
+
+const allVillagesSelected = computed(() =>
+    availableVillages.value.length > 0 &&
+    selectedVillages.value.length === availableVillages.value.length
+);
+
+// ============ CORE METHODS ============
+const loadDefaultLowestHierarchy = async () => {
+    lowest_hierarchy.value = props.frm.doc[props.hierarchy_level_field];
+};
+
+const loadExistingData = async () => {
+    if (isLoading.value) return;
+    await withLoading(async () => {
+        if (!props.frm.doctype || !props.frm.docname) return;
+
+        try {
+            const doc = await frappe.xcall('sva_frappe.api.get_geography_details', {
+                filters: JSON.stringify({
+                    document_type: props.frm.doctype,
+                    docname: props.frm.docname
+                })
             });
-        },
-        async loadStates() {
-            let filters = []
-            if (this.filters.state){
-                filters = this.filters.state;
-            }
-            await this.withLoading(async () => {
-                const response = await frappe.call({
-                    method: 'sva_frappe.api.get_states',
-                    args: {
-                        filters: JSON.stringify(filters)
-                    },
-                    callback: (r) => {
-                        if (r.message) {
-                            this.states = r.message.map(state => ({
-                                id: state.name,
-                                name: state.state_name,
-                                code: state.state_code
-                            }));
-                            if (this.states.length > 0) {
-                                this.expandedStateId = this.states[0].id;
-                            }
-                        }
-                    }
-                });
-            });
-        },
-        async updateDistricts() {
-            let filters = []
-            
-            if (this.filters.district){
-                filters = this.filters.district;
+            if (doc) {
+                await resetData();
+                if (props.frm.doc[props.hierarchy_level_field]) {
+                    lowest_hierarchy.value = props.frm.doc[props.hierarchy_level_field];
+                }
+                
+                if (doc.geography_details) {
+                    const stateSet = new Set();
+                    const districtSet = new Set();
+                    const blockSet = new Set();
+                    const gpSet = new Set();
+                    const villageSet = new Set();
+                    doc.geography_details.forEach((detail) => {
+                        if (detail.state && detail.state.trim()) stateSet.add(detail.state);
+                        if (detail.district && detail.district.trim()) districtSet.add(detail.district);
+                        if (detail.block && detail.block.trim()) blockSet.add(detail.block);
+                        if (detail.gram_panchayat && detail.gram_panchayat.trim()) gpSet.add(detail.gram_panchayat);
+                        if (detail.village && detail.village.trim()) villageSet.add(detail.village);
+                    });
+                    selectedStates.value = Array.from(stateSet);
+                    selectedDistricts.value = Array.from(districtSet);
+                    selectedBlocks.value = Array.from(blockSet);
+                    selectedGramPanchayats.value = Array.from(gpSet);
+                    selectedVillages.value = Array.from(villageSet);
+
+                    await loadStates();
+                    await updateAvailableItems();
+                    expandTreeBasedOnStep();
+                }
             }else{
-                filters = [];
+                // load state if the geography details have no record
+                await loadStates();
             }
-            if (this.selectedStates.length === 0) {
-                this.availableDistricts = [];
-                this.selectedDistricts = [];
-                this.updateBlocks();
-                return;
+        } catch (error) {
+            console.error('Error loading existing data:', error);
+            frappe.show_alert({
+                message: __('Error loading existing data'),
+                indicator: 'red'
+            });
+        }
+    });
+};
+
+const loadStates = async () => {
+    let filters = props.filters.state || [];
+    await withLoading(async () => {
+        await frappe.call({
+            method: 'sva_frappe.api.get_states',
+            args: { filters: JSON.stringify(filters) },
+            callback: (r) => {
+                if (r.message) {
+                    states.value = r.message.map(state => ({
+                        id: state.name,
+                        name: state.state_name,
+                        code: state.state_code
+                    }));
+                    if (states.value.length > 0) {
+                        expandedStateId.value = states.value[0].id;
+                    }
+                }
             }
+        });
+    });
+};
 
-            await this.withLoading(async () => {
-                try {
-                    const response = await frappe.call({
-                        method: 'sva_frappe.api.get_districts',
-                        args: {
-                            state: this.selectedStates,
-                            filters: JSON.stringify(filters)
-                        },
-                        callback: (r) => {
-                            if (r.message) {
-                                this.districts = {};
-                                this.availableDistricts = r.message.map(district => ({
-                                    id: district.name,
-                                    name: district.district_name,
-                                    code: district.district_code,
-                                    state: district.state
-                                }));
+const updateDistricts = async () => {
+    const filters = props.filters.district || [];
+    if (selectedStates.value.length === 0) {
+        availableDistricts.value = [];
+        selectedDistricts.value = [];
+        await updateBlocks();
+        return;
+    }
 
-                                this.availableDistricts.forEach(district => {
-                                    if (!this.districts[district.state]) {
-                                        this.districts[district.state] = [];
-                                    }
-                                    this.districts[district.state].push(district);
-                                });
+    await withLoading(async () => {
+        try {
+            await frappe.call({
+                method: 'sva_frappe.api.get_districts',
+                args: {
+                    state: selectedStates.value,
+                    filters: JSON.stringify(filters)
+                },
+                callback: (r) => {
+                    if (r.message) {
+                        Object.keys(districts).forEach(key => delete districts[key]);
 
-                                this.selectedDistricts = this.selectedDistricts.filter(districtId => {
-                                    const district = this.availableDistricts.find(d => d.id === districtId);
-                                    return district && this.selectedStates.includes(district.state);
-                                });
+                        availableDistricts.value = r.message.map(district => ({
+                            id: district.name,
+                            name: district.district_name,
+                            code: district.district_code,
+                            state: district.state
+                        }));
+
+                        availableDistricts.value.forEach(district => {
+                            if (!districts[district.state]) {
+                                districts[district.state] = [];
                             }
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error fetching districts:', error);
-                }
-            });
-
-            this.updateBlocks();
-        },
-        async updateBlocks() {
-            if (this.selectedDistricts.length === 0) {
-                this.availableBlocks = [];
-                this.selectedBlocks = [];
-                this.updateGramPanchayats();
-                return;
-            }
-
-            await this.withLoading(async () => {
-                const response = await frappe.call({
-                    method: 'sva_frappe.api.get_blocks',
-                    args: {
-                        district: this.selectedDistricts,
-                        filters: JSON.stringify(this.filters.block || [])
-                    },
-                    callback: (r) => {
-                        if (r.message) {
-                            this.blocks = {};
-                            this.availableBlocks = r.message.map(block => ({
-                                id: block.name,
-                                name: block.block_name,
-                                code: block.block_code,
-                                district: block.district,
-                                state: block.state
-                            }));
-
-                            this.availableBlocks.forEach(block => {
-                                if (!this.blocks[block.district]) {
-                                    this.blocks[block.district] = [];
-                                }
-                                this.blocks[block.district].push(block);
-                            });
-
-                            this.selectedBlocks = this.selectedBlocks.filter(blockId => {
-                                const block = this.availableBlocks.find(b => b.id === blockId);
-                                return block && this.selectedDistricts.includes(block.district);
-                            });
-                        }
-                    }
-                });
-            });
-
-            this.updateGramPanchayats();
-        },
-        async updateGramPanchayats() {
-            if (this.selectedBlocks.length === 0) {
-                this.availableGramPanchayats = [];
-                this.selectedGramPanchayats = [];
-                this.updateVillages();
-                return;
-            }
-
-            await this.withLoading(async () => {
-                const response = await frappe.call({
-                    method: 'sva_frappe.api.get_gram_panchayats',
-                    args: {
-                        block: this.selectedBlocks
-                    },
-                    callback: (r) => {
-                        if (r.message) {
-                            this.gramPanchayats = {};
-                            this.availableGramPanchayats = r.message.map(gp => ({
-                                id: gp.name,
-                                name: gp.gram_pachayat_name,
-                                code: gp.gram_panchayat_code,
-                                block: gp.block,
-                                district: gp.district,
-                                state: gp.state
-                            }));
-
-                            this.availableGramPanchayats.forEach(gp => {
-                                if (!this.gramPanchayats[gp.block]) {
-                                    this.gramPanchayats[gp.block] = [];
-                                }
-                                this.gramPanchayats[gp.block].push(gp);
-                            });
-
-                            this.selectedGramPanchayats = this.selectedGramPanchayats.filter(gpId => {
-                                const gp = this.availableGramPanchayats.find(g => g.id === gpId);
-                                return gp && this.selectedBlocks.includes(gp.block);
-                            });
-                        }
-                    }
-                });
-            });
-
-            this.updateVillages();
-        },
-        async updateVillages() {
-
-            // Save selection if disable_save_btn is true
-            if (this.disable_save_btn) {
-                this.frm.geography_data = await this.saveSelection();
-            }
-
-            // If no Gram Panchayats are selected, clear villages and return
-            if (this.selectedGramPanchayats.length === 0) {
-                this.availableVillages = [];
-                this.selectedVillages = [];
-                return;
-            }
-
-            await this.withLoading(async () => {
-                const response = await frappe.call({
-                    method: 'sva_frappe.api.get_villages',
-                    args: {
-                        gram_panchayat: this.selectedGramPanchayats
-                    },
-                    callback: (r) => {
-                        if (r.message) {
-                            this.villages = {};
-                            this.availableVillages = r.message.map(village => ({
-                                id: village.name,
-                                name: village.village_name,
-                                code: village.village_code,
-                                gram_panchayat: village.gram_panchayat,
-                                block: village.block,
-                                district: village.district,
-                                state: village.state
-                            }));
-
-                            this.availableVillages.forEach(village => {
-                                if (!this.villages[village.gram_panchayat]) {
-                                    this.villages[village.gram_panchayat] = [];
-                                }
-                                this.villages[village.gram_panchayat].push(village);
-                            });
-
-                            this.selectedVillages = this.selectedVillages.filter(villageId => {
-                                const village = this.availableVillages.find(v => v.id === villageId);
-                                return village && this.selectedGramPanchayats.includes(village.gram_panchayat);
-                            });
-                        }
-                    }
-                });
-            });
-        },
-        expandTreeBasedOnStep() {
-            // Clear all expansions first
-            this.expandedStates.clear();
-            this.expandedDistricts.clear();
-            this.expandedBlocks.clear();
-            this.expandedGPs.clear();
-
-            // Expand based on current step
-            switch (this.currentStep) {
-                case 1: // States
-                    // Expand all states
-                    this.selectedStates.forEach(stateId => {
-                        this.expandedStates.add(stateId);
-                    });
-                    break;
-                case 2: // Districts
-                    // Expand states and their districts
-                    this.selectedStates.forEach(stateId => {
-                        this.expandedStates.add(stateId);
-                        this.getSelectedDistrictsForState(stateId).forEach(district => {
-                            this.expandedDistricts.add(district.id);
+                            districts[district.state].push(district);
                         });
-                    });
-                    break;
-                case 3: // Blocks
-                    // Expand states, districts and their blocks
-                    this.selectedStates.forEach(stateId => {
-                        this.expandedStates.add(stateId);
-                        this.getSelectedDistrictsForState(stateId).forEach(district => {
-                            this.expandedDistricts.add(district.id);
-                            this.getSelectedBlocksForDistrict(district.id).forEach(block => {
-                                this.expandedBlocks.add(block.id);
-                            });
-                        });
-                    });
-                    break;
-                case 4: // Gram Panchayats
-                    // Expand states, districts, blocks and their GPs
-                    this.selectedStates.forEach(stateId => {
-                        this.expandedStates.add(stateId);
-                        this.getSelectedDistrictsForState(stateId).forEach(district => {
-                            this.expandedDistricts.add(district.id);
-                            this.getSelectedBlocksForDistrict(district.id).forEach(block => {
-                                this.expandedBlocks.add(block.id);
-                                this.getSelectedGramPanchayatsForBlock(block.id).forEach(gp => {
-                                    this.expandedGPs.add(gp.id);
-                                });
-                            });
-                        });
-                    });
-                    break;
-                case 5: // Villages
-                    // Expand everything
-                    this.selectedStates.forEach(stateId => {
-                        this.expandedStates.add(stateId);
-                        this.getSelectedDistrictsForState(stateId).forEach(district => {
-                            this.expandedDistricts.add(district.id);
-                            this.getSelectedBlocksForDistrict(district.id).forEach(block => {
-                                this.expandedBlocks.add(block.id);
-                                this.getSelectedGramPanchayatsForBlock(block.id).forEach(gp => {
-                                    this.expandedGPs.add(gp.id);
-                                });
-                            });
-                        });
-                    });
-                    break;
-            }
-        },
-        goNext() {
-            if (this.currentStep >= this.totalSteps) return;
 
-            // Validate current step selection before proceeding
-            const validationResult = this.validateCurrentStepSelection();
-            if (!validationResult.isValid) {
-                this.showValidationError(validationResult);
-                return;
-            }
-
-            const canProceed = (() => {
-                switch (this.currentStep) {
-                    case 1:
-                        return this.selectedStates.length > 0;
-                    case 2:
-                        return this.selectedDistricts.length > 0;
-                    case 3:
-                        return this.selectedBlocks.length > 0;
-                    case 4:
-                        return this.selectedGramPanchayats.length > 0;
-                    default:
-                        return true;
-                }
-            })();
-
-            if (canProceed) {
-                this.currentStep++;
-                switch (this.currentStep) {
-                    case 2:
-                        this.updateBlocks();
-                        break;
-                    case 3:
-                        this.updateGramPanchayats();
-                        break;
-                    case 4:
-                        this.updateVillages();
-                        break;
-                }
-                // Expand tree based on new step
-                this.expandTreeBasedOnStep();
-            }
-        },
-        goBack() {
-            if (this.currentStep > 1) {
-                this.currentStep--;
-                // Expand tree based on new step
-                this.expandTreeBasedOnStep();
-            }
-        },
-        async saveSelection() {
-            this.isSaving = true;
-            // Comprehensive validation for all levels based on lowest_hierarchy
-            if (!this.disable_save_btn){
-                const validationResult = this.validateAllLevelsForSave();
-                if (!validationResult.isValid) {
-                    this.showValidationError(validationResult);
-                    this.isSaving = false;
-                    return;
-                }
-            }
-
-            const selectionMap = new Map();
-            this.selectedStates.forEach(stateId => {
-                const state = this.states.find(s => s.id === stateId);
-                if (state) {
-                    const key = `${state.id}`;
-                    selectionMap.set(key, {
-                        state: {
-                            id: state.id,
-                            name: state.name,
-                            code: state.code
-                        }
-                    });
-                }
-            });
-
-            this.selectedDistricts.forEach(districtId => {
-                const district = this.availableDistricts.find(d => d.id === districtId);
-                if (district) {
-                    const state = this.states.find(s => s.id === district.state);
-                    const key = `${district.state}_${district.id}`;
-                    selectionMap.set(key, {
-                        state: {
-                            id: state.id,
-                            name: state.name,
-                            code: state.code
-                        },
-                        district: {
-                            id: district.id,
-                            name: district.name,
-                            code: district.code,
-                            state: district.state
-                        }
-                    });
-                }
-            });
-
-            this.selectedBlocks.forEach(blockId => {
-                const block = this.availableBlocks.find(b => b.id === blockId);
-                if (block) {
-                    const state = this.states.find(s => s.id === block.state);
-                    const district = this.availableDistricts.find(d => d.id === block.district);
-                    const key = `${block.state}_${block.district}_${block.id}`;
-                    selectionMap.set(key, {
-                        state: {
-                            id: state.id,
-                            name: state.name,
-                            code: state.code
-                        },
-                        district: {
-                            id: district.id,
-                            name: district.name,
-                            code: district.code,
-                            state: district.state
-                        },
-                        block: {
-                            id: block.id,
-                            name: block.name,
-                            code: block.code,
-                            district: block.district,
-                            state: block.state
-                        }
-                    });
-                }
-            });
-
-            this.selectedGramPanchayats.forEach(gpId => {
-                const gp = this.availableGramPanchayats.find(g => g.id === gpId);
-                if (gp) {
-                    const state = this.states.find(s => s.id === gp.state);
-                    const district = this.availableDistricts.find(d => d.id === gp.district);
-                    const block = this.availableBlocks.find(b => b.id === gp.block);
-                    const key = `${gp.state}_${gp.district}_${gp.block}_${gp.id}`;
-                    selectionMap.set(key, {
-                        state: {
-                            id: state.id,
-                            name: state.name,
-                            code: state.code
-                        },
-                        district: {
-                            id: district.id,
-                            name: district.name,
-                            code: district.code,
-                            state: district.state
-                        },
-                        block: {
-                            id: block.id,
-                            name: block.name,
-                            code: block.code,
-                            district: block.district,
-                            state: block.state
-                        },
-                        gramPanchayat: {
-                            id: gp.id,
-                            name: gp.name,
-                            code: gp.code,
-                            block: gp.block,
-                            district: gp.district,
-                            state: gp.state
-                        }
-                    });
-                }
-            });
-
-            this.selectedVillages.forEach(villageId => {
-                const village = this.availableVillages.find(v => v.id === villageId);
-                if (village) {
-                    const state = this.states.find(s => s.id === village.state);
-                    const district = this.availableDistricts.find(d => d.id === village.district);
-                    const block = this.availableBlocks.find(b => b.id === village.block);
-                    const gp = this.availableGramPanchayats.find(g => g.id === village.gram_panchayat);
-                    const key = `${village.state}_${village.district}_${village.block}_${village.gram_panchayat}_${village.id}`;
-                    selectionMap.set(key, {
-                        state: {
-                            id: state.id,
-                            name: state.name,
-                            code: state.code
-                        },
-                        district: {
-                            id: district.id,
-                            name: district.name,
-                            code: district.code,
-                            state: district.state
-                        },
-                        block: {
-                            id: block.id,
-                            name: block.name,
-                            code: block.code,
-                            district: block.district,
-                            state: block.state
-                        },
-                        gramPanchayat: {
-                            id: gp.id,
-                            name: gp.name,
-                            code: gp.code,
-                            block: gp.block,
-                            district: gp.district,
-                            state: gp.state
-                        },
-                        village: {
-                            id: village.id,
-                            name: village.name,
-                            code: village.code,
-                            gram_panchayat: village.gram_panchayat,
-                            block: village.block,
-                            district: village.district,
-                            state: village.state
-                        }
-                    });
-                }
-            });
-
-            let selection = Array.from(selectionMap.values());
-
-            switch (this.lowest_hierarchy) {
-                case 'State':
-                    selection = selection.filter(item => item.state && !item.district);
-                    break;
-                case 'District':
-                    selection = selection.filter(item => item.state && item.district && !item.block);
-                    break;
-                case 'Block':
-                    selection = selection.filter(item => item.state && item.district && item.block && !item.gramPanchayat);
-                    break;
-                case 'Gram Panchayat':
-                    selection = selection.filter(item => item.state && item.district && item.block && item.gramPanchayat && !item.village);
-                    break;
-                case 'Village':
-                    selection = selection.filter(item => item.state && item.district && item.block && item.gramPanchayat && item.village);
-                    break;
-            }
-            if (!this.disable_save_btn){
-                try {
-                    const r = await frappe.xcall('sva_frappe.api.save_geography_details', {
-                        selection_data: JSON.stringify(selection),
-                        document_type: this.frm.doctype,
-                        docname: this.frm.docname,
-                        lowest_hierarchy: this.lowest_hierarchy
-                    });
-                    if (r.status === 'success') {
-                        frappe.show_alert({
-                            message: r.message,
-                            indicator: 'green'
-                        });
-                    } else {
-                        frappe.show_alert({
-                            message: r.message || __('Error saving geography details'),
-                            indicator: 'red'
+                        selectedDistricts.value = selectedDistricts.value.filter(districtId => {
+                            const district = availableDistricts.value.find(d => d.id === districtId);
+                            return district && selectedStates.value.includes(district.state);
                         });
                     }
-                } catch (error) {
-                    frappe.show_alert({
-                        message: error.message || __('Error saving geography details'),
-                        indicator: 'red'
-                    });
-                } finally {
-                    this.isSaving = false;
                 }
-            }
-            // Set hierarchy level field if exists
-            if (this.hierarchy_level_field && this.frm.doc[this.hierarchy_level_field] && this.frm.docname && !this.disable_save_btn){
-                await frappe.db.set_value(this.frm.doctype, this.frm.docname, this.hierarchy_level_field, this.frm.doc[this.hierarchy_level_field]);
-
-            }
-            return selection;
-        },
-        getSelectedBlocksForStateRecursive(stateId) {
-            const selectedBlocks = [];
-            const selectedDistrictsForState = this.getSelectedDistrictsForState(stateId);
-
-            selectedDistrictsForState.forEach(district => {
-                const blocksForDistrict = this.getSelectedBlocksForDistrict(district.id);
-                selectedBlocks.push(...blocksForDistrict);
             });
+        } catch (error) {
+            console.error('Error fetching districts:', error);
+        }
+    });
+    await updateBlocks();
+};
 
-            return selectedBlocks;
-        },
-        getSelectedGPsForStateRecursive(stateId) {
-            const selectedGPs = [];
-            const selectedBlocksForState = this.getSelectedBlocksForStateRecursive(stateId);
+const updateBlocks = async () => {
+    if (selectedDistricts.value.length === 0) {
+        availableBlocks.value = [];
+        selectedBlocks.value = [];
+        await updateGramPanchayats();
+        return;
+    }
 
-            selectedBlocksForState.forEach(block => {
-                const gpsForBlock = this.getSelectedGramPanchayatsForBlock(block.id);
-                selectedGPs.push(...gpsForBlock);
+    await withLoading(async () => {
+        await frappe.call({
+            method: 'sva_frappe.api.get_blocks',
+            args: {
+                district: selectedDistricts.value,
+                filters: JSON.stringify(props.filters.block || [])
+            },
+            callback: (r) => {
+                if (r.message) {
+                    Object.keys(blocks).forEach(key => delete blocks[key]);
+
+                    availableBlocks.value = r.message.map(block => ({
+                        id: block.name,
+                        name: block.block_name,
+                        code: block.block_code,
+                        district: block.district,
+                        state: block.state
+                    }));
+
+                    availableBlocks.value.forEach(block => {
+                        if (!blocks[block.district]) {
+                            blocks[block.district] = [];
+                        }
+                        blocks[block.district].push(block);
+                    });
+
+                    selectedBlocks.value = selectedBlocks.value.filter(blockId => {
+                        const block = availableBlocks.value.find(b => b.id === blockId);
+                        return block && selectedDistricts.value.includes(block.district);
+                    });
+                }
+            }
+        });
+    });
+    await updateGramPanchayats();
+};
+
+const updateGramPanchayats = async () => {
+    if (selectedBlocks.value.length === 0) {
+        availableGramPanchayats.value = [];
+        selectedGramPanchayats.value = [];
+        await updateVillages();
+        return;
+    }
+
+    await withLoading(async () => {
+        await frappe.call({
+            method: 'sva_frappe.api.get_gram_panchayats',
+            args: { block: selectedBlocks.value },
+            callback: (r) => {
+                if (r.message) {
+                    Object.keys(gramPanchayats).forEach(key => delete gramPanchayats[key]);
+
+                    availableGramPanchayats.value = r.message.map(gp => ({
+                        id: gp.name,
+                        name: gp.gram_pachayat_name,
+                        code: gp.gram_panchayat_code,
+                        block: gp.block,
+                        district: gp.district,
+                        state: gp.state
+                    }));
+
+                    availableGramPanchayats.value.forEach(gp => {
+                        if (!gramPanchayats[gp.block]) {
+                            gramPanchayats[gp.block] = [];
+                        }
+                        gramPanchayats[gp.block].push(gp);
+                    });
+
+                    selectedGramPanchayats.value = selectedGramPanchayats.value.filter(gpId => {
+                        const gp = availableGramPanchayats.value.find(g => g.id === gpId);
+                        return gp && selectedBlocks.value.includes(gp.block);
+                    });
+                }
+            }
+        });
+    });
+    await updateVillages();
+};
+
+const updateVillages = async () => {
+    if (props.disable_save_btn) {
+        props.frm.geography_data = await saveSelection();
+    }
+
+    if (selectedGramPanchayats.value.length === 0) {
+        availableVillages.value = [];
+        selectedVillages.value = [];
+        return;
+    }
+
+    await withLoading(async () => {
+        await frappe.call({
+            method: 'sva_frappe.api.get_villages',
+            args: { gram_panchayat: selectedGramPanchayats.value },
+            callback: (r) => {
+                if (r.message) {
+                    Object.keys(villages).forEach(key => delete villages[key]);
+
+                    availableVillages.value = r.message.map(village => ({
+                        id: village.name,
+                        name: village.village_name,
+                        code: village.village_code,
+                        gram_panchayat: village.gram_panchayat,
+                        block: village.block,
+                        district: village.district,
+                        state: village.state
+                    }));
+
+                    availableVillages.value.forEach(village => {
+                        if (!villages[village.gram_panchayat]) {
+                            villages[village.gram_panchayat] = [];
+                        }
+                        villages[village.gram_panchayat].push(village);
+                    });
+
+                    selectedVillages.value = selectedVillages.value.filter(villageId => {
+                        const village = availableVillages.value.find(v => v.id === villageId);
+                        return village && selectedGramPanchayats.value.includes(village.gram_panchayat);
+                    });
+                }
+            }
+        });
+    });
+};
+
+// ============ NAVIGATION & TREE METHODS ============
+const expandTreeBasedOnStep = () => {
+    expandedStates.clear();
+    expandedDistricts.clear();
+    expandedBlocks.clear();
+    expandedGPs.clear();
+
+    switch (currentStep.value) {
+        case 1:
+            selectedStates.value.forEach(stateId => expandedStates.add(stateId));
+            break;
+        case 2:
+            selectedStates.value.forEach(stateId => {
+                expandedStates.add(stateId);
+                getSelectedDistrictsForState(stateId).forEach(district => {
+                    expandedDistricts.add(district.id);
+                });
             });
-
-            return selectedGPs;
-        },
-        getHierarchyDisplayName(hierarchy) {
-            const displayNames = {
-                'State': __('States'),
-                'District': __('Districts'),
-                'Block': __('Blocks'),
-                'Gram Panchayat': __('Gram Panchayats'),
-                'Village': __('Villages')
-            };
-            return displayNames[hierarchy] || hierarchy;
-        },
-        getStateName(stateId) {
-            const state = this.states.find(s => s.id === stateId);
-            return state ? state.name : '';
-        },
-        getDistrictsForState(stateId) {
-            return this.districts[stateId] || [];
-        },
-        isAllDistrictsSelectedForState(stateId) {
-            const stateDistricts = this.getDistrictsForState(stateId);
-            if (!stateDistricts.length) return false;
-            return stateDistricts.every(district =>
-                this.selectedDistricts.includes(district.id)
-            );
-        },
-        toggleAllDistrictsForState(stateId) {
-            const stateDistricts = this.getDistrictsForState(stateId);
-            const allSelected = this.isAllDistrictsSelectedForState(stateId);
-
-            if (allSelected) {
-                // If all districts for this state are selected, unselect them and their children
-                const districtIds = stateDistricts.map(d => d.id);
-                this.selectedDistricts = this.selectedDistricts.filter(id => !districtIds.includes(id));
-
-                // Also remove any blocks, GPs, and villages that belong to these districts
-                const blocksToRemove = this.availableBlocks
-                    .filter(block => districtIds.includes(block.district))
-                    .map(block => block.id);
-                this.selectedBlocks = this.selectedBlocks.filter(id => !blocksToRemove.includes(id));
-
-                const gpsToRemove = this.availableGramPanchayats
-                    .filter(gp => blocksToRemove.includes(gp.block))
-                    .map(gp => gp.id);
-                this.selectedGramPanchayats = this.selectedGramPanchayats.filter(id => !gpsToRemove.includes(id));
-
-                const villagesToRemove = this.availableVillages
-                    .filter(village => gpsToRemove.includes(village.gram_panchayat))
-                    .map(village => village.id);
-                this.selectedVillages = this.selectedVillages.filter(id => !villagesToRemove.includes(id));
-            } else {
-                // If not all districts are selected, select all districts for this state
-                const districtIds = stateDistricts.map(d => d.id);
-                this.selectedDistricts = [...new Set([...this.selectedDistricts, ...districtIds])];
-            }
-
-            this.updateBlocks();
-        },
-        getDistrictName(districtId) {
-            const district = this.availableDistricts.find(d => d.id === districtId);
-            return district ? district.name : '';
-        },
-        getBlocksForDistrict(districtId) {
-            return this.blocks[districtId] || [];
-        },
-        isAllBlocksSelected() {
-            return this.availableBlocks.length > 0 &&
-                this.availableBlocks.every(block =>
-                    this.selectedBlocks.includes(block.id)
-                );
-        },
-        isAllBlocksSelectedForDistrict(districtId) {
-            const districtBlocks = this.getBlocksForDistrict(districtId);
-            return districtBlocks.length > 0 &&
-                districtBlocks.every(block =>
-                    this.selectedBlocks.includes(block.id)
-                );
-        },
-        toggleAllBlocksForDistrict(districtId) {
-            const districtBlocks = this.getBlocksForDistrict(districtId);
-            const allSelected = this.isAllBlocksSelectedForDistrict(districtId);
-
-            if (allSelected) {
-                // If all blocks for this district are selected, unselect them and their children
-                const blockIds = districtBlocks.map(b => b.id);
-                this.selectedBlocks = this.selectedBlocks.filter(id => !blockIds.includes(id));
-
-                // Also remove any GPs and villages that belong to these blocks
-                const gpsToRemove = this.availableGramPanchayats
-                    .filter(gp => blockIds.includes(gp.block))
-                    .map(gp => gp.id);
-                this.selectedGramPanchayats = this.selectedGramPanchayats.filter(id => !gpsToRemove.includes(id));
-
-                const villagesToRemove = this.availableVillages
-                    .filter(village => gpsToRemove.includes(village.gram_panchayat))
-                    .map(village => village.id);
-                this.selectedVillages = this.selectedVillages.filter(id => !villagesToRemove.includes(id));
-            } else {
-                // If not all blocks are selected, select all blocks for this district
-                const blockIds = districtBlocks.map(b => b.id);
-                this.selectedBlocks = [...new Set([...this.selectedBlocks, ...blockIds])];
-            }
-
-            this.updateGramPanchayats();
-        },
-        getBlockName(blockId) {
-            const block = this.availableBlocks.find(b => b.id === blockId);
-            return block ? block.name : '';
-        },
-        getGramPanchayatsForBlock(blockId) {
-            return this.gramPanchayats[blockId] || [];
-        },
-        isAllGramPanchayatsSelected() {
-            return this.availableGramPanchayats.length > 0 &&
-                this.availableGramPanchayats.every(gp =>
-                    this.selectedGramPanchayats.includes(gp.id)
-                );
-        },
-        isAllGramPanchayatsSelectedForBlock(blockId) {
-            const blockGPs = this.getGramPanchayatsForBlock(blockId);
-            return blockGPs.length > 0 &&
-                blockGPs.every(gp =>
-                    this.selectedGramPanchayats.includes(gp.id)
-                );
-        },
-        toggleAllGramPanchayatsForBlock(blockId) {
-            const blockGPs = this.getGramPanchayatsForBlock(blockId);
-            const allSelected = this.isAllGramPanchayatsSelectedForBlock(blockId);
-
-            if (allSelected) {
-                // If all GPs for this block are selected, unselect them and their children
-                const gpIds = blockGPs.map(gp => gp.id);
-                this.selectedGramPanchayats = this.selectedGramPanchayats.filter(id => !gpIds.includes(id));
-
-                // Also remove any villages that belong to these GPs
-                const villagesToRemove = this.availableVillages
-                    .filter(village => gpIds.includes(village.gram_panchayat))
-                    .map(village => village.id);
-                this.selectedVillages = this.selectedVillages.filter(id => !villagesToRemove.includes(id));
-            } else {
-                // If not all GPs are selected, select all GPs for this block
-                const gpIds = blockGPs.map(gp => gp.id);
-                this.selectedGramPanchayats = [...new Set([...this.selectedGramPanchayats, ...gpIds])];
-            }
-
-            this.updateVillages();
-        },
-        getGramPanchayatName(gpId) {
-            const gp = this.availableGramPanchayats.find(g => g.id === gpId);
-            return gp ? gp.name : '';
-        },
-        getVillagesForGP(gpId) {
-            return this.villages[gpId] || [];
-        },
-        isAllVillagesSelected() {
-            return this.availableVillages.length > 0 &&
-                this.availableVillages.every(village =>
-                    this.selectedVillages.includes(village.id)
-                );
-        },
-        isAllVillagesSelectedForGP(gpId) {
-            const gpVillages = this.getVillagesForGP(gpId);
-            return gpVillages.length > 0 &&
-                gpVillages.every(village =>
-                    this.selectedVillages.includes(village.id)
-                );
-        },
-        toggleAllVillagesForGP(gpId) {
-            const gpVillages = this.getVillagesForGP(gpId);
-            const allSelected = this.isAllVillagesSelectedForGP(gpId);
-
-            if (allSelected) {
-                // If all villages for this GP are selected, unselect them
-                const villageIds = gpVillages.map(v => v.id);
-                this.selectedVillages = this.selectedVillages.filter(id => !villageIds.includes(id));
-            } else {
-                // If not all villages are selected, select all villages for this GP
-                const villageIds = gpVillages.map(v => v.id);
-                this.selectedVillages = [...new Set([...this.selectedVillages, ...villageIds])];
-            }
-        },
-        async updateAvailableItems() {
-            this.updateDistricts();
-            if (this.lowest_hierarchy !== 'State') {
-                this.updateBlocks();
-                if (this.lowest_hierarchy !== 'District') {
-                    this.updateGramPanchayats();
-                    if (this.lowest_hierarchy !== 'Block') {
-                        this.updateVillages();
-                    }
-                }
-            }
-        },
-        withLoading(callback) {
-            this.isLoading = true;
-            try {
-                return callback();
-            } finally {
-                this.isLoading = false;
-            }
-        },
-        getDistrictState(districtId) {
-            const district = this.availableDistricts.find(d => d.id === districtId);
-            return district ? district.state : '';
-        },
-        getBlockState(blockId) {
-            const block = this.availableBlocks.find(b => b.id === blockId);
-            return block ? block.state : '';
-        },
-        getBlockDistrict(blockId) {
-            const block = this.availableBlocks.find(b => b.id === blockId);
-            return block ? block.district : '';
-        },
-        getGPState(gpId) {
-            const gp = this.availableGramPanchayats.find(g => g.id === gpId);
-            return gp ? gp.state : '';
-        },
-        getGPDistrict(gpId) {
-            const gp = this.availableGramPanchayats.find(g => g.id === gpId);
-            return gp ? gp.district : '';
-        },
-        getGPBlock(gpId) {
-            const gp = this.availableGramPanchayats.find(g => g.id === gpId);
-            return gp ? gp.block : '';
-        },
-        toggleStateExpansion(stateId) {
-            if (this.expandedStates.has(stateId)) {
-                this.expandedStates.delete(stateId);
-            } else {
-                this.expandedStates.clear();
-                this.expandedStates.add(stateId);
-                this.expandedDistricts.clear();
-                this.expandedBlocks.clear();
-                this.expandedGPs.clear();
-            }
-        },
-        toggleDistrictExpansion(districtId) {
-            if (this.expandedDistricts.has(districtId)) {
-                this.expandedDistricts.delete(districtId);
-            } else {
-                this.expandedDistricts.clear();
-                this.expandedDistricts.add(districtId);
-                this.expandedBlocks.clear();
-                this.expandedGPs.clear();
-            }
-        },
-        toggleBlockExpansion(blockId) {
-            if (this.expandedBlocks.has(blockId)) {
-                this.expandedBlocks.delete(blockId);
-            } else {
-                this.expandedBlocks.clear();
-                this.expandedBlocks.add(blockId);
-                this.expandedGPs.clear();
-            }
-        },
-        toggleGPExpansion(gpId) {
-            if (this.expandedGPs.has(gpId)) {
-                this.expandedGPs.delete(gpId);
-            } else {
-                this.expandedGPs.clear();
-                this.expandedGPs.add(gpId);
-            }
-        },
-        isStateExpanded(stateId) {
-            return this.expandedStates.has(stateId);
-        },
-        isDistrictExpanded(districtId) {
-            return this.expandedDistricts.has(districtId);
-        },
-        isBlockExpanded(blockId) {
-            return this.expandedBlocks.has(blockId);
-        },
-        isGPExpanded(gpId) {
-            return this.expandedGPs.has(gpId);
-        },
-        resetData() {
-            this.states = [];
-            this.districts = {};
-            this.blocks = {};
-            this.gramPanchayats = {};
-            this.villages = {};
-            this.selectedStates = [];
-            this.selectedDistricts = [];
-            this.selectedBlocks = [];
-            this.selectedGramPanchayats = [];
-            this.selectedVillages = [];
-            this.availableDistricts = [];
-            this.availableBlocks = [];
-            this.availableGramPanchayats = [];
-            this.availableVillages = [];
-            this.isDataLoaded = false;
-            this.expandedStates.clear();
-            this.expandedDistricts.clear();
-            this.expandedBlocks.clear();
-            this.expandedGPs.clear();
-        },
-        getSelectedDistrictsForState(stateId) {
-            return this.getDistrictsForState(stateId).filter(district =>
-                this.selectedDistricts.includes(district.id)
-            );
-        },
-        getSelectedBlocksForDistrict(districtId) {
-            return this.getBlocksForDistrict(districtId).filter(block =>
-                this.selectedBlocks.includes(block.id)
-            );
-        },
-        getSelectedGramPanchayatsForBlock(blockId) {
-            return this.getGramPanchayatsForBlock(blockId).filter(gp =>
-                this.selectedGramPanchayats.includes(gp.id)
-            );
-        },
-        getSelectedVillagesForGP(gpId) {
-            return this.getVillagesForGP(gpId).filter(village =>
-                this.selectedVillages.includes(village.id)
-            );
-        },
-        toggleAllStates() {
-            if (this.allStatesSelected) {
-                // If all are selected, unselect all
-                this.selectedStates = [];
-                this.selectedDistricts = [];
-                this.selectedBlocks = [];
-                this.selectedGramPanchayats = [];
-                this.selectedVillages = [];
-            } else {
-                // If not all are selected, select all states
-                this.selectedStates = this.states.map(state => state.id);
-            }
-            this.updateDistricts();
-        },
-        toggleAllDistricts() {
-            if (this.allDistrictsSelected) {
-                // If all are selected, unselect all districts and their children
-                this.selectedDistricts = [];
-                this.selectedBlocks = [];
-                this.selectedGramPanchayats = [];
-                this.selectedVillages = [];
-            } else {
-                // If not all are selected, select all available districts
-                this.selectedDistricts = this.availableDistricts.map(district => district.id);
-            }
-            this.updateBlocks();
-        },
-        toggleAllBlocks() {
-            if (this.allBlocksSelected) {
-                // If all are selected, unselect all blocks and their children
-                this.selectedBlocks = [];
-                this.selectedGramPanchayats = [];
-                this.selectedVillages = [];
-            } else {
-                // If not all are selected, select all available blocks
-                this.selectedBlocks = this.availableBlocks.map(block => block.id);
-            }
-            this.updateGramPanchayats();
-        },
-        toggleAllGramPanchayats() {
-            if (this.allGramPanchayatsSelected) {
-                // If all are selected, unselect all GPs and their children
-                this.selectedGramPanchayats = [];
-                this.selectedVillages = [];
-            } else {
-                // If not all are selected, select all available GPs
-                this.selectedGramPanchayats = this.availableGramPanchayats.map(gp => gp.id);
-            }
-            this.updateVillages();
-        },
-        toggleAllVillages() {
-            if (this.allVillagesSelected) {
-                // If all are selected, unselect all villages
-                this.selectedVillages = [];
-            } else {
-                // If not all are selected, select all available villages
-                this.selectedVillages = this.availableVillages.map(village => village.id);
-            }
-        },
-        getLightColor(color) {
-            // Convert hex to RGB
-            const r = parseInt(color.slice(1, 3), 16);
-            const g = parseInt(color.slice(3, 5), 16);
-            const b = parseInt(color.slice(5, 7), 16);
-
-            // Create a lighter version
-            const lightR = Math.min(r + 40, 255);
-            const lightG = Math.min(g + 40, 255);
-            const lightB = Math.min(b + 40, 255);
-
-            return `rgb(${lightR}, ${lightG}, ${lightB})`;
-        },
-        validateCurrentStepSelection() {
-            const validation = {
-                isValid: true,
-                message: '',
-                missingItems: []
-            };
-
-            switch (this.currentStep) {
-                case 1: // States step
-                    if (this.selectedStates.length === 0) {
-                        validation.isValid = false;
-                        validation.message = 'Please select at least one state to continue.';
-                    }
-                    break;
-
-                case 2: // Districts step
-                    if (this.lowest_hierarchy === 'State') {
-                        break; // Skip validation for State level
-                    }
-
-                    // Check each selected state has at least one district selected
-                    const statesWithoutDistricts = [];
-                    this.selectedStates.forEach(stateId => {
-                        const stateName = this.getStateName(stateId);
-                        const districtsForState = this.getDistrictsForState(stateId);
-                        const selectedDistrictsForState = districtsForState.filter(d =>
-                            this.selectedDistricts.includes(d.id)
-                        );
-
-                        if (selectedDistrictsForState.length === 0) {
-                            statesWithoutDistricts.push(stateName);
-                        }
+            break;
+        case 3:
+            selectedStates.value.forEach(stateId => {
+                expandedStates.add(stateId);
+                getSelectedDistrictsForState(stateId).forEach(district => {
+                    expandedDistricts.add(district.id);
+                    getSelectedBlocksForDistrict(district.id).forEach(block => {
+                        expandedBlocks.add(block.id);
                     });
-
-                    if (statesWithoutDistricts.length > 0) {
-                        validation.isValid = false;
-                        validation.missingItems = statesWithoutDistricts;
-                        if (statesWithoutDistricts.length === 1) {
-                            validation.message = `Please select ${__("Districts").toLowerCase()} in ${statesWithoutDistricts[0]}.`;
-                        } else {
-                            validation.message = `Please select ${__("Districts").toLowerCase()} all ${__("States").toLowerCase()}.`;
-                        }
-                    }
-                    break;
-
-                case 3: // Blocks step
-                    if (['State', 'District'].includes(this.lowest_hierarchy)) {
-                        break; // Skip validation for State/District level
-                    }
-
-                    // Check each selected district has at least one block selected
-                    const districtsWithoutBlocks = [];
-                    this.selectedDistricts.forEach(districtId => {
-                        const district = this.availableDistricts.find(d => d.id === districtId);
-                        if (!district) return;
-
-                        const blocksForDistrict = this.getBlocksForDistrict(districtId);
-                        const selectedBlocksForDistrict = blocksForDistrict.filter(b =>
-                            this.selectedBlocks.includes(b.id)
-                        );
-
-                        if (selectedBlocksForDistrict.length === 0) {
-                            districtsWithoutBlocks.push(district.name);
-                        }
-                    });
-
-                    if (districtsWithoutBlocks.length > 0) {
-                        validation.isValid = false;
-                        validation.missingItems = districtsWithoutBlocks;
-                        if (districtsWithoutBlocks.length === 1) {
-                            validation.message = `Please select ${__("Blocks").toLowerCase()} in ${districtsWithoutBlocks[0]}.`;
-                        } else {
-                            validation.message = `Please select ${__("Blocks").toLowerCase()} all ${__("Districts").toLowerCase()}.`;
-                        }
-                    }
-                    break;
-
-                case 4: // Gram Panchayats step
-                    if (['State', 'District', 'Block'].includes(this.lowest_hierarchy)) {
-                        break; // Skip validation for higher levels
-                    }
-
-                    // Check each selected block has at least one gram panchayat selected
-                    const blocksWithoutGPs = [];
-                    this.selectedBlocks.forEach(blockId => {
-                        const block = this.availableBlocks.find(b => b.id === blockId);
-                        if (!block) return;
-
-                        const gpsForBlock = this.getGramPanchayatsForBlock(blockId);
-                        const selectedGPsForBlock = gpsForBlock.filter(gp =>
-                            this.selectedGramPanchayats.includes(gp.id)
-                        );
-
-                        if (selectedGPsForBlock.length === 0) {
-                            blocksWithoutGPs.push(block.name);
-                        }
-                    });
-
-                    if (blocksWithoutGPs.length > 0) {
-                        validation.isValid = false;
-                        validation.missingItems = blocksWithoutGPs;
-                        if (blocksWithoutGPs.length === 1) {
-                            validation.message = `Please select ${__("Gram Panchayats").toLowerCase()} in ${blocksWithoutGPs[0]}.`;
-                        } else {
-                            validation.message = `Please select ${__("Gram Panchayats").toLowerCase()} all ${__("Blocks").toLowerCase()}.`;
-                        }
-                    }
-                    break;
-
-                case 5: // Villages step
-                    if (this.lowest_hierarchy !== 'Village') {
-                        break; // Skip validation if not targeting Village level
-                    }
-
-                    // Check each selected gram panchayat has at least one village selected
-                    const gpsWithoutVillages = [];
-                    this.selectedGramPanchayats.forEach(gpId => {
-                        const gp = this.availableGramPanchayats.find(g => g.id === gpId);
-                        if (!gp) return;
-
-                        const villagesForGP = this.getVillagesForGP(gpId);
-                        const selectedVillagesForGP = villagesForGP.filter(village =>
-                            this.selectedVillages.includes(village.id)
-                        );
-
-                        if (selectedVillagesForGP.length === 0) {
-                            gpsWithoutVillages.push(gp.name);
-                        }
-                    });
-
-                    if (gpsWithoutVillages.length > 0) {
-                        validation.isValid = false;
-                        validation.missingItems = gpsWithoutVillages;
-                        if (gpsWithoutVillages.length === 1) {
-                            validation.message = `Please select ${__("Villages").toLowerCase()} in ${gpsWithoutVillages[0]}.`;
-                        } else {
-                            validation.message = `Please select ${__("Villages").toLowerCase()} all ${__("Gram Panchayats").toLowerCase()}.`;
-                        }
-                    }
-                    break;
-            }
-
-            return validation;
-        },
-        validateAllLevelsForSave() {
-            const validation = {
-                isValid: true,
-                message: '',
-                missingItems: []
-            };
-
-            // Always validate states first
-            if (this.selectedStates.length === 0) {
-                validation.isValid = false;
-                validation.message = 'Please select at least one state to save.';
-                return validation;
-            }
-
-            // Validate districts if lowest_hierarchy requires them
-            if (['District', 'Block', 'Gram Panchayat', 'Village'].includes(this.lowest_hierarchy)) {
-                const statesWithoutDistricts = [];
-                this.selectedStates.forEach(stateId => {
-                    const stateName = this.getStateName(stateId);
-                    const districtsForState = this.getDistrictsForState(stateId);
-                    const selectedDistrictsForState = districtsForState.filter(d =>
-                        this.selectedDistricts.includes(d.id)
-                    );
-
-                    if (selectedDistrictsForState.length === 0) {
-                        statesWithoutDistricts.push(stateName);
-                    }
                 });
-
-                if (statesWithoutDistricts.length > 0) {
-                    validation.isValid = false;
-                    validation.missingItems = statesWithoutDistricts;
-                    if (statesWithoutDistricts.length === 1) {
-                        validation.message = `Please select ${__("Districts").toLowerCase()} in ${statesWithoutDistricts[0]}.`;
-                    } else {
-                        validation.message = `Please select ${__("Districts").toLowerCase()} all ${__("States").toLowerCase()}.`;
-                    }
-                    return validation;
-                }
-            }
-
-            // Validate blocks if lowest_hierarchy requires them
-            if (['Block', 'Gram Panchayat', 'Village'].includes(this.lowest_hierarchy)) {
-                const districtsWithoutBlocks = [];
-                this.selectedDistricts.forEach(districtId => {
-                    const district = this.availableDistricts.find(d => d.id === districtId);
-                    if (!district) return;
-
-                    const blocksForDistrict = this.getBlocksForDistrict(districtId);
-                    const selectedBlocksForDistrict = blocksForDistrict.filter(b =>
-                        this.selectedBlocks.includes(b.id)
-                    );
-
-                    if (selectedBlocksForDistrict.length === 0) {
-                        districtsWithoutBlocks.push(district.name);
-                    }
-                });
-
-                if (districtsWithoutBlocks.length > 0) {
-                    validation.isValid = false;
-                    validation.missingItems = districtsWithoutBlocks;
-                    if (districtsWithoutBlocks.length === 1) {
-                        validation.message = `Please select ${__("Blocks").toLowerCase()} in ${districtsWithoutBlocks[0]}.`;
-                    } else {
-                        validation.message = `Please select ${__("Blocks").toLowerCase()} all ${__("Districts").toLowerCase()}.`;
-                    }
-                    return validation;
-                }
-            }
-
-            // Validate gram panchayats if lowest_hierarchy requires them
-            if (['Gram Panchayat', 'Village'].includes(this.lowest_hierarchy)) {
-                const blocksWithoutGPs = [];
-                this.selectedBlocks.forEach(blockId => {
-                    const block = this.availableBlocks.find(b => b.id === blockId);
-                    if (!block) return;
-
-                    const gpsForBlock = this.getGramPanchayatsForBlock(blockId);
-                    const selectedGPsForBlock = gpsForBlock.filter(gp =>
-                        this.selectedGramPanchayats.includes(gp.id)
-                    );
-
-                    if (selectedGPsForBlock.length === 0) {
-                        blocksWithoutGPs.push(block.name);
-                    }
-                });
-
-                if (blocksWithoutGPs.length > 0) {
-                    validation.isValid = false;
-                    validation.missingItems = blocksWithoutGPs;
-                    if (blocksWithoutGPs.length === 1) {
-                        validation.message = `Please select ${__("Gram Panchayats").toLowerCase()} in ${blocksWithoutGPs[0]}.`;
-                    } else {
-                        validation.message = `Please select ${__("Gram Panchayats").toLowerCase()} all ${__("Blocks").toLowerCase()}.`;
-                    }
-                    return validation;
-                }
-            }
-
-            // Validate villages if lowest_hierarchy requires them
-            if (this.lowest_hierarchy === 'Village') {
-                const gpsWithoutVillages = [];
-                this.selectedGramPanchayats.forEach(gpId => {
-                    const gp = this.availableGramPanchayats.find(g => g.id === gpId);
-                    if (!gp) return;
-
-                    const villagesForGP = this.getVillagesForGP(gpId);
-                    const selectedVillagesForGP = villagesForGP.filter(village =>
-                        this.selectedVillages.includes(village.id)
-                    );
-
-                    if (selectedVillagesForGP.length === 0) {
-                        gpsWithoutVillages.push(gp.name);
-                    }
-                });
-
-                if (gpsWithoutVillages.length > 0) {
-                    validation.isValid = false;
-                    validation.missingItems = gpsWithoutVillages;
-                    if (gpsWithoutVillages.length === 1) {
-                        validation.message = `Please select ${__("Villages").toLowerCase()} in ${gpsWithoutVillages[0]}.`;
-                    } else {
-                        validation.message = `Please select ${__("Villages").toLowerCase()} all ${__("Gram Panchayats").toLowerCase()}.`;
-                    }
-                    return validation;
-                }
-            }
-
-            return validation;
-        },
-        showValidationError(validationResult) {
-            const { message, missingItems } = validationResult;
-
-            // Simple, compact error message
-            let errorHtml = `
-                <div style="text-align: left; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                    <div style="display: flex; align-items: flex-start; gap: 10px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px;">
-                        <span style="color: #e17055; font-size: 20px; flex-shrink: 0;">⚠️</span>
-                        <div style="flex: 1;">
-                            <p style="margin: 0; font-size: 14px; color: #6c5700; line-height: 1.4;">
-                                <strong>Selection Required:</strong> ${message}
-                            </p>
-            `;
-
-            // Add compact list if there are multiple missing items
-            if (missingItems && missingItems.length > 1) {
-                errorHtml += `
-                    <div style="margin-top: 10px; padding: 8px; background-color: #fff; border: 1px solid #ffeaa7; border-radius: 3px;">
-                        <div style="font-size: 12px; color: #6c5700; font-weight: 500; margin-bottom: 5px;">
-                            Missing selections in:
-                        </div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
-                `;
-
-                missingItems.forEach(item => {
-                    errorHtml += `
-                        <span style="background-color: #ffeaa7; color: #6c5700; padding: 2px 6px; border-radius: 2px; font-size: 11px; font-weight: 500;">
-                            ${item}
-                        </span>
-                    `;
-                });
-
-                errorHtml += `
-                        </div>
-                    </div>
-                `;
-            }
-
-            errorHtml += `
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            frappe.msgprint({
-                title: __('Selection Required'),
-                message: errorHtml,
-                indicator: 'orange'
             });
-        },
+            break;
+        case 4:
+            selectedStates.value.forEach(stateId => {
+                expandedStates.add(stateId);
+                getSelectedDistrictsForState(stateId).forEach(district => {
+                    expandedDistricts.add(district.id);
+                    getSelectedBlocksForDistrict(district.id).forEach(block => {
+                        expandedBlocks.add(block.id);
+                        getSelectedGramPanchayatsForBlock(block.id).forEach(gp => {
+                            expandedGPs.add(gp.id);
+                        });
+                    });
+                });
+            });
+            break;
+        case 5:
+            selectedStates.value.forEach(stateId => {
+                expandedStates.add(stateId);
+                getSelectedDistrictsForState(stateId).forEach(district => {
+                    expandedDistricts.add(district.id);
+                    getSelectedBlocksForDistrict(district.id).forEach(block => {
+                        expandedBlocks.add(block.id);
+                        getSelectedGramPanchayatsForBlock(block.id).forEach(gp => {
+                            expandedGPs.add(gp.id);
+                        });
+                    });
+                });
+            });
+            break;
     }
 };
+
+const goNext = () => {
+    if (currentStep.value >= totalSteps.value) return;
+
+    const validationResult = validateCurrentStepSelection();
+    if (!validationResult.isValid) {
+        showValidationError(validationResult);
+        return;
+    }
+
+    const canProceed = (() => {
+        switch (currentStep.value) {
+            case 1: return selectedStates.value.length > 0;
+            case 2: return selectedDistricts.value.length > 0;
+            case 3: return selectedBlocks.value.length > 0;
+            case 4: return selectedGramPanchayats.value.length > 0;
+            default: return true;
+        }
+    })();
+
+    if (canProceed) {
+        currentStep.value++;
+        switch (currentStep.value) {
+            case 2: updateBlocks(); break;
+            case 3: updateGramPanchayats(); break;
+            case 4: updateVillages(); break;
+        }
+        expandTreeBasedOnStep();
+    }
+};
+
+const goBack = () => {
+    if (currentStep.value > 1) {
+        currentStep.value--;
+        expandTreeBasedOnStep();
+    }
+};
+
+// ============ SAVE FUNCTIONALITY ============
+const saveSelection = async () => {
+    isSaving.value = true;
+
+    if (!props.disable_save_btn) {
+        const validationResult = validateAllLevelsForSave();
+        if (!validationResult.isValid) {
+            showValidationError(validationResult);
+            isSaving.value = false;
+            return;
+        }
+    }
+
+    const selectionMap = new Map();
+
+    // Build selection map for all hierarchy levels
+    selectedStates.value.forEach(stateId => {
+        const state = states.value.find(s => s.id == stateId);
+        if (state) {
+            selectionMap.set(state.id, {
+                state: { id: state.id, name: state.name, code: state.code }
+            });
+        }
+    });
+
+    selectedDistricts.value.forEach(districtId => {
+        const district = availableDistricts.value.find(d => d.id === districtId);
+        if (district) {
+            const state = states.value.find(s => s.id === district.state);
+            selectionMap.set(`${district.state}_${district.id}`, {
+                state: { id: state.id, name: state.name, code: state.code },
+                district: { id: district.id, name: district.name, code: district.code, state: district.state }
+            });
+        }
+    });
+
+    selectedBlocks.value.forEach(blockId => {
+        const block = availableBlocks.value.find(b => b.id === blockId);
+        if (block) {
+            const state = states.value.find(s => s.id === block.state);
+            const district = availableDistricts.value.find(d => d.id === block.district);
+            selectionMap.set(`${block.state}_${block.district}_${block.id}`, {
+                state: { id: state.id, name: state.name, code: state.code },
+                district: { id: district.id, name: district.name, code: district.code, state: district.state },
+                block: { id: block.id, name: block.name, code: block.code, district: block.district, state: block.state }
+            });
+        }
+    });
+
+    selectedGramPanchayats.value.forEach(gpId => {
+        const gp = availableGramPanchayats.value.find(g => g.id === gpId);
+        if (gp) {
+            const state = states.value.find(s => s.id === gp.state);
+            const district = availableDistricts.value.find(d => d.id === gp.district);
+            const block = availableBlocks.value.find(b => b.id === gp.block);
+            selectionMap.set(`${gp.state}_${gp.district}_${gp.block}_${gp.id}`, {
+                state: { id: state.id, name: state.name, code: state.code },
+                district: { id: district.id, name: district.name, code: district.code, state: district.state },
+                block: { id: block.id, name: block.name, code: block.code, district: block.district, state: block.state },
+                gramPanchayat: { id: gp.id, name: gp.name, code: gp.code, block: gp.block, district: gp.district, state: gp.state }
+            });
+        }
+    });
+
+    selectedVillages.value.forEach(villageId => {
+        const village = availableVillages.value.find(v => v.id === villageId);
+        if (village) {
+            const state = states.value.find(s => s.id === village.state);
+            const district = availableDistricts.value.find(d => d.id === village.district);
+            const block = availableBlocks.value.find(b => b.id === village.block);
+            const gp = availableGramPanchayats.value.find(g => g.id === village.gram_panchayat);
+            selectionMap.set(`${village.state}_${village.district}_${village.block}_${village.gram_panchayat}_${village.id}`, {
+                state: { id: state.id, name: state.name, code: state.code },
+                district: { id: district.id, name: district.name, code: district.code, state: district.state },
+                block: { id: block.id, name: block.name, code: block.code, district: block.district, state: block.state },
+                gramPanchayat: { id: gp.id, name: gp.name, code: gp.code, block: gp.block, district: gp.district, state: gp.state },
+                village: { id: village.id, name: village.name, code: village.code, gram_panchayat: village.gram_panchayat, block: village.block, district: village.district, state: village.state }
+            });
+        }
+    });
+    let selection = Array.from(selectionMap.values());
+    // Filter based on lowest hierarchy
+    switch (lowest_hierarchy.value) {
+        case 'State':
+            selection = selection.filter(item => item.state && !item.district);
+            break;
+        case 'District':
+            selection = selection.filter(item => item.state && item.district && !item.block);
+            break;
+        case 'Block':
+            selection = selection.filter(item => item.state && item.district && item.block && !item.gramPanchayat);
+            break;
+        case 'Gram Panchayat':
+            selection = selection.filter(item => item.state && item.district && item.block && item.gramPanchayat && !item.village);
+            break;
+        case 'Village':
+            selection = selection.filter(item => item.state && item.district && item.block && item.gramPanchayat && item.village);
+            break;
+    }
+
+    if (!props.disable_save_btn) {
+        try {
+            const r = await frappe.xcall('sva_frappe.api.save_geography_details', {
+                selection_data: JSON.stringify(selection),
+                document_type: props.frm.doctype,
+                docname: props.frm.docname,
+                lowest_hierarchy: lowest_hierarchy.value
+            });
+
+            if (r.status === 'success') {
+                frappe.show_alert({ message: r.message, indicator: 'green' });
+            } else {
+                frappe.show_alert({ message: r.message || __('Error saving geography details'), indicator: 'red' });
+            }
+        } catch (error) {
+            frappe.show_alert({ message: error.message || __('Error saving geography details'), indicator: 'red' });
+        } finally {
+            isSaving.value = false;
+        }
+    }
+
+    if (props.hierarchy_level_field && props.frm.doc[props.hierarchy_level_field] && props.frm.docname && !props.disable_save_btn) {
+        await frappe.db.set_value(props.frm.doctype, props.frm.docname, props.hierarchy_level_field, props.frm.doc[props.hierarchy_level_field]);
+    }
+
+    return selection;
+};
+
+// ============ GETTER METHODS ============
+const getHierarchyDisplayName = (hierarchy) => {
+    const displayNames = {
+        'State': __('States'),
+        'District': __('Districts'),
+        'Block': __('Blocks'),
+        'Gram Panchayat': __('Gram Panchayats'),
+        'Village': __('Villages')
+    };
+    return displayNames[hierarchy] || hierarchy;
+};
+
+const getStateName = (stateId) => {
+    const state = states.value.find(s => s.id === stateId);
+    return state ? state.name : '';
+};
+
+const getDistrictsForState = (stateId) => districts[stateId] || [];
+const getBlocksForDistrict = (districtId) => blocks[districtId] || [];
+const getGramPanchayatsForBlock = (blockId) => gramPanchayats[blockId] || [];
+const getVillagesForGP = (gpId) => villages[gpId] || [];
+
+const getDistrictName = (districtId) => {
+    const district = availableDistricts.value.find(d => d.id === districtId);
+    return district ? district.name : '';
+};
+
+const getBlockName = (blockId) => {
+    const block = availableBlocks.value.find(b => b.id === blockId);
+    return block ? block.name : '';
+};
+
+const getGramPanchayatName = (gpId) => {
+    const gp = availableGramPanchayats.value.find(g => g.id === gpId);
+    return gp ? gp.name : '';
+};
+
+// ============ SELECTION HELPER METHODS ============
+const getSelectedDistrictsForState = (stateId) => {
+    return getDistrictsForState(stateId).filter(district =>
+        selectedDistricts.value.includes(district.id)
+    );
+};
+
+const getSelectedBlocksForDistrict = (districtId) => {
+    return getBlocksForDistrict(districtId).filter(block =>
+        selectedBlocks.value.includes(block.id)
+    );
+};
+
+const getSelectedGramPanchayatsForBlock = (blockId) => {
+    return getGramPanchayatsForBlock(blockId).filter(gp =>
+        selectedGramPanchayats.value.includes(gp.id)
+    );
+};
+
+const getSelectedVillagesForGP = (gpId) => {
+    return getVillagesForGP(gpId).filter(village =>
+        selectedVillages.value.includes(village.id)
+    );
+};
+
+const getSelectedBlocksForStateRecursive = (stateId) => {
+    const selectedBlocksRecursive = [];
+    const selectedDistrictsForState = getSelectedDistrictsForState(stateId);
+    selectedDistrictsForState.forEach(district => {
+        const blocksForDistrict = getSelectedBlocksForDistrict(district.id);
+        selectedBlocksRecursive.push(...blocksForDistrict);
+    });
+    return selectedBlocksRecursive;
+};
+
+const getSelectedGPsForStateRecursive = (stateId) => {
+    const selectedGPs = [];
+    const selectedBlocksForState = getSelectedBlocksForStateRecursive(stateId);
+    selectedBlocksForState.forEach(block => {
+        const gpsForBlock = getSelectedGramPanchayatsForBlock(block.id);
+        selectedGPs.push(...gpsForBlock);
+    });
+    return selectedGPs;
+};
+
+// ============ TOGGLE/SELECTION METHODS ============
+const isAllDistrictsSelectedForState = (stateId) => {
+    const stateDistricts = getDistrictsForState(stateId);
+    return stateDistricts.length > 0 && stateDistricts.every(district =>
+        selectedDistricts.value.includes(district.id)
+    );
+};
+
+const toggleAllDistrictsForState = (stateId) => {
+    const stateDistricts = getDistrictsForState(stateId);
+    const allSelected = isAllDistrictsSelectedForState(stateId);
+
+    if (allSelected) {
+        const districtIds = stateDistricts.map(d => d.id);
+        selectedDistricts.value = selectedDistricts.value.filter(id => !districtIds.includes(id));
+
+        const blocksToRemove = availableBlocks.value
+            .filter(block => districtIds.includes(block.district))
+            .map(block => block.id);
+        selectedBlocks.value = selectedBlocks.value.filter(id => !blocksToRemove.includes(id));
+
+        const gpsToRemove = availableGramPanchayats.value
+            .filter(gp => blocksToRemove.includes(gp.block))
+            .map(gp => gp.id);
+        selectedGramPanchayats.value = selectedGramPanchayats.value.filter(id => !gpsToRemove.includes(id));
+
+        const villagesToRemove = availableVillages.value
+            .filter(village => gpsToRemove.includes(village.gram_panchayat))
+            .map(village => village.id);
+        selectedVillages.value = selectedVillages.value.filter(id => !villagesToRemove.includes(id));
+    } else {
+        const districtIds = stateDistricts.map(d => d.id);
+        selectedDistricts.value = [...new Set([...selectedDistricts.value, ...districtIds])];
+    }
+    updateBlocks();
+};
+
+const isAllBlocksSelectedForDistrict = (districtId) => {
+    const districtBlocks = getBlocksForDistrict(districtId);
+    return districtBlocks.length > 0 && districtBlocks.every(block =>
+        selectedBlocks.value.includes(block.id)
+    );
+};
+
+const toggleAllBlocksForDistrict = (districtId) => {
+    const districtBlocks = getBlocksForDistrict(districtId);
+    const allSelected = isAllBlocksSelectedForDistrict(districtId);
+
+    if (allSelected) {
+        const blockIds = districtBlocks.map(b => b.id);
+        selectedBlocks.value = selectedBlocks.value.filter(id => !blockIds.includes(id));
+
+        const gpsToRemove = availableGramPanchayats.value
+            .filter(gp => blockIds.includes(gp.block))
+            .map(gp => gp.id);
+        selectedGramPanchayats.value = selectedGramPanchayats.value.filter(id => !gpsToRemove.includes(id));
+
+        const villagesToRemove = availableVillages.value
+            .filter(village => gpsToRemove.includes(village.gram_panchayat))
+            .map(village => village.id);
+        selectedVillages.value = selectedVillages.value.filter(id => !villagesToRemove.includes(id));
+    } else {
+        const blockIds = districtBlocks.map(b => b.id);
+        selectedBlocks.value = [...new Set([...selectedBlocks.value, ...blockIds])];
+    }
+    updateGramPanchayats();
+};
+
+const isAllGramPanchayatsSelectedForBlock = (blockId) => {
+    const blockGPs = getGramPanchayatsForBlock(blockId);
+    return blockGPs.length > 0 && blockGPs.every(gp =>
+        selectedGramPanchayats.value.includes(gp.id)
+    );
+};
+
+const toggleAllGramPanchayatsForBlock = (blockId) => {
+    const blockGPs = getGramPanchayatsForBlock(blockId);
+    const allSelected = isAllGramPanchayatsSelectedForBlock(blockId);
+
+    if (allSelected) {
+        const gpIds = blockGPs.map(gp => gp.id);
+        selectedGramPanchayats.value = selectedGramPanchayats.value.filter(id => !gpIds.includes(id));
+
+        const villagesToRemove = availableVillages.value
+            .filter(village => gpIds.includes(village.gram_panchayat))
+            .map(village => village.id);
+        selectedVillages.value = selectedVillages.value.filter(id => !villagesToRemove.includes(id));
+    } else {
+        const gpIds = blockGPs.map(gp => gp.id);
+        selectedGramPanchayats.value = [...new Set([...selectedGramPanchayats.value, ...gpIds])];
+    }
+    updateVillages();
+};
+
+const isAllVillagesSelectedForGP = (gpId) => {
+    const gpVillages = getVillagesForGP(gpId);
+    return gpVillages.length > 0 && gpVillages.every(village =>
+        selectedVillages.value.includes(village.id)
+    );
+};
+
+const toggleAllVillagesForGP = (gpId) => {
+    const gpVillages = getVillagesForGP(gpId);
+    const allSelected = isAllVillagesSelectedForGP(gpId);
+
+    if (allSelected) {
+        const villageIds = gpVillages.map(v => v.id);
+        selectedVillages.value = selectedVillages.value.filter(id => !villageIds.includes(id));
+    } else {
+        const villageIds = gpVillages.map(v => v.id);
+        selectedVillages.value = [...new Set([...selectedVillages.value, ...villageIds])];
+    }
+};
+
+const toggleAllStates = () => {
+    if (allStatesSelected.value) {
+        selectedStates.value = [];
+        selectedDistricts.value = [];
+        selectedBlocks.value = [];
+        selectedGramPanchayats.value = [];
+        selectedVillages.value = [];
+    } else {
+        selectedStates.value = states.value.map(state => state.id);
+    }
+    updateDistricts();
+};
+
+const toggleAllDistricts = () => {
+    if (allDistrictsSelected.value) {
+        selectedDistricts.value = [];
+        selectedBlocks.value = [];
+        selectedGramPanchayats.value = [];
+        selectedVillages.value = [];
+    } else {
+        selectedDistricts.value = availableDistricts.value.map(district => district.id);
+    }
+    updateBlocks();
+};
+
+const toggleAllBlocks = () => {
+    if (allBlocksSelected.value) {
+        selectedBlocks.value = [];
+        selectedGramPanchayats.value = [];
+        selectedVillages.value = [];
+    } else {
+        selectedBlocks.value = availableBlocks.value.map(block => block.id);
+    }
+    updateGramPanchayats();
+};
+
+const toggleAllGramPanchayats = () => {
+    if (allGramPanchayatsSelected.value) {
+        selectedGramPanchayats.value = [];
+        selectedVillages.value = [];
+    } else {
+        selectedGramPanchayats.value = availableGramPanchayats.value.map(gp => gp.id);
+    }
+    updateVillages();
+};
+
+const toggleAllVillages = () => {
+    if (allVillagesSelected.value) {
+        selectedVillages.value = [];
+    } else {
+        selectedVillages.value = availableVillages.value.map(village => village.id);
+    }
+};
+
+// ============ EXPANSION METHODS ============
+const toggleStateExpansion = (stateId) => {
+    if (expandedStates.has(stateId)) {
+        expandedStates.delete(stateId);
+    } else {
+        expandedStates.clear();
+        expandedStates.add(stateId);
+        expandedDistricts.clear();
+        expandedBlocks.clear();
+        expandedGPs.clear();
+    }
+};
+
+const toggleDistrictExpansion = (districtId) => {
+    if (expandedDistricts.has(districtId)) {
+        expandedDistricts.delete(districtId);
+    } else {
+        expandedDistricts.clear();
+        expandedDistricts.add(districtId);
+        expandedBlocks.clear();
+        expandedGPs.clear();
+    }
+};
+
+const toggleBlockExpansion = (blockId) => {
+    if (expandedBlocks.has(blockId)) {
+        expandedBlocks.delete(blockId);
+    } else {
+        expandedBlocks.clear();
+        expandedBlocks.add(blockId);
+        expandedGPs.clear();
+    }
+};
+
+const toggleGPExpansion = (gpId) => {
+    if (expandedGPs.has(gpId)) {
+        expandedGPs.delete(gpId);
+    } else {
+        expandedGPs.clear();
+        expandedGPs.add(gpId);
+    }
+};
+
+const isStateExpanded = (stateId) => expandedStates.has(stateId);
+const isDistrictExpanded = (districtId) => expandedDistricts.has(districtId);
+const isBlockExpanded = (blockId) => expandedBlocks.has(blockId);
+const isGPExpanded = (gpId) => expandedGPs.has(gpId);
+
+// ============ UTILITY METHODS ============
+const updateAvailableItems = async () => {
+    updateDistricts();
+    if (lowest_hierarchy.value !== 'State') {
+        updateBlocks();
+        if (lowest_hierarchy.value !== 'District') {
+            updateGramPanchayats();
+            if (lowest_hierarchy.value !== 'Block') {
+                updateVillages();
+            }
+        }
+    }
+};
+
+const withLoading = (callback) => {
+    isLoading.value = true;
+    try {
+        return callback();
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+const resetData = async () => {
+    Object.keys(districts).forEach(key => delete districts[key]);
+    Object.keys(blocks).forEach(key => delete blocks[key]);
+    Object.keys(gramPanchayats).forEach(key => delete gramPanchayats[key]);
+    Object.keys(villages).forEach(key => delete villages[key]);
+    selectedStates.value = [];
+    selectedDistricts.value = [];
+    selectedBlocks.value = [];
+    selectedGramPanchayats.value = [];
+    selectedVillages.value = [];
+    availableDistricts.value = [];
+    availableBlocks.value = [];
+    availableGramPanchayats.value = [];
+    availableVillages.value = [];
+    isDataLoaded.value = false;
+    expandedStates.clear();
+    expandedDistricts.clear();
+    expandedBlocks.clear();
+    expandedGPs.clear();
+};
+
+const getLightColor = (color) => {
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    const lightR = Math.min(r + 40, 255);
+    const lightG = Math.min(g + 40, 255);
+    const lightB = Math.min(b + 40, 255);
+    return `rgb(${lightR}, ${lightG}, ${lightB})`;
+};
+
+// ============ GETTER METHODS FOR RELATED DATA ============
+const getDistrictState = (districtId) => {
+    const district = availableDistricts.value.find(d => d.id === districtId);
+    return district ? district.state : '';
+};
+
+const getBlockState = (blockId) => {
+    const block = availableBlocks.value.find(b => b.id === blockId);
+    return block ? block.state : '';
+};
+
+const getBlockDistrict = (blockId) => {
+    const block = availableBlocks.value.find(b => b.id === blockId);
+    return block ? block.district : '';
+};
+
+const getGPState = (gpId) => {
+    const gp = availableGramPanchayats.value.find(g => g.id === gpId);
+    return gp ? gp.state : '';
+};
+
+const getGPDistrict = (gpId) => {
+    const gp = availableGramPanchayats.value.find(g => g.id === gpId);
+    return gp ? gp.district : '';
+};
+
+const getGPBlock = (gpId) => {
+    const gp = availableGramPanchayats.value.find(g => g.id === gpId);
+    return gp ? gp.block : '';
+};
+
+// ============ VALIDATION METHODS ============
+const validateCurrentStepSelection = () => {
+    const validation = { isValid: true, message: '', missingItems: [] };
+
+    switch (currentStep.value) {
+        case 1:
+            if (selectedStates.value.length === 0) {
+                validation.isValid = false;
+                validation.message = 'Please select at least one state to continue.';
+            }
+            break;
+
+        case 2:
+            if (lowest_hierarchy.value === 'State') break;
+            const statesWithoutDistricts = [];
+            selectedStates.value.forEach(stateId => {
+                const stateName = getStateName(stateId);
+                const districtsForState = getDistrictsForState(stateId);
+                const selectedDistrictsForState = districtsForState.filter(d =>
+                    selectedDistricts.value.includes(d.id)
+                );
+                if (selectedDistrictsForState.length === 0) {
+                    statesWithoutDistricts.push(stateName);
+                }
+            });
+            if (statesWithoutDistricts.length > 0) {
+                validation.isValid = false;
+                validation.missingItems = statesWithoutDistricts;
+                validation.message = statesWithoutDistricts.length === 1
+                    ? `Please select ${__("Districts").toLowerCase()} in ${statesWithoutDistricts[0]}.`
+                    : `Please select ${__("Districts").toLowerCase()} all ${__("States").toLowerCase()}.`;
+            }
+            break;
+
+        case 3:
+            if (['State', 'District'].includes(lowest_hierarchy.value)) break;
+            const districtsWithoutBlocks = [];
+            selectedDistricts.value.forEach(districtId => {
+                const district = availableDistricts.value.find(d => d.id === districtId);
+                if (!district) return;
+                const blocksForDistrict = getBlocksForDistrict(districtId);
+                const selectedBlocksForDistrict = blocksForDistrict.filter(b =>
+                    selectedBlocks.value.includes(b.id)
+                );
+                if (selectedBlocksForDistrict.length === 0) {
+                    districtsWithoutBlocks.push(district.name);
+                }
+            });
+            if (districtsWithoutBlocks.length > 0) {
+                validation.isValid = false;
+                validation.missingItems = districtsWithoutBlocks;
+                validation.message = districtsWithoutBlocks.length === 1
+                    ? `Please select ${__("Blocks").toLowerCase()} in ${districtsWithoutBlocks[0]}.`
+                    : `Please select ${__("Blocks").toLowerCase()} all ${__("Districts").toLowerCase()}.`;
+            }
+            break;
+
+        case 4:
+            if (['State', 'District', 'Block'].includes(lowest_hierarchy.value)) break;
+            const blocksWithoutGPs = [];
+            selectedBlocks.value.forEach(blockId => {
+                const block = availableBlocks.value.find(b => b.id === blockId);
+                if (!block) return;
+                const gpsForBlock = getGramPanchayatsForBlock(blockId);
+                const selectedGPsForBlock = gpsForBlock.filter(gp =>
+                    selectedGramPanchayats.value.includes(gp.id)
+                );
+                if (selectedGPsForBlock.length === 0) {
+                    blocksWithoutGPs.push(block.name);
+                }
+            });
+            if (blocksWithoutGPs.length > 0) {
+                validation.isValid = false;
+                validation.missingItems = blocksWithoutGPs;
+                validation.message = blocksWithoutGPs.length === 1
+                    ? `Please select ${__("Gram Panchayats").toLowerCase()} in ${blocksWithoutGPs[0]}.`
+                    : `Please select ${__("Gram Panchayats").toLowerCase()} all ${__("Blocks").toLowerCase()}.`;
+            }
+            break;
+
+        case 5:
+            if (lowest_hierarchy.value !== 'Village') break;
+            const gpsWithoutVillages = [];
+            selectedGramPanchayats.value.forEach(gpId => {
+                const gp = availableGramPanchayats.value.find(g => g.id === gpId);
+                if (!gp) return;
+                const villagesForGP = getVillagesForGP(gpId);
+                const selectedVillagesForGP = villagesForGP.filter(village =>
+                    selectedVillages.value.includes(village.id)
+                );
+                if (selectedVillagesForGP.length === 0) {
+                    gpsWithoutVillages.push(gp.name);
+                }
+            });
+            if (gpsWithoutVillages.length > 0) {
+                validation.isValid = false;
+                validation.missingItems = gpsWithoutVillages;
+                validation.message = gpsWithoutVillages.length === 1
+                    ? `Please select ${__("Villages").toLowerCase()} in ${gpsWithoutVillages[0]}.`
+                    : `Please select ${__("Villages").toLowerCase()} all ${__("Gram Panchayats").toLowerCase()}.`;
+            }
+            break;
+    }
+    return validation;
+};
+
+const validateAllLevelsForSave = () => {
+    const validation = { isValid: true, message: '', missingItems: [] };
+
+    if (selectedStates.value.length === 0) {
+        validation.isValid = false;
+        validation.message = 'Please select at least one state to save.';
+        return validation;
+    }
+
+    if (['District', 'Block', 'Gram Panchayat', 'Village'].includes(lowest_hierarchy.value)) {
+        const statesWithoutDistricts = [];
+        selectedStates.value.forEach(stateId => {
+            const stateName = getStateName(stateId);
+            const districtsForState = getDistrictsForState(stateId);
+            const selectedDistrictsForState = districtsForState.filter(d =>
+                selectedDistricts.value.includes(d.id)
+            );
+            if (selectedDistrictsForState.length === 0) {
+                statesWithoutDistricts.push(stateName);
+            }
+        });
+        if (statesWithoutDistricts.length > 0) {
+            validation.isValid = false;
+            validation.missingItems = statesWithoutDistricts;
+            validation.message = statesWithoutDistricts.length === 1
+                ? `Please select ${__("Districts").toLowerCase()} in ${statesWithoutDistricts[0]}.`
+                : `Please select ${__("Districts").toLowerCase()} all ${__("States").toLowerCase()}.`;
+            return validation;
+        }
+    }
+
+    if (['Block', 'Gram Panchayat', 'Village'].includes(lowest_hierarchy.value)) {
+        const districtsWithoutBlocks = [];
+        selectedDistricts.value.forEach(districtId => {
+            const district = availableDistricts.value.find(d => d.id === districtId);
+            if (!district) return;
+            const blocksForDistrict = getBlocksForDistrict(districtId);
+            const selectedBlocksForDistrict = blocksForDistrict.filter(b =>
+                selectedBlocks.value.includes(b.id)
+            );
+            if (selectedBlocksForDistrict.length === 0) {
+                districtsWithoutBlocks.push(district.name);
+            }
+        });
+        if (districtsWithoutBlocks.length > 0) {
+            validation.isValid = false;
+            validation.missingItems = districtsWithoutBlocks;
+            validation.message = districtsWithoutBlocks.length === 1
+                ? `Please select ${__("Blocks").toLowerCase()} in ${districtsWithoutBlocks[0]}.`
+                : `Please select ${__("Blocks").toLowerCase()} all ${__("Districts").toLowerCase()}.`;
+            return validation;
+        }
+    }
+
+    if (['Gram Panchayat', 'Village'].includes(lowest_hierarchy.value)) {
+        const blocksWithoutGPs = [];
+        selectedBlocks.value.forEach(blockId => {
+            const block = availableBlocks.value.find(b => b.id === blockId);
+            if (!block) return;
+            const gpsForBlock = getGramPanchayatsForBlock(blockId);
+            const selectedGPsForBlock = gpsForBlock.filter(gp =>
+                selectedGramPanchayats.value.includes(gp.id)
+            );
+            if (selectedGPsForBlock.length === 0) {
+                blocksWithoutGPs.push(block.name);
+            }
+        });
+        if (blocksWithoutGPs.length > 0) {
+            validation.isValid = false;
+            validation.missingItems = blocksWithoutGPs;
+            validation.message = blocksWithoutGPs.length === 1
+                ? `Please select ${__("Gram Panchayats").toLowerCase()} in ${blocksWithoutGPs[0]}.`
+                : `Please select ${__("Gram Panchayats").toLowerCase()} all ${__("Blocks").toLowerCase()}.`;
+            return validation;
+        }
+    }
+
+    if (lowest_hierarchy.value === 'Village') {
+        const gpsWithoutVillages = [];
+        selectedGramPanchayats.value.forEach(gpId => {
+            const gp = availableGramPanchayats.value.find(g => g.id === gpId);
+            if (!gp) return;
+            const villagesForGP = getVillagesForGP(gpId);
+            const selectedVillagesForGP = villagesForGP.filter(village =>
+                selectedVillages.value.includes(village.id)
+            );
+            if (selectedVillagesForGP.length === 0) {
+                gpsWithoutVillages.push(gp.name);
+            }
+        });
+        if (gpsWithoutVillages.length > 0) {
+            validation.isValid = false;
+            validation.missingItems = gpsWithoutVillages;
+            validation.message = gpsWithoutVillages.length === 1
+                ? `Please select ${__("Villages").toLowerCase()} in ${gpsWithoutVillages[0]}.`
+                : `Please select ${__("Villages").toLowerCase()} all ${__("Gram Panchayats").toLowerCase()}.`;
+            return validation;
+        }
+    }
+
+    return validation;
+};
+
+const showValidationError = (validationResult) => {
+    const { message, missingItems } = validationResult;
+    let errorHtml = `
+        <div style="text-align: left; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+            <div style="display: flex; align-items: flex-start; gap: 10px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px;">
+                <span style="color: #e17055; font-size: 20px; flex-shrink: 0;">⚠️</span>
+                <div style="flex: 1;">
+                    <p style="margin: 0; font-size: 14px; color: #6c5700; line-height: 1.4;">
+                        <strong>Selection Required:</strong> ${message}
+                    </p>`;
+
+    if (missingItems && missingItems.length > 1) {
+        errorHtml += `
+            <div style="margin-top: 10px; padding: 8px; background-color: #fff; border: 1px solid #ffeaa7; border-radius: 3px;">
+                <div style="font-size: 12px; color: #6c5700; font-weight: 500; margin-bottom: 5px;">
+                    Missing selections in:
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 5px;">`;
+
+        missingItems.forEach(item => {
+            errorHtml += `
+                <span style="background-color: #ffeaa7; color: #6c5700; padding: 2px 6px; border-radius: 2px; font-size: 11px; font-weight: 500;">
+                    ${item}
+                </span>`;
+        });
+
+        errorHtml += `</div></div>`;
+    }
+
+    errorHtml += `</div></div></div>`;
+
+    frappe.msgprint({
+        title: __('Selection Required'),
+        message: errorHtml,
+        indicator: 'orange'
+    });
+};
+
+// ============ LIFECYCLE & INITIALIZATION ============
+const initializeComponent = async () => {
+    doctype.value = props.frm.doctype;
+    if (isDataLoaded.value) return;
+
+    if (props.frm.doctype && props.frm.docname) {
+        await loadExistingData();
+    } else {
+        await loadDefaultLowestHierarchy();
+        await loadStates();
+    }
+
+    if (states.value.length > 0) {
+        expandedStates.add(states.value[0].id);
+    }
+    isDataLoaded.value = true;
+    expandTreeBasedOnStep();
+};
+
+onMounted(() => {
+    loadDefaultLowestHierarchy();
+    initializeComponent();
+});
+
+// ============ EXPOSE VALUES FOR TEMPLATE ACCESS ============
+defineExpose({
+    // Reactive state
+    currentStep, states, districts, blocks, gramPanchayats, villages,
+    selectedStates, selectedDistricts, selectedBlocks, selectedGramPanchayats, selectedVillages,
+    availableDistricts, availableBlocks, availableGramPanchayats, availableVillages,
+    isLoading, expandedStateId, current_docname, lowest_hierarchy, isDataLoaded,
+    expandedStates, expandedDistricts, expandedBlocks, expandedGPs, doctype, isSaving,
+
+    // Computed properties
+    totalSteps, themeColors, isAtLowestHierarchy,
+    allStatesSelected, allDistrictsSelected, allBlocksSelected,
+    allGramPanchayatsSelected, allVillagesSelected,
+
+    // Core methods
+    loadDefaultLowestHierarchy, loadExistingData, loadStates,
+    updateDistricts, updateBlocks, updateGramPanchayats, updateVillages,
+    expandTreeBasedOnStep, goNext, goBack, saveSelection,
+
+    // Getter methods
+    getHierarchyDisplayName, getStateName, getDistrictName, getBlockName, getGramPanchayatName,
+    getDistrictsForState, getBlocksForDistrict, getGramPanchayatsForBlock, getVillagesForGP,
+    getSelectedDistrictsForState, getSelectedBlocksForDistrict,
+    getSelectedGramPanchayatsForBlock, getSelectedVillagesForGP,
+    getSelectedBlocksForStateRecursive, getSelectedGPsForStateRecursive,
+    getDistrictState, getBlockState, getBlockDistrict, getGPState, getGPDistrict, getGPBlock,
+
+    // Toggle/Selection methods  
+    isAllDistrictsSelectedForState, toggleAllDistrictsForState,
+    isAllBlocksSelectedForDistrict, toggleAllBlocksForDistrict,
+    isAllGramPanchayatsSelectedForBlock, toggleAllGramPanchayatsForBlock,
+    isAllVillagesSelectedForGP, toggleAllVillagesForGP,
+    toggleAllStates, toggleAllDistricts, toggleAllBlocks, toggleAllGramPanchayats, toggleAllVillages,
+
+    // Expansion methods
+    toggleStateExpansion, toggleDistrictExpansion, toggleBlockExpansion, toggleGPExpansion,
+    isStateExpanded, isDistrictExpanded, isBlockExpanded, isGPExpanded,
+
+    // Utility methods
+    updateAvailableItems, withLoading, resetData, getLightColor,
+
+    // Validation methods
+    validateCurrentStepSelection, validateAllLevelsForSave, showValidationError
+});
 </script>
 
 <style scoped>
