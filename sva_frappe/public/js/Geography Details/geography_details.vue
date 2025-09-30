@@ -269,7 +269,7 @@
                     <div class="geography-tree">
                         <div v-for="stateId in selectedStates" :key="stateId" class="tree-item state-item">
                             <div class="tree-content"
-                                @click="!read_only && lowest_hierarchy !== 'State' && toggleStateExpansion(stateId)">
+                                @click="lowest_hierarchy !== 'State' && toggleStateExpansion(stateId)">
                                 <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'State'"
                                     :class="{ 'expanded': isStateExpanded(stateId) }">
                                     {{ isStateExpanded(stateId) ? '▼' : '▶' }}
@@ -285,7 +285,7 @@
                                 <div v-for="district in getDistrictsForState(stateId)" :key="district.id"
                                     class="tree-item district-item" v-show="selectedDistricts.includes(district.id)">
                                     <div class="tree-content"
-                                        @click="!read_only && lowest_hierarchy !== 'District' && toggleDistrictExpansion(district.id)">
+                                        @click="lowest_hierarchy !== 'District' && toggleDistrictExpansion(district.id)">
                                         <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'District'"
                                             :class="{ 'expanded': isDistrictExpanded(district.id) }">
                                             {{ isDistrictExpanded(district.id) ? '▼' : '▶' }}
@@ -301,7 +301,7 @@
                                         <div v-for="block in getBlocksForDistrict(district.id)" :key="block.id"
                                             class="tree-item block-item" v-show="selectedBlocks.includes(block.id)">
                                             <div class="tree-content"
-                                                @click="!read_only && lowest_hierarchy !== 'Block' && toggleBlockExpansion(block.id)">
+                                                @click="lowest_hierarchy !== 'Block' && toggleBlockExpansion(block.id)">
                                                 <span class="tree-icon toggle-icon" v-if="lowest_hierarchy !== 'Block'"
                                                     :class="{ 'expanded': isBlockExpanded(block.id) }">
                                                     {{ isBlockExpanded(block.id) ? '▼' : '▶' }}
@@ -318,7 +318,7 @@
                                                     class="tree-item gp-item"
                                                     v-show="selectedGramPanchayats.includes(gp.id)">
                                                     <div class="tree-content"
-                                                        @click="!read_only && lowest_hierarchy !== 'Gram Panchayat' && toggleGPExpansion(gp.id)">
+                                                        @click="lowest_hierarchy !== 'Gram Panchayat' && toggleGPExpansion(gp.id)">
                                                         <span class="tree-icon toggle-icon"
                                                             v-if="lowest_hierarchy !== 'Gram Panchayat'"
                                                             :class="{ 'expanded': isGPExpanded(gp.id) }">
