@@ -105,28 +105,31 @@ function hide_advance_search(frm, list) {
 };
 
 frappe.ui.form.on("SVA User", {
-    async before_save(frm) {
-        if (frm.doc.confirm_password === frm.doc.old_password) {
-            !frm.is_new() && await frm.set_value('password', frm.doc.confirm_password);
-        }
-    },
+    // async before_save(frm) {
+    //     if (frm.doc.confirm_password === frm.doc.old_password) {
+    //         !frm.is_new() && await frm.set_value('password', frm.doc.confirm_password);
+    //     }
+    // },
     async refresh(frm) {
-        frm.add_custom_button(
-            __("Reset Password"),
-            function () {
-                frappe.call({
-                    method: "frappe.core.doctype.user.user.reset_password",
-                    args: {
-                        user: frm.doc.email,
-                    },
-                });
-            },
-            __("Password")
-        );
+        if(!frm.is_new()){
+            frm.add_custom_button(
+                __("Reset Password"),
+                function () {
+                    frappe.call({
+                        method: "frappe.core.doctype.user.user.reset_password",
+                        args: {
+                            user: frm.doc.email,
+                        },
+                    });
+                },
+                __("Password")
+            );
+        }
+        
         if(frm.doc.role_profile){
             role_and_permission_popup(frm)
         }
-        frm.doc.old_password = frm.doc.confirm_password;
+        // frm.doc.old_password = frm.doc.confirm_password;
         let restricted_array = []
         let setting = await get_user_settings()
         // console.log(frappe.user_roles)
