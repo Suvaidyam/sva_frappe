@@ -88,7 +88,7 @@ class SVAUser(Document):
 		new_user.new_password = password
 		new_user.insert(ignore_permissions=True)  # Insert to trigger 'before_insert' or 'after_insert' for User
 	def on_update(self):
-		# check user verifed or not
+		# check user verified or not
 		exists = frappe.db.exists('Email Unsubscribe',{'email': self.email})
 		if not self.is_verified and not exists:
 			new_doc = frappe.new_doc('Email Unsubscribe')
@@ -97,7 +97,6 @@ class SVAUser(Document):
 			new_doc.insert(ignore_permissions=True)
 		elif exists and self.is_verified:
 			frappe.delete_doc('Email Unsubscribe',exists,ignore_permissions=True)
-		frappe.db.commit()
 
 		# Check if the user is already created
 		if not self.get('localname'):
