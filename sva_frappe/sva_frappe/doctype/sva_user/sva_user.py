@@ -64,7 +64,7 @@ class SVAUser(Document):
 
 	# def validate(self):
 	# 	# Check if password and confirm password match
-	# 	is_disabled_usr_pass_login = frappe.db.get_single_value('My Theme', 'disable_usr_pass_login')
+	# 	is_disabled_usr_pass_login = frappe.db.get_single_value('My Theme', 'enable_usr_pass_login')
 	# 	if not is_disabled_usr_pass_login:
 	# 		if self.is_new():
 	# 			if self.password != self.confirm_password:
