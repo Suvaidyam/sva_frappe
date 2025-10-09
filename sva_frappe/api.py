@@ -13,7 +13,6 @@ def get_states(filters):
             ["status", "=", "Active"]
         ] + (filters if filters else []),
         order_by='state_name',
-        limit=50
     )
     return states
 
@@ -34,7 +33,6 @@ def get_districts(state=None,filters=None):
         fields=['name', 'district_name', 'district_code', 'state'],
         filters=_filters + (filters if filters else []),
         order_by='district_name',
-        limit=200
     )
     return districts
 
@@ -53,7 +51,6 @@ def get_blocks(district=None, filters=None):
         fields=['name', 'block_name', 'block_code', 'district', 'state'],
         filters=_filters + (filters if filters else []),
         order_by='block_name',
-        limit=300
     )
     return blocks
 
@@ -72,7 +69,6 @@ def get_gram_panchayats(block=None , filters=None):
         fields=['name', 'gram_pachayat_name', 'gram_panchayat_code', 'block', 'district', 'state'],
         filters= _filters + (filters if filters else []),
         order_by='gram_pachayat_name',
-        limit=300
     )
     return gram_panchayats
 
@@ -91,7 +87,6 @@ def get_villages(gram_panchayat=None , filters=None):
         fields=['name', 'village_name', 'village_code', 'gram_panchayat', 'block', 'district', 'state'],
         filters=_filters + (filters if filters else []),
         order_by='village_name',
-        limit=500
     )
     return villages
 
