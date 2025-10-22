@@ -88,8 +88,7 @@
    "fieldname": "country",
    "fieldtype": "Link",
    "label": "Country",
-   "options": "Country",
-   "reqd": 1
+   "options": "Country"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -105,7 +104,7 @@
    "link_fieldname": "block"
   }
  ],
- "modified": "2025-03-27 14:05:02.033311",
+ "modified": "2025-06-24 14:54:37.957077",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Block",
