@@ -13,7 +13,8 @@ required_apps = ["Suvaidyam/frappe_theme"]
 # app_include_css = "/assets/sva_frappe/css/sva_frappe.css"
 app_include_js = [
     "/assets/sva_frappe/js/sva_frappe.js",
-    "/assets/sva_frappe/js/user_permission.js"
+    "/assets/sva_frappe/js/user_permission.js",
+    "/assets/sva_frappe/js/globle.js"
 ]
 # fixtures = [
 #     'State',
