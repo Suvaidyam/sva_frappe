@@ -111,6 +111,7 @@
   {
    "fieldname": "mobile_number",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Mobile Number",
    "length": 10
   },
@@ -180,7 +181,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-04 07:16:52.949396",
+ "modified": "2025-10-30 16:57:17.919590",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
