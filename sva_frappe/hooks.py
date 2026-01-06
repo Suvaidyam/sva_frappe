@@ -13,11 +13,18 @@ required_apps = ["Suvaidyam/frappe_theme"]
 # app_include_css = "/assets/sva_frappe/css/sva_frappe.css"
 app_include_js = [
     "/assets/sva_frappe/js/sva_frappe.js",
-    "/assets/sva_frappe/js/user_permission.js"
+    "/assets/sva_frappe/js/user_permission.js",
+    "/assets/sva_frappe/js/globle.js"
 ]
 # fixtures = [
-#     'State',
-#     'District'
+# #     'State',
+# #     'District',
+#         {
+#             "dt":"Role",
+#             "filters": [
+#                 ["role_name", "in", ["Impersonate User"]]
+#             ]
+#         }
 # ]
 # include js, css files in header of web template
 # web_include_css = "/assets/sva_frappe/css/sva_frappe.css"
@@ -121,9 +128,9 @@ doctype_list_js = {
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
+permission_query_conditions = {
+	"*": "sva_frappe.controllers.permission.get_permission_query_conditions"
+}
 #
 # has_permission = {
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
@@ -177,9 +184,11 @@ doc_events = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "sva_frappe.event.get_events"
-# }
+override_whitelisted_methods = {
+	# "frappe.desk.doctype.event.event.get_events": "sva_frappe.event.get_events"
+    "frappe.core.doctype.user.user.impersonate":"sva_frappe.overrides.impersonate.impersonate"
+
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
