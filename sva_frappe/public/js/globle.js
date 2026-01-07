@@ -95,7 +95,8 @@ frappe.ui.form.on("*", {
 		let role_names = user_settings?.role_level
 			?.filter(item => item.level == frm.doctype)
 			?.map(item => item.role);
-        if(role_names?.length > 0) {
+		let allowed_assign_to = user_settings?.visible_assign_to?.map(item => item.role)
+        if(role_names?.length > 0 && (!allowed_assign_to?.length || allowed_assign_to?.some(item => frappe.user.has_role(item)) || frappe.user.has_role("Administrator"))) {
             frm.page.add_menu_item(__("Assign To"), () => {
                 assign_UP(frm,role_names);
             });
