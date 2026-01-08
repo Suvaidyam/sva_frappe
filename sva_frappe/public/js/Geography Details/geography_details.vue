@@ -54,12 +54,12 @@
                             </div>
                         </div>
                         <div class="checkbox-container">
-                            <div class="checkbox-item" v-for="(state, index) in states" :key="index">
+                            <div class="checkbox-item" v-for="(state, index) in states" :key="state.id">
                                 <div class="form-check">
                                     <input type="checkbox" :id="`state-${state.id}`" :value="state.id"
                                         v-model="selectedStates" @change="updateDistricts" class="form-check-input"
                                         :disabled="read_only || isStatePreserved(state.id)">
-                                    <label class="form-check-label" :for="`state-${state.id}`">
+                                    <label class="form-check-label" :for="`state-${state.id}`" @click.prevent="toggleState(state.id)">
                                         {{ state.name }}
                                     </label>
                                 </div>
@@ -100,7 +100,7 @@
                                         <input type="checkbox" :id="`district-${district.id}`" :value="district.id"
                                             v-model="selectedDistricts" @change="updateBlocks" class="form-check-input"
                                             :disabled="read_only || isDistrictPreserved(district.id)">
-                                        <label class="form-check-label" :for="`district-${district.id}`">
+                                        <label class="form-check-label" :for="`district-${district.id}`" @click.prevent="toggleDistrict(district.id)">
                                             {{ district.name }}
                                         </label>
                                     </div>
@@ -145,7 +145,7 @@
                                         <input class="form-check-input" type="checkbox" :id="`block-${block.id}`"
                                             :value="block.id" v-model="selectedBlocks" @change="updateGramPanchayats"
                                             :disabled="read_only || isBlockPreserved(block.id)">
-                                        <label class="form-check-label" :for="`block-${block.id}`">
+                                        <label class="form-check-label" :for="`block-${block.id}`" @click.prevent="toggleBlock(block.id)">
                                             {{ block.name }}
                                         </label>
                                     </div>
@@ -191,7 +191,7 @@
                                         <input class="form-check-input" type="checkbox" :id="`gp-${gp.id}`"
                                             :value="gp.id" v-model="selectedGramPanchayats" @change="updateVillages"
                                             :disabled="read_only || isGramPanchayatPreserved(gp.id)">
-                                        <label class="form-check-label" :for="`gp-${gp.id}`">
+                                        <label class="form-check-label" :for="`gp-${gp.id}`" @click.prevent="toggleGramPanchayat(gp.id)">
                                             {{ gp.name }}
                                         </label>
                                     </div>
@@ -237,7 +237,7 @@
                                         <input class="form-check-input" type="checkbox" :id="`village-${village.id}`"
                                             :value="village.id" v-model="selectedVillages" 
                                             :disabled="read_only || isVillagePreserved(village.id)">
-                                        <label class="form-check-label" :for="`village-${village.id}`">
+                                        <label class="form-check-label" :for="`village-${village.id}`" @click.prevent="toggleVillage(village.id)">
                                             {{ village.name }}
                                         </label>
                                     </div>
@@ -1127,6 +1127,65 @@ const getSelectedGPsForStateRecursive = (stateId) => {
 };
 
 // ============ TOGGLE/SELECTION METHODS ============
+const toggleState = (stateId) => {
+    if (props.read_only || isStatePreserved(stateId)) return;
+    
+    const index = selectedStates.value.indexOf(stateId);
+    if (index > -1) {
+        selectedStates.value.splice(index, 1);
+    } else {
+        selectedStates.value.push(stateId);
+    }
+    updateDistricts();
+};
+
+const toggleDistrict = (districtId) => {
+    if (props.read_only || isDistrictPreserved(districtId)) return;
+    
+    const index = selectedDistricts.value.indexOf(districtId);
+    if (index > -1) {
+        selectedDistricts.value.splice(index, 1);
+    } else {
+        selectedDistricts.value.push(districtId);
+    }
+    updateBlocks();
+};
+
+const toggleBlock = (blockId) => {
+    if (props.read_only || isBlockPreserved(blockId)) return;
+    
+    const index = selectedBlocks.value.indexOf(blockId);
+    if (index > -1) {
+        selectedBlocks.value.splice(index, 1);
+    } else {
+        selectedBlocks.value.push(blockId);
+    }
+    updateGramPanchayats();
+};
+
+const toggleGramPanchayat = (gpId) => {
+    if (props.read_only || isGramPanchayatPreserved(gpId)) return;
+    
+    const index = selectedGramPanchayats.value.indexOf(gpId);
+    if (index > -1) {
+        selectedGramPanchayats.value.splice(index, 1);
+    } else {
+        selectedGramPanchayats.value.push(gpId);
+    }
+    updateVillages();
+};
+
+const toggleVillage = (villageId) => {
+    if (props.read_only || isVillagePreserved(villageId)) return;
+    
+    const index = selectedVillages.value.indexOf(villageId);
+    if (index > -1) {
+        selectedVillages.value.splice(index, 1);
+    } else {
+        selectedVillages.value.push(villageId);
+    }
+};
+
 const isAllDistrictsSelectedForState = (stateId) => {
     const stateDistricts = getDistrictsForState(stateId);
     return stateDistricts.length > 0 && stateDistricts.every(district =>
@@ -1737,6 +1796,7 @@ defineExpose({
     getDistrictState, getBlockState, getBlockDistrict, getGPState, getGPDistrict, getGPBlock,
 
     // Toggle/Selection methods  
+    toggleState, toggleDistrict, toggleBlock, toggleGramPanchayat, toggleVillage,
     isAllDistrictsSelectedForState, toggleAllDistrictsForState,
     isAllBlocksSelectedForDistrict, toggleAllBlocksForDistrict,
     isAllGramPanchayatsSelectedForBlock, toggleAllGramPanchayatsForBlock,
@@ -1849,6 +1909,7 @@ defineExpose({
     margin-top: 2px;
     margin-right: 8px;
     flex-shrink: 0;
+    cursor: pointer;
 }
 
 .form-check-label {
@@ -1867,6 +1928,10 @@ defineExpose({
 }
 
 /* Disabled state styling */
+.form-check-input:disabled {
+    cursor: not-allowed;
+}
+
 .form-check-input:disabled+.form-check-label {
     color: var(--text-muted);
     cursor: not-allowed;
