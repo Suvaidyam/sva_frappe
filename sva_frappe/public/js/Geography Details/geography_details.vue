@@ -58,7 +58,7 @@
                                 <div class="form-check">
                                     <input type="checkbox" :id="`state-${state.id}`" :value="state.id"
                                         v-model="selectedStates" @change="updateDistricts" class="form-check-input"
-                                        :disabled="read_only">
+                                        :disabled="read_only || isStatePreserved(state.id)">
                                     <label class="form-check-label" :for="`state-${state.id}`">
                                         {{ state.name }}
                                     </label>
@@ -99,7 +99,7 @@
                                     <div class="form-check">
                                         <input type="checkbox" :id="`district-${district.id}`" :value="district.id"
                                             v-model="selectedDistricts" @change="updateBlocks" class="form-check-input"
-                                            :disabled="read_only">
+                                            :disabled="read_only || isDistrictPreserved(district.id)">
                                         <label class="form-check-label" :for="`district-${district.id}`">
                                             {{ district.name }}
                                         </label>
@@ -144,7 +144,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" :id="`block-${block.id}`"
                                             :value="block.id" v-model="selectedBlocks" @change="updateGramPanchayats"
-                                            :disabled="read_only">
+                                            :disabled="read_only || isBlockPreserved(block.id)">
                                         <label class="form-check-label" :for="`block-${block.id}`">
                                             {{ block.name }}
                                         </label>
@@ -190,7 +190,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" :id="`gp-${gp.id}`"
                                             :value="gp.id" v-model="selectedGramPanchayats" @change="updateVillages"
-                                            :disabled="read_only">
+                                            :disabled="read_only || isGramPanchayatPreserved(gp.id)">
                                         <label class="form-check-label" :for="`gp-${gp.id}`">
                                             {{ gp.name }}
                                         </label>
@@ -235,7 +235,8 @@
                                 <div class="checkbox-item" v-for="village in getVillagesForGP(gpId)" :key="village.id">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" :id="`village-${village.id}`"
-                                            :value="village.id" v-model="selectedVillages" :disabled="read_only">
+                                            :value="village.id" v-model="selectedVillages" 
+                                            :disabled="read_only || isVillagePreserved(village.id)">
                                         <label class="form-check-label" :for="`village-${village.id}`">
                                             {{ village.name }}
                                         </label>
@@ -388,6 +389,14 @@ const props = defineProps({
     read_only: {
         type: Boolean,
         default: false
+    },
+    preserve_data: {
+        type: Object,
+        default: {}
+    },
+    existing_data: {
+        type: Array,
+        default: []
     }
 });
 
@@ -429,6 +438,32 @@ const totalSteps = computed(() => {
         case 'Village': return 5;
         default: return 2;
     }
+});
+
+const preserveData = computed(() => {
+    let preservedStates = new Set();
+    let preservedDistricts = new Set();
+    let preservedBlocks = new Set();
+    let preservedGramPanchayats = new Set();
+    let preservedVillages = new Set();
+
+    if (props.preserve_data?.geography_details) {
+        props.preserve_data.geography_details.forEach(detail => {
+            if (detail.state) preservedStates.add(detail.state);
+            if (detail.district) preservedDistricts.add(detail.district);
+            if (detail.block) preservedBlocks.add(detail.block);
+            if (detail.gram_panchayat) preservedGramPanchayats.add(detail.gram_panchayat);
+            if (detail.village) preservedVillages.add(detail.village);
+        });
+    }
+    
+    return {
+        states: preservedStates,
+        districts: preservedDistricts,
+        blocks: preservedBlocks,
+        gramPanchayats: preservedGramPanchayats,
+        villages: preservedVillages
+    };
 });
 
 const themeColors = computed(() => ({
@@ -477,58 +512,105 @@ const loadDefaultLowestHierarchy = async () => {
 };
 
 const loadExistingData = async () => {
-    if (isLoading.value) return;
-    await withLoading(async () => {
-        if (!props.frm.doctype || !props.frm.docname) return;
-
-        try {
-            const doc = await frappe.xcall('sva_frappe.api.get_geography_details', {
-                filters: JSON.stringify({
-                    document_type: props.frm.doctype,
-                    docname: props.frm.docname
-                })
-            });
-            if (doc) {
-                await resetData();
-                if (props.frm.doc[props.hierarchy_level_field]) {
-                    lowest_hierarchy.value = props.frm.doc[props.hierarchy_level_field];
-                }
-                
-                if (doc.geography_details) {
-                    const stateSet = new Set();
-                    const districtSet = new Set();
-                    const blockSet = new Set();
-                    const gpSet = new Set();
-                    const villageSet = new Set();
-                    doc.geography_details.forEach((detail) => {
-                        if (detail.state && detail.state.trim()) stateSet.add(detail.state);
-                        if (detail.district && detail.district.trim()) districtSet.add(detail.district);
-                        if (detail.block && detail.block.trim()) blockSet.add(detail.block);
-                        if (detail.gram_panchayat && detail.gram_panchayat.trim()) gpSet.add(detail.gram_panchayat);
-                        if (detail.village && detail.village.trim()) villageSet.add(detail.village);
-                    });
-                    selectedStates.value = Array.from(stateSet);
-                    selectedDistricts.value = Array.from(districtSet);
-                    selectedBlocks.value = Array.from(blockSet);
-                    selectedGramPanchayats.value = Array.from(gpSet);
-                    selectedVillages.value = Array.from(villageSet);
-
+    if (props.existing_data.length > 0) {
+        const stateSet = new Set();
+        const districtSet = new Set();
+        const blockSet = new Set();
+        const gpSet = new Set();
+        const villageSet = new Set();
+        props.existing_data.forEach((detail) => {
+            if (detail.state && detail.state.trim()) stateSet.add(detail.state);
+            if (detail.district && detail.district.trim()) districtSet.add(detail.district);
+            if (detail.block && detail.block.trim()) blockSet.add(detail.block);
+            if (detail.gram_panchayat && detail.gram_panchayat.trim()) gpSet.add(detail.gram_panchayat);
+            if (detail.village && detail.village.trim()) villageSet.add(detail.village);
+        });
+        selectedStates.value = Array.from(stateSet);
+        selectedDistricts.value = Array.from(districtSet);
+        selectedBlocks.value = Array.from(blockSet);
+        selectedGramPanchayats.value = Array.from(gpSet);
+        selectedVillages.value = Array.from(villageSet);
+        
+        await loadStates();
+        await updateAvailableItems();
+        expandTreeBasedOnStep();
+        return;
+    }else{
+        if (isLoading.value) return;
+        await withLoading(async () => {
+            if (!props.frm.doctype || !props.frm.docname) return;
+    
+            try {
+                const doc = await frappe.xcall('sva_frappe.api.get_geography_details', {
+                    filters: JSON.stringify({
+                        document_type: props.frm.doctype,
+                        docname: props.frm.docname
+                    })
+                });
+                if (doc) {
+                    await resetData();
+                    if (props.frm.doc[props.hierarchy_level_field]) {
+                        lowest_hierarchy.value = props.frm.doc[props.hierarchy_level_field];
+                    }
+                    
+                    if (doc.geography_details) {
+                        const stateSet = new Set();
+                        const districtSet = new Set();
+                        const blockSet = new Set();
+                        const gpSet = new Set();
+                        const villageSet = new Set();
+                        doc.geography_details.forEach((detail) => {
+                            if (detail.state && detail.state.trim()) stateSet.add(detail.state);
+                            if (detail.district && detail.district.trim()) districtSet.add(detail.district);
+                            if (detail.block && detail.block.trim()) blockSet.add(detail.block);
+                            if (detail.gram_panchayat && detail.gram_panchayat.trim()) gpSet.add(detail.gram_panchayat);
+                            if (detail.village && detail.village.trim()) villageSet.add(detail.village);
+                        });
+                        selectedStates.value = Array.from(stateSet);
+                        selectedDistricts.value = Array.from(districtSet);
+                        selectedBlocks.value = Array.from(blockSet);
+                        selectedGramPanchayats.value = Array.from(gpSet);
+                        selectedVillages.value = Array.from(villageSet);
+    
+                        await loadStates();
+                        await updateAvailableItems();
+                        expandTreeBasedOnStep();
+                    }
+                } else {
+                    // Load states if no geography details exist
                     await loadStates();
-                    await updateAvailableItems();
-                    expandTreeBasedOnStep();
                 }
-            }else{
-                // load state if the geography details have no record
-                await loadStates();
+    
+                // Ensure preserved items are selected
+                if (props.preserve_data?.geography_details) {
+                    props.preserve_data.geography_details.forEach((detail) => {
+                        if (detail.state && !selectedStates.value.includes(detail.state)) {
+                            selectedStates.value.push(detail.state);
+                        }
+                        if (detail.district && !selectedDistricts.value.includes(detail.district)) {
+                            selectedDistricts.value.push(detail.district);
+                        }
+                        if (detail.block && !selectedBlocks.value.includes(detail.block)) {
+                            selectedBlocks.value.push(detail.block);
+                        }
+                        if (detail.gram_panchayat && !selectedGramPanchayats.value.includes(detail.gram_panchayat)) {
+                            selectedGramPanchayats.value.push(detail.gram_panchayat);
+                        }
+                        if (detail.village && !selectedVillages.value.includes(detail.village)) {
+                            selectedVillages.value.push(detail.village);
+                        }
+                    });
+                    await updateAvailableItems();
+                }
+            } catch (error) {
+                console.error('Error loading existing data:', error);
+                frappe.show_alert({
+                    message: __('Error loading existing data'),
+                    indicator: 'red'
+                });
             }
-        } catch (error) {
-            console.error('Error loading existing data:', error);
-            frappe.show_alert({
-                message: __('Error loading existing data'),
-                indicator: 'red'
-            });
-        }
-    });
+        });
+    }
 };
 
 const loadStates = async () => {
@@ -1314,6 +1396,13 @@ const getLightColor = (color) => {
     return `rgb(${lightR}, ${lightG}, ${lightB})`;
 };
 
+// ============ PRESERVE DATA HELPER METHODS ============
+const isStatePreserved = (stateId) => preserveData.value.states.has(stateId);
+const isDistrictPreserved = (districtId) => preserveData.value.districts.has(districtId);
+const isBlockPreserved = (blockId) => preserveData.value.blocks.has(blockId);
+const isGramPanchayatPreserved = (gpId) => preserveData.value.gramPanchayats.has(gpId);
+const isVillagePreserved = (villageId) => preserveData.value.villages.has(villageId);
+
 // ============ GETTER METHODS FOR RELATED DATA ============
 const getDistrictState = (districtId) => {
     const district = availableDistricts.value.find(d => d.id === districtId);
@@ -1634,6 +1723,10 @@ defineExpose({
     loadDefaultLowestHierarchy, loadExistingData, loadStates,
     updateDistricts, updateBlocks, updateGramPanchayats, updateVillages,
     expandTreeBasedOnStep, goNext, goBack, saveSelection,
+
+    // Preserve data helper methods
+    isStatePreserved, isDistrictPreserved, isBlockPreserved, 
+    isGramPanchayatPreserved, isVillagePreserved,
 
     // Getter methods
     getHierarchyDisplayName, getStateName, getDistrictName, getBlockName, getGramPanchayatName,

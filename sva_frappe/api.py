@@ -212,3 +212,35 @@ def manage_user_permissions(parent, new_users, old_users, allow_doctype):
             up.allow = allow_doctype
             up.for_value = parent
             up.insert(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def get_geography_details_for_modify(document_type, docname):
+    """Get geography details for modification with preserve data"""
+    try:
+        filters = {
+            'document_type': document_type,
+            'docname': docname
+        }
+        exists = frappe.db.exists('Geography Details', filters)
+        if exists:
+            doc = frappe.get_cached_doc('Geography Details', exists)
+            return {
+                "status": "success",
+                "data": doc.as_dict(),
+                "preserve_data": {
+                    "geography_details": doc.geography_details
+                }
+            }
+        else:
+            return {
+                "status": "success",
+                "data": None,
+                "preserve_data": {}
+            }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error in get_geography_details_for_modify")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
