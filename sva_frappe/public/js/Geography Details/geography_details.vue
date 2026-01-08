@@ -48,7 +48,7 @@
                             <div class="form-check">
                                 <input type="checkbox" :id="`select-all-states`" :checked="allStatesSelected"
                                     @change="toggleAllStates" class="form-check-input" :disabled="read_only">
-                                <label class="form-check-label" :for="`select-all-states`">
+                                <label class="form-check-label" :for="`select-all-states`" @click.prevent="toggleAllStates">
                                     Select All {{ __("States") }}
                                 </label>
                             </div>
@@ -73,7 +73,7 @@
                             <div class="form-check">
                                 <input type="checkbox" :id="`select-all-districts`" :checked="allDistrictsSelected"
                                     @change="toggleAllDistricts" class="form-check-input" :disabled="read_only">
-                                <label class="form-check-label" :for="`select-all-districts`">
+                                <label class="form-check-label" :for="`select-all-districts`" @click.prevent="toggleAllDistricts">
                                     Select All {{ __("Districts") }}
                                 </label>
                             </div>
@@ -88,7 +88,7 @@
                                         :checked="isAllDistrictsSelectedForState(stateId)"
                                         @change="toggleAllDistrictsForState(stateId)" class="form-check-input"
                                         :disabled="read_only">
-                                    <label class="form-check-label" :for="`select-all-districts-${stateId}`">
+                                    <label class="form-check-label" :for="`select-all-districts-${stateId}`" @click.prevent="toggleAllDistrictsForState(stateId)">
                                         Select All {{ __("Districts") }}
                                     </label>
                                 </div>
@@ -1133,6 +1133,14 @@ const toggleState = (stateId) => {
     const index = selectedStates.value.indexOf(stateId);
     if (index > -1) {
         selectedStates.value.splice(index, 1);
+        // Remove related non-preserved items
+        const stateDistricts = getDistrictsForState(stateId);
+        stateDistricts.forEach(district => {
+            if (!isDistrictPreserved(district.id)) {
+                const districtIndex = selectedDistricts.value.indexOf(district.id);
+                if (districtIndex > -1) selectedDistricts.value.splice(districtIndex, 1);
+            }
+        });
     } else {
         selectedStates.value.push(stateId);
     }
@@ -1301,11 +1309,21 @@ const toggleAllVillagesForGP = (gpId) => {
 
 const toggleAllStates = () => {
     if (allStatesSelected.value) {
-        selectedStates.value = [];
-        selectedDistricts.value = [];
-        selectedBlocks.value = [];
-        selectedGramPanchayats.value = [];
-        selectedVillages.value = [];
+        // Keep preserved states when unselecting all
+        const preservedStateIds = Array.from(preserveData.value.states);
+        selectedStates.value = preservedStateIds;
+        selectedDistricts.value = selectedDistricts.value.filter(districtId => 
+            preserveData.value.districts.has(districtId)
+        );
+        selectedBlocks.value = selectedBlocks.value.filter(blockId => 
+            preserveData.value.blocks.has(blockId)
+        );
+        selectedGramPanchayats.value = selectedGramPanchayats.value.filter(gpId => 
+            preserveData.value.gramPanchayats.has(gpId)
+        );
+        selectedVillages.value = selectedVillages.value.filter(villageId => 
+            preserveData.value.villages.has(villageId)
+        );
     } else {
         selectedStates.value = states.value.map(state => state.id);
     }
@@ -1314,10 +1332,17 @@ const toggleAllStates = () => {
 
 const toggleAllDistricts = () => {
     if (allDistrictsSelected.value) {
-        selectedDistricts.value = [];
-        selectedBlocks.value = [];
-        selectedGramPanchayats.value = [];
-        selectedVillages.value = [];
+        const preservedDistrictIds = Array.from(preserveData.value.districts);
+        selectedDistricts.value = preservedDistrictIds;
+        selectedBlocks.value = selectedBlocks.value.filter(blockId => 
+            preserveData.value.blocks.has(blockId)
+        );
+        selectedGramPanchayats.value = selectedGramPanchayats.value.filter(gpId => 
+            preserveData.value.gramPanchayats.has(gpId)
+        );
+        selectedVillages.value = selectedVillages.value.filter(villageId => 
+            preserveData.value.villages.has(villageId)
+        );
     } else {
         selectedDistricts.value = availableDistricts.value.map(district => district.id);
     }
