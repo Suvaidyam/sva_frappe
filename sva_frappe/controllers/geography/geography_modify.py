@@ -4,12 +4,13 @@ from frappe_theme.utils import get_state_closure_by_type
 
 def check_duplicate_open_request(doc):
 	if doc.is_new():
+		negative_closure = get_state_closure_by_type("Geography Details Modify", "Negative")
 		positive_closure = get_state_closure_by_type("Geography Details Modify")
 		
 		existing_request = frappe.db.exists("Geography Details Modify", {
 			"document_type": doc.document_type,
 			"docname": doc.docname,
-			"workflow_state": ["!=", positive_closure],
+			"workflow_state": ["not in", [negative_closure, positive_closure]],
 			"name": ["!=", doc.name]
 		})
 		
