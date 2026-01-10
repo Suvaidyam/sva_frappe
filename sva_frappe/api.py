@@ -142,3 +142,105 @@ def get_geography_details(filters):
         return doc.as_dict()
     else:
         return None
+
+@frappe.whitelist()
+def get_user_settings():
+    user_settings = frappe.get_cached_doc("User Settings")
+    return user_settings
+
+@frappe.whitelist()
+def get_assigned_user_permission(allow, for_value):
+    existing = frappe.get_all("User Permission", filters={"allow": allow, "for_value": for_value},fields=["user"])
+    result = []
+    if existing:
+        for user in existing:
+            user_data = frappe.get_cached_value("SVA User", {"email": user.user}, ["email","role_profile","name"],as_dict=True)
+            if user_data:
+                result.append({
+                    "user": user_data.name,
+                    "role": user_data.role_profile
+                })
+    return result
+
+@frappe.whitelist()
+def set_assigned_user_permission(parent, assigned_roles, allow_doctype):
+    if isinstance(assigned_roles, str):
+        assigned_roles = json.loads(assigned_roles)
+    old_users = frappe.get_all("User Permission", filters={"allow": allow_doctype, "for_value": parent}, pluck="user")
+    old_users = {row for row in old_users}
+    new_users = set()
+
+    for role in assigned_roles:
+        user_email = frappe.get_cached_value("SVA User", role.get("user"), "email")
+        new_users.add(user_email)
+    manage_user_permissions(parent, new_users, old_users, allow_doctype)
+    return True
+
+
+def manage_user_permissions(parent, new_users, old_users, allow_doctype):
+    """
+    Synchronise User Permission Doc with child table.
+    """
+
+    removed_users = old_users - new_users
+    for user in removed_users:
+        perms = frappe.get_all(
+            "User Permission",
+            filters={
+                "user": user,
+                "allow": allow_doctype,
+                "for_value": parent
+            }
+        )
+        for p in perms:
+            frappe.delete_doc("User Permission", p.name, force=True)
+
+    for user in new_users:
+        existing = frappe.get_all(
+            "User Permission",
+            filters={
+                "user": user,
+                "allow": allow_doctype,
+                "for_value": parent
+            },
+            limit=1
+        )
+
+        if not existing:
+            up = frappe.new_doc("User Permission")
+            up.user = user
+            up.allow = allow_doctype
+            up.for_value = parent
+            up.insert(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def get_geography_details_for_modify(document_type, docname):
+    """Get geography details for modification with preserve data"""
+    try:
+        filters = {
+            'document_type': document_type,
+            'docname': docname
+        }
+        exists = frappe.db.exists('Geography Details', filters)
+        if exists:
+            doc = frappe.get_cached_doc('Geography Details', exists)
+            return {
+                "status": "success",
+                "data": doc.as_dict(),
+                "preserve_data": {
+                    "geography_details": doc.geography_details
+                }
+            }
+        else:
+            return {
+                "status": "success",
+                "data": None,
+                "preserve_data": {}
+            }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error in get_geography_details_for_modify")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
