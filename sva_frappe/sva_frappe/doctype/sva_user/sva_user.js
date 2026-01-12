@@ -99,20 +99,21 @@ function extend_options_length(frm, fields) {
 	});
 }
 function hide_advance_search(frm, list) {
-	for (item of list) {
+	for (let item of list) {
 		frm.set_df_property(item, "only_select", true);
 	}
 }
 
 frappe.ui.form.on("SVA User", {
 	async refresh(frm) {
-
 		if (!frm.is_new()) {
-			frm.add_custom_button(__('Impersonate'), () => {
+			frm.add_custom_button(__("Impersonate"), () => {
 				if (frm.doc.restrict_ip) {
 					frappe.msgprint({
-						title: __('IP restriction is enabled'),
-						message: __("There's IP restriction for this user, you cannot impersonate as this user."),
+						title: __("IP restriction is enabled"),
+						message: __(
+							"There's IP restriction for this user, you cannot impersonate as this user."
+						),
 					});
 					return;
 				}
@@ -120,26 +121,25 @@ frappe.ui.form.on("SVA User", {
 				frappe.prompt(
 					[
 						{
-							fieldname: 'reason',
-							fieldtype: 'Small Text',
-							label: __('Reason for impersonating'),
-							description: __('Note: This will be shared with the user.'),
+							fieldname: "reason",
+							fieldtype: "Small Text",
+							label: __("Reason for impersonating"),
+							description: __("Note: This will be shared with the user."),
 							reqd: 1,
 						},
 					],
 					(values) => {
-						frappe.xcall(
-							'frappe.core.doctype.user.user.impersonate',
-							{
+						frappe
+							.xcall("frappe.core.doctype.user.user.impersonate", {
 								user: frm.doc.email,
 								reason: values.reason,
-							}
-						).then(() => {
-							window.location.reload();
-						});
+							})
+							.then(() => {
+								window.location.reload();
+							});
 					},
-					__('Impersonate as {0}', [frm.doc.name]),
-					__('Confirm')
+					__("Impersonate as {0}", [frm.doc.name]),
+					__("Confirm")
 				);
 			});
 			frm.add_custom_button(
