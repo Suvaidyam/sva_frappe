@@ -1,36 +1,39 @@
 import frappe
 from frappe import _
-from frappe.utils import sha256_hash
 from frappe.rate_limiter import rate_limit
+from frappe.utils import sha256_hash
 
 
 @frappe.whitelist(methods=["POST"])
 def impersonate(user: str, reason: str):
-    allowed_roles = ["Administrator", "Impersonate User"]
+	if user == "Administrator":
+		frappe.throw(_("Impersonation of 'Administrator' is not allowed"), frappe.PermissionError)
 
-    if not any(role in frappe.get_roles() for role in allowed_roles):
-        frappe.throw(_("You are not allowed to impersonate users"), frappe.PermissionError)
+	allowed_roles = ["Administrator", "Impersonate User"]
 
-    impersonator = frappe.session.user
+	if not any(role in frappe.get_roles() for role in allowed_roles):
+		frappe.throw(_("You are not allowed to impersonate users"), frappe.PermissionError)
 
-    # Activity Log
-    frappe.get_doc({
-        "doctype": "Activity Log",
-        "user": user,
-        "status": "Success",
-        "subject": _("User {0} impersonated as {1}").format(impersonator, user),
-        "operation": "Impersonate",
-    }).insert(ignore_permissions=True, ignore_links=True)
+	impersonator = frappe.session.user
 
-    # Notification
-    notification = frappe.new_doc("Notification Log")
-    notification.for_user = user
-    notification.from_user = impersonator
-    notification.subject = _(
-        "{0} just impersonated as you. Reason: {1}"
-    ).format(impersonator, reason)
-    notification.type = "Alert"
-    notification.insert(ignore_permissions=True)
+	# Activity Log
+	frappe.get_doc(
+		{
+			"doctype": "Activity Log",
+			"user": user,
+			"status": "Success",
+			"subject": _("User {0} impersonated as {1}").format(impersonator, user),
+			"operation": "Impersonate",
+		}
+	).insert(ignore_permissions=True, ignore_links=True)
 
-    # Impersonate
-    frappe.local.login_manager.impersonate(user)
+	# Notification
+	notification = frappe.new_doc("Notification Log")
+	notification.for_user = user
+	notification.from_user = impersonator
+	notification.subject = _("{0} just impersonated as you. Reason: {1}").format(impersonator, reason)
+	notification.type = "Alert"
+	notification.insert(ignore_permissions=True)
+
+	# Impersonate
+	frappe.local.login_manager.impersonate(user)

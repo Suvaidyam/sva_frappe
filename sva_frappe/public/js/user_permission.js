@@ -1,51 +1,51 @@
 async function get_all_roles_permissions(role_profile) {
-    let roles = await frappe.call({
-        method: 'sva_frappe.apis.user_permissions.get_roles_and_permissions_by_profile',
-        args: {
-            role_profile: role_profile
-        },
-    });
-    return roles.message;
+	let roles = await frappe.call({
+		method: "sva_frappe.apis.user_permissions.get_roles_and_permissions_by_profile",
+		args: {
+			role_profile: role_profile,
+		},
+	});
+	return roles.message;
 }
 
 const role_and_permission_popup = async (frm) => {
-    try {
-        const roles = await get_all_roles_permissions(frm.doc.role_profile);
-        if (!roles || roles.message) {
-            frm.fields_dict.module_permissions.$wrapper.html(`
+	try {
+		const roles = await get_all_roles_permissions(frm.doc.role_profile);
+		if (!roles || roles.message) {
+			frm.fields_dict.module_permissions.$wrapper.html(`
                 <div class="p-4 text-center text-muted">
-                    ${roles?.message || 'No permissions found'}
+                    ${roles?.message || "No permissions found"}
                 </div>
             `);
-            return;
-        }
+			return;
+		}
 
-        // Define all possible permissions
-        const permissions = [
-            "read",
-            "write",
-            "create",
-            "delete",
-            "submit",
-            "cancel",
-            "amend",
-            "email",
-            "export",
-            "import",
-            "print",
-            "report",
-            "select",
-            "share"
-        ];
-        const headerRow = `
+		// Define all possible permissions
+		const permissions = [
+			"read",
+			"write",
+			"create",
+			"delete",
+			"submit",
+			"cancel",
+			"amend",
+			"email",
+			"export",
+			"import",
+			"print",
+			"report",
+			"select",
+			"share",
+		];
+		const headerRow = `
             <tr>
                 <th class="text-left" style="min-width: 200px;">Document Type</th>
                 <th class="text-left">Role</th>
                 <th>Level</th>
-                ${permissions.map(perm => `<th>${perm}</th>`).join('')}
+                ${permissions.map((perm) => `<th>${perm}</th>`).join("")}
             </tr>
         `;
-        /*
+		/*
         // Group permissions by document type
         const groupedPermissions = {};
         roles.roles_and_permissions.forEach(item => {
@@ -98,18 +98,22 @@ const role_and_permission_popup = async (frm) => {
             }).join('');
         }).join('');
         */
-        let tableRows = roles?.roles_and_permissions?.map(item => {
-            return `
+		let tableRows = roles?.roles_and_permissions
+			?.map((item) => {
+				return `
                 <tr>
                     <td class="text-left">${item.parent}</td>
                      <td class="text-left roles-cell">${item.role}</td>
                     <td>${item.permlevel}</td>
-                    ${permissions.map(perm => `<td>${item[perm.toLowerCase()] ? '✓' : '-'}</td>`).join('')}
+                    ${permissions
+						.map((perm) => `<td>${item[perm.toLowerCase()] ? "✓" : "-"}</td>`)
+						.join("")}
                 </tr>
             `;
-        }).join('');
-        // Render the complete table
-        frm.fields_dict.module_permissions.$wrapper.html(`
+			})
+			.join("");
+		// Render the complete table
+		frm.fields_dict.module_permissions.$wrapper.html(`
             <div class="permission-table-container">
                 <style>
                     .permission-table-container {
@@ -158,12 +162,12 @@ const role_and_permission_popup = async (frm) => {
                 </table>
             </div>
         `);
-    } catch (error) {
-        console.error('Error loading permissions:', error);
-        frm.fields_dict.module_permissions.$wrapper.html(`
+	} catch (error) {
+		console.error("Error loading permissions:", error);
+		frm.fields_dict.module_permissions.$wrapper.html(`
             <div class="p-4 text-center text-muted">
                 Error loading permissions. Please try again.
             </div>
         `);
-    }
+	}
 };
