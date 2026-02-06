@@ -83,14 +83,14 @@ class SVAUser(Document):
 
 	def on_update(self):
 		# check user verified or not
-		exists = frappe.db.exists("Email Unsubscribe", {"email": self.email})
-		if not self.is_verified and not exists:
-			new_doc = frappe.new_doc("Email Unsubscribe")
-			new_doc.email = self.email
-			new_doc.global_unsubscribe = 1
-			new_doc.insert(ignore_permissions=True)
-		elif exists and self.is_verified:
-			frappe.delete_doc("Email Unsubscribe", exists, ignore_permissions=True)
+		# exists = frappe.db.exists("Email Unsubscribe", {"email": self.email})
+		# if not self.is_verified and not exists:
+		# 	new_doc = frappe.new_doc("Email Unsubscribe")
+		# 	new_doc.email = self.email
+		# 	new_doc.global_unsubscribe = 1
+		# 	new_doc.insert(ignore_permissions=True)
+		# elif exists and self.is_verified:
+		# 	frappe.delete_doc("Email Unsubscribe", exists, ignore_permissions=True)
 
 		# Check if the user is already created
 		if not self.get("localname"):
