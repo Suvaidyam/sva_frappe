@@ -4,15 +4,28 @@ app_publisher = "suvaidyam"
 app_description = "customize frappe app for extra features"
 app_email = "tech@suvaidyam.com"
 app_license = "mit"
-# required_apps = []
+required_apps = ["Suvaidyam/frappe_theme"]
 
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/sva_frappe/css/sva_frappe.css"
-app_include_js = "/assets/sva_frappe/js/sva_frappe.js"
-
+app_include_js = [
+	"/assets/sva_frappe/js/sva_frappe.js",
+	"/assets/sva_frappe/js/user_permission.js",
+	"/assets/sva_frappe/js/globle.js",
+]
+# fixtures = [
+# #     'State',
+# #     'District',
+#         {
+#             "dt":"Role",
+#             "filters": [
+#                 ["role_name", "in", ["Impersonate User"]]
+#             ]
+#         }
+# ]
 # include js, css files in header of web template
 # web_include_css = "/assets/sva_frappe/css/sva_frappe.css"
 web_include_js = "/assets/sva_frappe/js/sva_frappe.js"
@@ -29,19 +42,19 @@ web_include_js = "/assets/sva_frappe/js/sva_frappe.js"
 
 # include js in doctype views
 doctype_js = {
-    "Zone" : "public/js/list_utils.js",
-    "State" : "public/js/sva_frappe.js",
-    "District" : "public/js/sva_frappe.js",
-    "Block" : "public/js/sva_frappe.js",
-    "Village" : "public/js/sva_frappe.js"
-    }
+	"Zone": "public/js/list_utils.js",
+	"State": "public/js/sva_frappe.js",
+	"District": "public/js/sva_frappe.js",
+	"Block": "public/js/sva_frappe.js",
+	"Village": "public/js/sva_frappe.js",
+}
 doctype_list_js = {
-    "Zone" : "public/js/list_utils.js",
-    "State" : "public/js/list_utils.js",
-    "District" : "public/js/list_utils.js",
-    "Block" : "public/js/list_utils.js",
-    "SVA User" : "public/js/list_utils.js",
-    "Village" : "public/js/list_utils.js"
+	"Zone": "public/js/list_utils.js",
+	"State": "public/js/list_utils.js",
+	"District": "public/js/list_utils.js",
+	"Block": "public/js/list_utils.js",
+	"SVA User": "public/js/list_utils.js",
+	"Village": "public/js/list_utils.js",
 }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -115,9 +128,7 @@ doctype_list_js = {
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
+permission_query_conditions = {"*": "sva_frappe.controllers.permission.get_permission_query_conditions"}
 #
 # has_permission = {
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
@@ -135,13 +146,12 @@ doctype_list_js = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"User Permission": {
+		"on_update": "sva_frappe.sva_frappe.doctype.sva_user.sva_user.on_user_permission_change",
+		"on_trash": "sva_frappe.sva_frappe.doctype.sva_user.sva_user.on_user_permission_change",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -172,9 +182,10 @@ doctype_list_js = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "sva_frappe.event.get_events"
-# }
+override_whitelisted_methods = {
+	# "frappe.desk.doctype.event.event.get_events": "sva_frappe.event.get_events"
+	"frappe.core.doctype.user.user.impersonate": "sva_frappe.overrides.impersonate.impersonate"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -239,4 +250,3 @@ doctype_list_js = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-

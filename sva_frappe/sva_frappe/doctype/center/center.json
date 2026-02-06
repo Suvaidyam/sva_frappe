@@ -1,25 +1,71 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:center_location_code",
  "creation": "2024-09-07 18:52:34.960349",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "center_location_name"
+  "center_location_name",
+  "center_location_code",
+  "zone",
+  "state",
+  "district",
+  "status"
  ],
  "fields": [
   {
    "fieldname": "center_location_name",
    "fieldtype": "Data",
-   "label": "Center location name"
+   "in_list_view": 1,
+   "label": "Center Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "center_location_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Center Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Link",
+   "label": "Zone",
+   "options": "Zone"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "State",
+   "options": "State",
+   "reqd": 1
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "District",
+   "options": "District",
+   "reqd": 1
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nActive\nInactive"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-07 18:53:11.042769",
+ "modified": "2024-10-28 10:51:41.418426",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "Center",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -35,7 +81,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "center_location_name"
 }

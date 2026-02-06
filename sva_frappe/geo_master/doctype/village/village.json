@@ -2,15 +2,17 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "format:{village_code}",
+ "autoname": "prompt",
  "creation": "2024-05-28 10:29:30.340088",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "zone",
+  "country",
   "state",
   "district",
   "block",
+  "gram_panchayat",
   "village_name",
   "village_code",
   "status"
@@ -69,15 +71,29 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "\nActive\nInactive"
+  },
+  {
+   "fieldname": "gram_panchayat",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Gram Panchayat",
+   "options": "Gram Panchayat"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-29 20:42:37.599190",
+ "modified": "2025-12-05 01:26:09.425200",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Village",
- "naming_rule": "Expression",
+ "naming_rule": "Set by user",
  "owner": "Administrator",
  "permissions": [
   {
@@ -94,6 +110,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",

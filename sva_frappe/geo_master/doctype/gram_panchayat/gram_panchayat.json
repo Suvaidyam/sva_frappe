@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "autoname": "prompt",
+ "creation": "2024-11-05 22:00:35.304361",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "gram_pachayat_name",
+  "gram_panchayat_code",
+  "country",
+  "state",
+  "district",
+  "block",
+  "status",
+  "villages_tab",
+  "villages"
+ ],
+ "fields": [
+  {
+   "fieldname": "gram_pachayat_name",
+   "fieldtype": "Data",
+   "label": "Gram Pachayat Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "State",
+   "options": "State",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "District",
+   "options": "District",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "block",
+   "fieldtype": "Link",
+   "label": "Block",
+   "options": "Block",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "gram_panchayat_code",
+   "fieldtype": "Data",
+   "label": "Gram Panchayat Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive",
+   "reqd": 1
+  },
+  {
+   "fieldname": "villages_tab",
+   "fieldtype": "Tab Break",
+   "label": "Villages"
+  },
+  {
+   "fieldname": "villages",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "hidden": 1,
+   "link_doctype": "Village",
+   "link_fieldname": "gram_panchayat"
+  }
+ ],
+ "modified": "2025-12-05 01:25:56.717638",
+ "modified_by": "Administrator",
+ "module": "Geo Master",
+ "name": "Gram Panchayat",
+ "naming_rule": "Set by user",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "gram_pachayat_name"
+}
