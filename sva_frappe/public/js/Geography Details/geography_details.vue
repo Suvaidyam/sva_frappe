@@ -2011,7 +2011,7 @@ const validateCurrentStepSelection = () => {
 						? `Please select ${__("Districts").toLowerCase()} in ${
 								statesWithoutDistricts[0]
 						  }.`
-						: `Please select ${__("Districts").toLowerCase()} all ${__(
+						: `Please select ${__("Districts").toLowerCase()} for all ${__(
 								"States"
 						  ).toLowerCase()}.`;
 			}
@@ -2039,7 +2039,7 @@ const validateCurrentStepSelection = () => {
 						? `Please select ${__("Blocks").toLowerCase()} in ${
 								districtsWithoutBlocks[0]
 						  }.`
-						: `Please select ${__("Blocks").toLowerCase()} all ${__(
+						: `Please select ${__("Blocks").toLowerCase()} for all ${__(
 								"Districts"
 						  ).toLowerCase()}.`;
 			}
@@ -2067,7 +2067,7 @@ const validateCurrentStepSelection = () => {
 						? `Please select ${__("Gram Panchayats").toLowerCase()} in ${
 								blocksWithoutGPs[0]
 						  }.`
-						: `Please select ${__("Gram Panchayats").toLowerCase()} all ${__(
+						: `Please select ${__("Gram Panchayats").toLowerCase()} for all ${__(
 								"Blocks"
 						  ).toLowerCase()}.`;
 			}
@@ -2095,7 +2095,7 @@ const validateCurrentStepSelection = () => {
 						? `Please select ${__("Villages").toLowerCase()} in ${
 								gpsWithoutVillages[0]
 						  }.`
-						: `Please select ${__("Villages").toLowerCase()} all ${__(
+						: `Please select ${__("Villages").toLowerCase()} for all ${__(
 								"Gram Panchayats"
 						  ).toLowerCase()}.`;
 			}
@@ -2133,7 +2133,7 @@ const validateAllLevelsForSave = () => {
 					? `Please select ${__("Districts").toLowerCase()} in ${
 							statesWithoutDistricts[0]
 					  }.`
-					: `Please select ${__("Districts").toLowerCase()} all ${__(
+					: `Please select ${__("Districts").toLowerCase()} for all ${__(
 							"States"
 					  ).toLowerCase()}.`;
 			return validation;
@@ -2161,7 +2161,7 @@ const validateAllLevelsForSave = () => {
 					? `Please select ${__("Blocks").toLowerCase()} in ${
 							districtsWithoutBlocks[0]
 					  }.`
-					: `Please select ${__("Blocks").toLowerCase()} all ${__(
+					: `Please select ${__("Blocks").toLowerCase()} for all ${__(
 							"Districts"
 					  ).toLowerCase()}.`;
 			return validation;
@@ -2189,7 +2189,7 @@ const validateAllLevelsForSave = () => {
 					? `Please select ${__("Gram Panchayats").toLowerCase()} in ${
 							blocksWithoutGPs[0]
 					  }.`
-					: `Please select ${__("Gram Panchayats").toLowerCase()} all ${__(
+					: `Please select ${__("Gram Panchayats").toLowerCase()} for all ${__(
 							"Blocks"
 					  ).toLowerCase()}.`;
 			return validation;
@@ -2215,7 +2215,7 @@ const validateAllLevelsForSave = () => {
 			validation.message =
 				gpsWithoutVillages.length === 1
 					? `Please select ${__("Villages").toLowerCase()} in ${gpsWithoutVillages[0]}.`
-					: `Please select ${__("Villages").toLowerCase()} all ${__(
+					: `Please select ${__("Villages").toLowerCase()} for all ${__(
 							"Gram Panchayats"
 					  ).toLowerCase()}.`;
 			return validation;
