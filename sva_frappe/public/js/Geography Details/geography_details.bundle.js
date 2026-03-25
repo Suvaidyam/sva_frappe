@@ -16,6 +16,7 @@ class GeographyDetails {
 	}) {
 		this.$wrapper = $(wrapper);
 		this.app = null;
+		this.vm = null;
 		this.hierarchy_level_field = hierarchy_level_field;
 		this.geography_details_field = geography_details_field;
 		this.geography_title = geography_title;
@@ -68,7 +69,7 @@ class GeographyDetails {
 
 		// mount the app only if wrapper exists
 		if (this.$wrapper && this.$wrapper.get(0)) {
-			this.app.mount(this.$wrapper.get(0));
+			this.vm = this.app.mount(this.$wrapper.get(0));
 		} else {
 			console.warn("Wrapper element not found for mounting Vue app");
 		}
