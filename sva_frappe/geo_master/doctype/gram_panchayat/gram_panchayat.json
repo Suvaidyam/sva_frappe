@@ -1,6 +1,6 @@
 {
  "actions": [],
- "autoname": "prompt",
+ "autoname": "field:gram_panchayat_code",
  "creation": "2024-11-05 22:00:35.304361",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -88,11 +88,11 @@
    "link_fieldname": "gram_panchayat"
   }
  ],
- "modified": "2025-12-05 01:25:56.717638",
+ "modified": "2026-04-15 15:27:14.320129",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Gram Panchayat",
- "naming_rule": "Set by user",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
