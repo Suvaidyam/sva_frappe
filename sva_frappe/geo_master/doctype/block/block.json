@@ -40,8 +40,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Block Name",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "block_code",
@@ -104,7 +103,7 @@
    "link_fieldname": "block"
   }
  ],
- "modified": "2026-04-20 16:13:35.539473",
+ "modified": "2026-04-20 17:49:27.217326",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Block",
