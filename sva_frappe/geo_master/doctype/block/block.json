@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
- "autoname": "field:block_name",
+ "autoname": "field:block_code",
  "creation": "2024-05-28 10:25:46.287529",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -104,7 +104,7 @@
    "link_fieldname": "block"
   }
  ],
- "modified": "2026-04-15 15:26:43.680079",
+ "modified": "2026-04-20 16:13:35.539473",
  "modified_by": "Administrator",
  "module": "Geo Master",
  "name": "Block",
