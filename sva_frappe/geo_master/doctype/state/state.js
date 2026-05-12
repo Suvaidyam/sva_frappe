@@ -8,7 +8,6 @@ frappe.ui.form.on("State", {
 		if (frm.doc.state_code != undefined && frm.doc.__unsaved != 1) {
 			frm.set_df_property("state_code", "read_only", 1);
 		}
-		depended_dropdown(frm, frm.doc.zone, "state", "zone");
 	},
 	after_save: function (frm) {
 		if (frm.doc.state_code != undefined && frm.doc.__unsaved != 1) {
