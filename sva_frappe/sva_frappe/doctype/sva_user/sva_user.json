@@ -180,7 +180,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-04 07:16:52.949396",
+ "modified": "2026-02-20 11:56:34.010370",
  "modified_by": "Administrator",
  "module": "Sva Frappe",
  "name": "SVA User",
@@ -204,5 +204,6 @@
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "title_field": "full_name"
+ "title_field": "full_name",
+ "translated_doctype": 1
 }

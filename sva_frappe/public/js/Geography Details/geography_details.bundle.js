@@ -16,6 +16,7 @@ class GeographyDetails {
 	}) {
 		this.$wrapper = $(wrapper);
 		this.app = null;
+		this.vm = null;
 		this.hierarchy_level_field = hierarchy_level_field;
 		this.geography_details_field = geography_details_field;
 		this.geography_title = geography_title;
