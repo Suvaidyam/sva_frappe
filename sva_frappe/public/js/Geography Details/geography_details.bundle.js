@@ -68,7 +68,7 @@ class GeographyDetails {
 
 		// mount the app only if wrapper exists
 		if (this.$wrapper && this.$wrapper.get(0)) {
-			this.app.mount(this.$wrapper.get(0));
+			this.vm = this.app.mount(this.$wrapper.get(0));
 		} else {
 			console.warn("Wrapper element not found for mounting Vue app");
 		}
