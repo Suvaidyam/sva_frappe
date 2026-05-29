@@ -185,9 +185,21 @@ frappe.ui.form.on("SVA User", {
 			cdt,
 			cdn
 		) {
+			let selected_modules = (frm.doc.table_pdop || [])
+				.filter((r) => r.name !== cdn && r.module)
+				.map((r) => r.module);
+
+			let non_multiselect_selected = (setting.role_level || [])
+				.filter((item) => item.role == level && !item.is_multiselect && selected_modules.includes(item.level))
+				.map((item) => item.level);
+
+			let available_modules = level_option.filter(
+				(m) => !non_multiselect_selected.includes(m)
+			);
+
 			return {
 				filters: {
-					name: ["in", level_option],
+					name: ["in", available_modules.length ? available_modules : [""]],
 				},
 			};
 		};

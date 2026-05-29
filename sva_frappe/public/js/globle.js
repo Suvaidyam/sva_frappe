@@ -1,4 +1,4 @@
-const assign_UP = async (frm, role_names) => {
+const assign_UP = async (frm, role_names, role_level_data) => {
 	const d = new frappe.ui.Dialog({
 		title: "Assign To",
 		size: "large",
@@ -20,16 +20,20 @@ const assign_UP = async (frm, role_names) => {
 						in_list_view: 1,
 						reqd: 1,
 						get_query() {
-							let selected_roles = d?.fields_dict?.assigned_roles?.grid
-								?.get_data()
-								?.map((r) => r.role)
-								?.filter((r) => r);
-							let filtered_role = role_names?.filter(
-								(r) => !selected_roles?.includes(r)
+							let grid_data = d?.fields_dict?.assigned_roles?.grid?.get_data() || [];
+							let selected_roles = grid_data.map((r) => r.role).filter((r) => r);
+
+							let non_multiselect_selected = (role_level_data || [])
+								.filter((item) => !item.is_multiselect && selected_roles.includes(item.role))
+								.map((item) => item.role);
+
+							let available_roles = (role_names || []).filter(
+								(r) => !non_multiselect_selected.includes(r)
 							);
+
 							return {
 								filters: {
-									role_name: ["in", filtered_role ? filtered_role : [""]],
+									role_name: ["in", available_roles.length ? available_roles : [""]],
 								},
 							};
 						},
@@ -42,12 +46,21 @@ const assign_UP = async (frm, role_names) => {
 						in_list_view: 1,
 						reqd: 1,
 						get_query(doc) {
-							return {
-								filters: {
-									role_profile: ["=", doc.role || ""],
-									status: "Active",
-								},
+							let grid_data = d?.fields_dict?.assigned_roles?.grid?.get_data() || [];
+							let selected_users = grid_data
+								.filter((r) => r.name !== doc.name && r.user)
+								.map((r) => r.user);
+
+							let filters = {
+								role_profile: ["=", doc.role || ""],
+								status: "Active",
 							};
+
+							if (selected_users.length) {
+								filters.name = ["not in", selected_users];
+							}
+
+							return { filters };
 						},
 						onchange() {
 							// This will be called when user field changes in grid
@@ -136,9 +149,10 @@ const assign_UP = async (frm, role_names) => {
 frappe.ui.form.on("*", {
 	refresh: async function (frm) {
 		let user_settings = await frappe.xcall("sva_frappe.api.get_user_settings");
-		let role_names = user_settings?.role_level
-			?.filter((item) => item.level == frm.doctype)
-			?.map((item) => item.role);
+		let role_level_data = user_settings?.role_level?.filter(
+			(item) => item.level == frm.doctype
+		);
+		let role_names = role_level_data?.map((item) => item.role);
 		let allowed_assign_to = user_settings?.visible_assign_to?.map((item) => item.role);
 		if (
 			role_names?.length > 0 &&
@@ -147,7 +161,7 @@ frappe.ui.form.on("*", {
 				frappe.user.has_role("Administrator"))
 		) {
 			frm.page.add_menu_item(__("Assign To"), () => {
-				assign_UP(frm, role_names);
+				assign_UP(frm, role_names, role_level_data);
 			});
 		}
 	},
