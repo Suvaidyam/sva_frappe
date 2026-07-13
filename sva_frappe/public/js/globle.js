@@ -45,6 +45,7 @@ const assign_UP = async (frm, role_names) => {
 							return {
 								filters: {
 									role_profile: ["=", doc.role || ""],
+									status: "Active",
 								},
 							};
 						},

@@ -148,6 +148,7 @@ permission_query_conditions = {"*": "sva_frappe.controllers.permission.get_permi
 
 doc_events = {
 	"User Permission": {
+		"after_insert": "sva_frappe.sva_frappe.doctype.sva_user.sva_user.on_user_permission_change",
 		"on_update": "sva_frappe.sva_frappe.doctype.sva_user.sva_user.on_user_permission_change",
 		"on_trash": "sva_frappe.sva_frappe.doctype.sva_user.sva_user.on_user_permission_change",
 	}
