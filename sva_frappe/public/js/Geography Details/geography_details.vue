@@ -447,7 +447,7 @@
 						<button
 							class="btn btn-primary"
 							@click="saveSelection"
-							v-if="isAtLowestHierarchy && !read_only && !disable_save_btn"
+							v-if="!read_only && !disable_save_btn"
 							:disabled="isLoading || isSaving"
 						>
 							<span
@@ -460,7 +460,7 @@
 							<span v-else>Saving...</span>
 						</button>
 						<button
-							class="btn btn-primary"
+							class="btn btn-default"
 							@click="goNext"
 							v-if="currentStep < totalSteps"
 							:disabled="isLoading"
@@ -670,7 +670,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 
 // ============ PROPS DEFINITION ============
 const props = defineProps({
@@ -976,8 +976,10 @@ const loadStates = async () => {
 const updateDistricts = async () => {
 	const filters = props.filters.district || [];
 	if (selectedStates.value.length === 0) {
+		// Nothing to show right now, but keep selectedDistricts intact - a state toggled off
+		// (even if it was the only one selected) must restore its districts the moment it's
+		// re-checked, not lose them.
 		availableDistricts.value = [];
-		selectedDistricts.value = [];
 		await updateBlocks();
 		return;
 	}
@@ -1008,12 +1010,11 @@ const updateDistricts = async () => {
 							districts[district.state].push(district);
 						});
 
-						selectedDistricts.value = selectedDistricts.value.filter((districtId) => {
-							const district = availableDistricts.value.find(
-								(d) => d.id === districtId
-							);
-							return district && selectedStates.value.includes(district.state);
-						});
+						// Don't filter selectedDistricts here - this fetch only ever covers
+						// currently-selected states, so a district under a temporarily
+						// unchecked state would wrongly look "stale" and get dropped. Local
+						// selections are only ever removed by an explicit toggle or by Save
+						// actually persisting a cascade-delete.
 					}
 				},
 			});
@@ -1027,7 +1028,6 @@ const updateDistricts = async () => {
 const updateBlocks = async () => {
 	if (selectedDistricts.value.length === 0) {
 		availableBlocks.value = [];
-		selectedBlocks.value = [];
 		await updateGramPanchayats();
 		return;
 	}
@@ -1058,10 +1058,7 @@ const updateBlocks = async () => {
 						blocks[block.district].push(block);
 					});
 
-					selectedBlocks.value = selectedBlocks.value.filter((blockId) => {
-						const block = availableBlocks.value.find((b) => b.id === blockId);
-						return block && selectedDistricts.value.includes(block.district);
-					});
+					// See updateDistricts - don't filter selectedBlocks based on this fetch.
 				}
 			},
 		});
@@ -1072,7 +1069,6 @@ const updateBlocks = async () => {
 const updateGramPanchayats = async () => {
 	if (selectedBlocks.value.length === 0) {
 		availableGramPanchayats.value = [];
-		selectedGramPanchayats.value = [];
 		await updateVillages();
 		return;
 	}
@@ -1101,10 +1097,7 @@ const updateGramPanchayats = async () => {
 						gramPanchayats[gp.block].push(gp);
 					});
 
-					selectedGramPanchayats.value = selectedGramPanchayats.value.filter((gpId) => {
-						const gp = availableGramPanchayats.value.find((g) => g.id === gpId);
-						return gp && selectedBlocks.value.includes(gp.block);
-					});
+					// See updateDistricts - don't filter selectedGramPanchayats based on this fetch.
 				}
 			},
 		});
@@ -1119,7 +1112,6 @@ const updateVillages = async () => {
 
 	if (selectedGramPanchayats.value.length === 0) {
 		availableVillages.value = [];
-		selectedVillages.value = [];
 		return;
 	}
 
@@ -1148,13 +1140,7 @@ const updateVillages = async () => {
 						villages[village.gram_panchayat].push(village);
 					});
 
-					selectedVillages.value = selectedVillages.value.filter((villageId) => {
-						const village = availableVillages.value.find((v) => v.id === villageId);
-						return (
-							village &&
-							selectedGramPanchayats.value.includes(village.gram_panchayat)
-						);
-					});
+					// See updateDistricts - don't filter selectedVillages based on this fetch.
 				}
 			},
 		});
@@ -1271,18 +1257,7 @@ const goBack = () => {
 };
 
 // ============ SAVE FUNCTIONALITY ============
-const saveSelection = async () => {
-	isSaving.value = true;
-
-	if (!props.disable_save_btn) {
-		const validationResult = validateAllLevelsForSave();
-		if (!validationResult.isValid) {
-			showValidationError(validationResult);
-			isSaving.value = false;
-			return;
-		}
-	}
-
+const buildSelectionMap = () => {
 	const selectionMap = new Map();
 
 	// Build selection map for all hierarchy levels
@@ -1413,22 +1388,21 @@ const saveSelection = async () => {
 			);
 		}
 	});
-	let selection = Array.from(selectionMap.values());
-	// Filter based on lowest hierarchy
-	switch (lowest_hierarchy.value) {
+	return Array.from(selectionMap.values());
+};
+
+const filterToDepth = (selection, hierarchy) => {
+	switch (hierarchy) {
 		case "State":
-			selection = selection.filter((item) => item.state && !item.district);
-			break;
+			return selection.filter((item) => item.state && !item.district);
 		case "District":
-			selection = selection.filter((item) => item.state && item.district && !item.block);
-			break;
+			return selection.filter((item) => item.state && item.district && !item.block);
 		case "Block":
-			selection = selection.filter(
+			return selection.filter(
 				(item) => item.state && item.district && item.block && !item.gramPanchayat
 			);
-			break;
 		case "Gram Panchayat":
-			selection = selection.filter(
+			return selection.filter(
 				(item) =>
 					item.state &&
 					item.district &&
@@ -1436,48 +1410,144 @@ const saveSelection = async () => {
 					item.gramPanchayat &&
 					!item.village
 			);
-			break;
 		case "Village":
-			selection = selection.filter(
+			return selection.filter(
 				(item) =>
 					item.state && item.district && item.block && item.gramPanchayat && item.village
 			);
-			break;
+		default:
+			return selection;
+	}
+};
+
+const LEVEL_FIELD_NAMES = ["state", "district", "block", "gram_panchayat", "village"];
+
+// Build the {level, scope, selected} entry for one level. `scope` is the set of
+// currently-selected parent tuples (defines what this level's diff is allowed to touch);
+// `selected` is the fully-qualified tuples for whatever's checked at this level. Only
+// currently-in-view items are ever included - anything belonging to a parent that isn't
+// selected right now (e.g. a different, untouched state) is simply out of scope.
+const buildLevelEntry = (levelIndex) => {
+	const level = LEVEL_FIELD_NAMES[levelIndex];
+
+	if (levelIndex === 0) {
+		return { level, scope: [], selected: selectedStates.value.map((id) => [id]) };
 	}
 
-	if (!props.disable_save_btn) {
-		try {
-			const r = await frappe.xcall("sva_frappe.api.save_geography_details", {
-				selection_data: JSON.stringify(selection),
-				document_type: props.frm.doctype,
-				docname: props.frm.docname,
-				lowest_hierarchy: lowest_hierarchy.value,
-			});
+	if (levelIndex === 1) {
+		return {
+			level,
+			scope: selectedStates.value.map((id) => [id]),
+			selected: selectedDistricts.value
+				.map((id) => availableDistricts.value.find((d) => d.id === id))
+				.filter(Boolean)
+				.map((d) => [d.state, d.id]),
+		};
+	}
 
-			if (r.status === "success") {
-				frappe.show_alert({ message: r.message, indicator: "green" });
-			} else {
-				frappe.show_alert({
-					message: r.message || __("Error saving geography details"),
-					indicator: "red",
-				});
-			}
-		} catch (error) {
-			frappe.show_alert({
-				message: error.message || __("Error saving geography details"),
-				indicator: "red",
-			});
-		} finally {
+	if (levelIndex === 2) {
+		return {
+			level,
+			scope: selectedDistricts.value
+				.map((id) => availableDistricts.value.find((d) => d.id === id))
+				.filter(Boolean)
+				.map((d) => [d.state, d.id]),
+			selected: selectedBlocks.value
+				.map((id) => availableBlocks.value.find((b) => b.id === id))
+				.filter(Boolean)
+				.map((b) => [b.state, b.district, b.id]),
+		};
+	}
+
+	if (levelIndex === 3) {
+		return {
+			level,
+			scope: selectedBlocks.value
+				.map((id) => availableBlocks.value.find((b) => b.id === id))
+				.filter(Boolean)
+				.map((b) => [b.state, b.district, b.id]),
+			selected: selectedGramPanchayats.value
+				.map((id) => availableGramPanchayats.value.find((g) => g.id === id))
+				.filter(Boolean)
+				.map((g) => [g.state, g.district, g.block, g.id]),
+		};
+	}
+
+	return {
+		level,
+		scope: selectedGramPanchayats.value
+			.map((id) => availableGramPanchayats.value.find((g) => g.id === id))
+			.filter(Boolean)
+			.map((g) => [g.state, g.district, g.block, g.id]),
+		selected: selectedVillages.value
+			.map((id) => availableVillages.value.find((v) => v.id === id))
+			.filter(Boolean)
+			.map((v) => [v.state, v.district, v.block, v.gram_panchayat, v.id]),
+	};
+};
+
+// Cascade through every ancestor level up to and including the current step, so unchecking an
+// ancestor (e.g. a state) is applied correctly even when Save is clicked from a deeper step
+// (e.g. Districts), while a sibling branch that's still checked stays untouched (it remains
+// present in that level's own `selected` list).
+const buildLevelSavePayload = () => {
+	const levelSelections = [];
+	for (let levelIndex = 0; levelIndex <= currentStep.value - 1; levelIndex++) {
+		levelSelections.push(buildLevelEntry(levelIndex));
+	}
+	return levelSelections;
+};
+
+const saveSelection = async () => {
+	isSaving.value = true;
+
+	if (props.disable_save_btn) {
+		// Embedded mode (Grant "Geography Details Modify" dialog, Field Visit Report) - no
+		// network call here, just return the full flat selection so the caller can stash it
+		// on its own form field and submit it itself. Unrelated to the wizard's own Save
+		// button flow below.
+		const selection = filterToDepth(buildSelectionMap(), lowest_hierarchy.value);
+		isSaving.value = false;
+		return selection;
+	}
+
+	if (isAtLowestHierarchy.value) {
+		const validationResult = validateAllLevelsForSave();
+		if (!validationResult.isValid) {
+			showValidationError(validationResult);
 			isSaving.value = false;
+			return;
 		}
 	}
 
-	if (
-		props.hierarchy_level_field &&
-		props.frm.doc[props.hierarchy_level_field] &&
-		props.frm.docname &&
-		!props.disable_save_btn
-	) {
+	const levelSelections = buildLevelSavePayload();
+
+	try {
+		const r = await frappe.xcall("sva_frappe.api.save_geography_level", {
+			document_type: props.frm.doctype,
+			docname: props.frm.docname,
+			level_selections: JSON.stringify(levelSelections),
+			lowest_hierarchy: lowest_hierarchy.value,
+		});
+
+		if (r.status === "success") {
+			frappe.show_alert({ message: r.message, indicator: "green" });
+		} else {
+			frappe.show_alert({
+				message: r.message || __("Error saving geography details"),
+				indicator: "red",
+			});
+		}
+	} catch (error) {
+		frappe.show_alert({
+			message: error.message || __("Error saving geography details"),
+			indicator: "red",
+		});
+	} finally {
+		isSaving.value = false;
+	}
+
+	if (props.hierarchy_level_field && props.frm.doc[props.hierarchy_level_field] && props.frm.docname) {
 		await frappe.db.set_value(
 			props.frm.doctype,
 			props.frm.docname,
@@ -1485,8 +1555,6 @@ const saveSelection = async () => {
 			props.frm.doc[props.hierarchy_level_field]
 		);
 	}
-
-	return selection;
 };
 
 // ============ GETTER METHODS ============
@@ -1573,17 +1641,13 @@ const getSelectedGPsForStateRecursive = (stateId) => {
 const toggleState = (stateId) => {
 	if (props.read_only || isStatePreserved(stateId)) return;
 
+	// Unchecking only hides this state's districts from view (they're no longer part of
+	// any currently-selected state) - it must NOT clear selectedDistricts locally, so that
+	// re-checking the same state instantly restores its previously-selected districts.
+	// Deletion only ever happens when the user Saves while a branch is actually unchecked.
 	const index = selectedStates.value.indexOf(stateId);
 	if (index > -1) {
 		selectedStates.value.splice(index, 1);
-		// Remove related non-preserved items
-		const stateDistricts = getDistrictsForState(stateId);
-		stateDistricts.forEach((district) => {
-			if (!isDistrictPreserved(district.id)) {
-				const districtIndex = selectedDistricts.value.indexOf(district.id);
-				if (districtIndex > -1) selectedDistricts.value.splice(districtIndex, 1);
-			}
-		});
 	} else {
 		selectedStates.value.push(stateId);
 	}
@@ -1648,33 +1712,15 @@ const isAllDistrictsSelectedForState = (stateId) => {
 const toggleAllDistrictsForState = (stateId) => {
 	const stateDistricts = getDistrictsForState(stateId);
 	const allSelected = isAllDistrictsSelectedForState(stateId);
+	const districtIds = stateDistricts.map((d) => d.id);
 
 	if (allSelected) {
-		const districtIds = stateDistricts.map((d) => d.id);
+		// Only unselect the districts themselves - deeper (block/GP/village) selections stay
+		// intact locally, exactly like toggleState, so re-selecting restores them instantly.
 		selectedDistricts.value = selectedDistricts.value.filter(
 			(id) => !districtIds.includes(id)
 		);
-
-		const blocksToRemove = availableBlocks.value
-			.filter((block) => districtIds.includes(block.district))
-			.map((block) => block.id);
-		selectedBlocks.value = selectedBlocks.value.filter((id) => !blocksToRemove.includes(id));
-
-		const gpsToRemove = availableGramPanchayats.value
-			.filter((gp) => blocksToRemove.includes(gp.block))
-			.map((gp) => gp.id);
-		selectedGramPanchayats.value = selectedGramPanchayats.value.filter(
-			(id) => !gpsToRemove.includes(id)
-		);
-
-		const villagesToRemove = availableVillages.value
-			.filter((village) => gpsToRemove.includes(village.gram_panchayat))
-			.map((village) => village.id);
-		selectedVillages.value = selectedVillages.value.filter(
-			(id) => !villagesToRemove.includes(id)
-		);
 	} else {
-		const districtIds = stateDistricts.map((d) => d.id);
 		selectedDistricts.value = [...new Set([...selectedDistricts.value, ...districtIds])];
 	}
 	updateBlocks();
@@ -1691,26 +1737,12 @@ const isAllBlocksSelectedForDistrict = (districtId) => {
 const toggleAllBlocksForDistrict = (districtId) => {
 	const districtBlocks = getBlocksForDistrict(districtId);
 	const allSelected = isAllBlocksSelectedForDistrict(districtId);
+	const blockIds = districtBlocks.map((b) => b.id);
 
 	if (allSelected) {
-		const blockIds = districtBlocks.map((b) => b.id);
+		// Deeper (GP/village) selections stay intact locally - see toggleState.
 		selectedBlocks.value = selectedBlocks.value.filter((id) => !blockIds.includes(id));
-
-		const gpsToRemove = availableGramPanchayats.value
-			.filter((gp) => blockIds.includes(gp.block))
-			.map((gp) => gp.id);
-		selectedGramPanchayats.value = selectedGramPanchayats.value.filter(
-			(id) => !gpsToRemove.includes(id)
-		);
-
-		const villagesToRemove = availableVillages.value
-			.filter((village) => gpsToRemove.includes(village.gram_panchayat))
-			.map((village) => village.id);
-		selectedVillages.value = selectedVillages.value.filter(
-			(id) => !villagesToRemove.includes(id)
-		);
 	} else {
-		const blockIds = districtBlocks.map((b) => b.id);
 		selectedBlocks.value = [...new Set([...selectedBlocks.value, ...blockIds])];
 	}
 	updateGramPanchayats();
@@ -1726,21 +1758,14 @@ const isAllGramPanchayatsSelectedForBlock = (blockId) => {
 const toggleAllGramPanchayatsForBlock = (blockId) => {
 	const blockGPs = getGramPanchayatsForBlock(blockId);
 	const allSelected = isAllGramPanchayatsSelectedForBlock(blockId);
+	const gpIds = blockGPs.map((gp) => gp.id);
 
 	if (allSelected) {
-		const gpIds = blockGPs.map((gp) => gp.id);
+		// Deeper (village) selections stay intact locally - see toggleState.
 		selectedGramPanchayats.value = selectedGramPanchayats.value.filter(
 			(id) => !gpIds.includes(id)
 		);
-
-		const villagesToRemove = availableVillages.value
-			.filter((village) => gpIds.includes(village.gram_panchayat))
-			.map((village) => village.id);
-		selectedVillages.value = selectedVillages.value.filter(
-			(id) => !villagesToRemove.includes(id)
-		);
 	} else {
-		const gpIds = blockGPs.map((gp) => gp.id);
 		selectedGramPanchayats.value = [...new Set([...selectedGramPanchayats.value, ...gpIds])];
 	}
 	updateVillages();
@@ -1769,21 +1794,10 @@ const toggleAllVillagesForGP = (gpId) => {
 
 const toggleAllStates = () => {
 	if (allStatesSelected.value) {
-		// Keep preserved states when unselecting all
+		// Keep preserved states when unselecting all - deeper local selections (districts and
+		// below) are left intact, see toggleState.
 		const preservedStateIds = Array.from(preserveData.value.states);
 		selectedStates.value = preservedStateIds;
-		selectedDistricts.value = selectedDistricts.value.filter((districtId) =>
-			preserveData.value.districts.has(districtId)
-		);
-		selectedBlocks.value = selectedBlocks.value.filter((blockId) =>
-			preserveData.value.blocks.has(blockId)
-		);
-		selectedGramPanchayats.value = selectedGramPanchayats.value.filter((gpId) =>
-			preserveData.value.gramPanchayats.has(gpId)
-		);
-		selectedVillages.value = selectedVillages.value.filter((villageId) =>
-			preserveData.value.villages.has(villageId)
-		);
 	} else {
 		selectedStates.value = states.value.map((state) => state.id);
 	}
@@ -1794,15 +1808,6 @@ const toggleAllDistricts = () => {
 	if (allDistrictsSelected.value) {
 		const preservedDistrictIds = Array.from(preserveData.value.districts);
 		selectedDistricts.value = preservedDistrictIds;
-		selectedBlocks.value = selectedBlocks.value.filter((blockId) =>
-			preserveData.value.blocks.has(blockId)
-		);
-		selectedGramPanchayats.value = selectedGramPanchayats.value.filter((gpId) =>
-			preserveData.value.gramPanchayats.has(gpId)
-		);
-		selectedVillages.value = selectedVillages.value.filter((villageId) =>
-			preserveData.value.villages.has(villageId)
-		);
 	} else {
 		selectedDistricts.value = availableDistricts.value.map((district) => district.id);
 	}
@@ -1812,8 +1817,6 @@ const toggleAllDistricts = () => {
 const toggleAllBlocks = () => {
 	if (allBlocksSelected.value) {
 		selectedBlocks.value = [];
-		selectedGramPanchayats.value = [];
-		selectedVillages.value = [];
 	} else {
 		selectedBlocks.value = availableBlocks.value.map((block) => block.id);
 	}
@@ -1823,7 +1826,6 @@ const toggleAllBlocks = () => {
 const toggleAllGramPanchayats = () => {
 	if (allGramPanchayatsSelected.value) {
 		selectedGramPanchayats.value = [];
-		selectedVillages.value = [];
 	} else {
 		selectedGramPanchayats.value = availableGramPanchayats.value.map((gp) => gp.id);
 	}
