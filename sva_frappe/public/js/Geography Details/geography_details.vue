@@ -1511,6 +1511,13 @@ const saveSelection = async () => {
 		return selection;
 	}
 
+	const stepValidation = validateCurrentStepSelection();
+	if (!stepValidation.isValid) {
+		showValidationError(stepValidation);
+		isSaving.value = false;
+		return;
+	}
+
 	if (isAtLowestHierarchy.value) {
 		const validationResult = validateAllLevelsForSave();
 		if (!validationResult.isValid) {
