@@ -3,7 +3,7 @@ import json
 import frappe
 from frappe import _
 
-from sva_frappe.controllers.geography.geography_merge import LEVEL_FIELDS, merge_full_path
+from sva_frappe.controllers.geography.geography_merge import LEVEL_FIELDS, clamp_to_level, merge_full_path
 
 
 def _existing_rows(doc):
@@ -171,6 +171,7 @@ def save_geography_level(document_type, docname, level_selections, lowest_hierar
 		merged_rows = merge_full_path(_existing_rows(doc), level_selections)
 
 		if lowest_hierarchy:
+			merged_rows = clamp_to_level(merged_rows, lowest_hierarchy)
 			doc.set("lowest_geography_level", lowest_hierarchy)
 		doc.geography_details = []
 		for row in merged_rows:
