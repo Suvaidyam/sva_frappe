@@ -1,5 +1,13 @@
 LEVEL_FIELDS = ["state", "district", "block", "gram_panchayat", "village"]
 
+LEVEL_DISPLAY_TO_FIELD = {
+	"State": "state",
+	"District": "district",
+	"Block": "block",
+	"Gram Panchayat": "gram_panchayat",
+	"Village": "village",
+}
+
 
 def _row_path(row):
 	"""Return the populated ancestor tuple for a row, trimmed at the first empty field."""
@@ -96,3 +104,35 @@ def merge_full_path(existing_rows, level_selections):
 	for entry in level_selections or []:
 		rows = merge_level_selection(rows, entry["level"], entry.get("scope"), entry.get("selected"))
 	return rows
+
+
+def clamp_to_level(rows, lowest_hierarchy):
+	"""
+	Enforce that no row is deeper than the document's currently-configured lowest_geography_level
+	- e.g. if lowest_geography_level was "Village" and is changed to "District", any row still
+	carrying block/gram_panchayat/village values from before gets truncated back to state+district
+	on the next save, regardless of which level's Save button triggered it. Rows already within
+	the configured depth are untouched. If two rows collapse onto the same truncated path (e.g.
+	two different villages under the same district), only one surviving row is kept.
+	"""
+	level_field = LEVEL_DISPLAY_TO_FIELD.get(lowest_hierarchy)
+	if not level_field:
+		return rows
+
+	level_index = LEVEL_FIELDS.index(level_field)
+	seen_paths = set()
+	clamped_rows = []
+
+	for row in rows:
+		clamped = dict(row)
+		for i, field in enumerate(LEVEL_FIELDS):
+			if i > level_index:
+				clamped[field] = None
+
+		path = _row_path(clamped)
+		if not path or path in seen_paths:
+			continue
+		seen_paths.add(path)
+		clamped_rows.append(clamped)
+
+	return clamped_rows
