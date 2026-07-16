@@ -3,6 +3,23 @@ import json
 import frappe
 from frappe import _
 
+from sva_frappe.controllers.geography.geography_merge import LEVEL_FIELDS, merge_full_path
+
+
+def _existing_rows(doc):
+	return [{field: row.get(field) for field in LEVEL_FIELDS} for row in doc.geography_details]
+
+
+def _get_or_create_geography_details(document_type, docname):
+	filters = {"document_type": document_type, "docname": docname}
+	exists = frappe.db.exists("Geography Details", filters)
+	if exists:
+		doc = frappe.get_doc("Geography Details", exists)
+	else:
+		doc = frappe.new_doc("Geography Details")
+		doc.update(filters)
+	return doc
+
 
 @frappe.whitelist()
 def get_states(filters):
@@ -133,6 +150,37 @@ def save_geography_details(selection_data, document_type=None, docname=None, low
 		return {"status": "success", "message": "Geography details saved successfully", "docname": doc.name}
 	except Exception as e:
 		frappe.log_error(frappe.get_traceback(), "Error in save_geography_details")
+		return {"status": "error", "message": str(e)}
+
+
+@frappe.whitelist()
+def save_geography_level(document_type, docname, level_selections, lowest_hierarchy=None):
+	"""
+	Cascading, level-scoped Save used by the Geography wizard's Save button. `level_selections`
+	is an ordered list of {level, scope, selected} entries, one per level from State through the
+	current step's level. Each level's diff (add/cascade-delete) is applied in order, so an
+	ancestor uncheck (e.g. a state) is correctly applied even when Save is triggered from a
+	deeper step (e.g. Districts) - while a sibling branch that's still checked (e.g. a different
+	state) is never touched, since it's still present in the State-level `selected` list.
+	"""
+	try:
+		if isinstance(level_selections, str):
+			level_selections = json.loads(level_selections)
+
+		doc = _get_or_create_geography_details(document_type, docname)
+		merged_rows = merge_full_path(_existing_rows(doc), level_selections)
+
+		if lowest_hierarchy:
+			doc.set("lowest_geography_level", lowest_hierarchy)
+		doc.geography_details = []
+		for row in merged_rows:
+			doc.append("geography_details", row)
+
+		doc.insert(ignore_permissions=True) if doc.is_new() else doc.save(ignore_permissions=True)
+		frappe.db.commit()
+		return {"status": "success", "message": "Geography details saved successfully", "docname": doc.name}
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Error in save_geography_level")
 		return {"status": "error", "message": str(e)}
 
 
