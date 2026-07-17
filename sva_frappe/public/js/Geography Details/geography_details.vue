@@ -1554,7 +1554,11 @@ const saveSelection = async () => {
 		isSaving.value = false;
 	}
 
-	if (props.hierarchy_level_field && props.frm.doc[props.hierarchy_level_field] && props.frm.docname) {
+	if (
+		props.hierarchy_level_field &&
+		props.frm.doc[props.hierarchy_level_field] &&
+		props.frm.docname
+	) {
 		await frappe.db.set_value(
 			props.frm.doctype,
 			props.frm.docname,

@@ -214,12 +214,14 @@ def get_assigned_user_permission(allow, for_value):
 				"SVA User", {"email": user.user}, ["email", "role_profile", "name", "full_name"], as_dict=True
 			)
 			if user_data:
-				result.append({
-					"user": user_data.name,
-					"role": user_data.role_profile,
-					"user_title": user_data.get("full_name") or user_data.name,
-					"user_email": user_data.email,
-				})
+				result.append(
+					{
+						"user": user_data.name,
+						"role": user_data.role_profile,
+						"user_title": user_data.get("full_name") or user_data.name,
+						"user_email": user_data.email,
+					}
+				)
 	return result
 
 
