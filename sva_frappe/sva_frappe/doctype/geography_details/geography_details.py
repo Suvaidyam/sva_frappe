@@ -25,6 +25,5 @@ class GeographyDetails(Document):
 		if any(row.get(f) for row in self.geography_details for f in fields):
 			for row in self.geography_details:
 				for f in fields:
-					print(f"Clearing field: {f} for row: {row.name}")
 					row.set(f, None)
 					row.set(f"{f}_name", None)
