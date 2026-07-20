@@ -53,7 +53,7 @@ const assign_UP = async (frm, role_names) => {
 							// This will be called when user field changes in grid
 							const grid = d?.fields_dict?.assigned_roles?.grid;
 							if (!grid || !this.doc) return;
-							
+
 							const user_id = this.get_value();
 							if (!user_id) {
 								this.doc.user_title = "";
@@ -61,14 +61,16 @@ const assign_UP = async (frm, role_names) => {
 								grid.refresh();
 								return;
 							}
-							
-							frappe.db.get_value("SVA User", user_id, ["full_name", "email"]).then((r) => {
-								if (r.message && this.doc) {
-									this.doc.user_title = r.message.full_name || user_id;
-									this.doc.user_email = r.message.email || "";
-									grid.refresh();
-								}
-							});
+
+							frappe.db
+								.get_value("SVA User", user_id, ["full_name", "email"])
+								.then((r) => {
+									if (r.message && this.doc) {
+										this.doc.user_title = r.message.full_name || user_id;
+										this.doc.user_email = r.message.email || "";
+										grid.refresh();
+									}
+								});
 						},
 					},
 					{
