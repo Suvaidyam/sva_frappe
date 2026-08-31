@@ -4,7 +4,7 @@ app_publisher = "suvaidyam"
 app_description = "customize frappe app for extra features"
 app_email = "tech@suvaidyam.com"
 app_license = "mit"
-required_apps = ["Suvaidyam/frappe_theme"]
+required_apps = ["Suvaidyam/utility"]
 
 # Includes in <head>
 # ------------------

@@ -1,5 +1,5 @@
 import frappe
-from frappe_theme.utils import get_state_closure_by_type
+from utility.utils import get_state_closure_by_type
 
 
 def check_duplicate_open_request(doc):
