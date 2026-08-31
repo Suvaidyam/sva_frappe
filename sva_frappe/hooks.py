@@ -76,7 +76,7 @@ doctype_list_js = {
 # }
 
 # Generators
-# ----------
+# ------------
 
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
